@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Image from "next/image";
 import "./globals.css";
+import SiteHeader from "./components/SiteHeader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -58,37 +59,7 @@ export default function RootLayout({
           </div>
         </div>
 
-        <header className="header">
-          <div className="container headerInner">
-            <a className="logo" href="#" aria-label="Dewan Dakwah Kota Semarang">
-              <Image
-                src="/logo.png"
-                alt="Logo Dewan Dakwah Kota Semarang"
-                width={160}
-                height={64}
-                className="logoImage"
-                priority
-              />
-            </a>
-
-            <nav className="nav">
-              <a href="#">Beranda</a>
-              <a className="navActive" href="#">
-                Berita
-              </a>
-              <a href="#">Kajian</a>
-              <a href="#">Konsultasi</a>
-              <a href="#">Tentang Kami</a>
-            </nav>
-
-            <div className="searchWrap">
-              <input placeholder="Cari Berita, Kajian, Program..." />
-              <button type="button" aria-label="search">
-                ⌕
-              </button>
-            </div>
-          </div>
-        </header>
+        <SiteHeader />
 
         <div className="flex-1">{children}</div>
 

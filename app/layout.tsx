@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Image from "next/image";
+import Link from "next/link";
 import "./globals.css";
 import SiteHeader from "./components/SiteHeader";
 
@@ -49,7 +50,7 @@ export default function RootLayout({
                   <Image src="/indonesia.png" alt="Indonesia" width={24} height={16} />
                 </div>
                 <div className="langBox">
-                  <Image src="/amerika.png" alt="America" width={24} height={16} />
+                    <Image src="/america.png" alt="Amerika Serikat" width={24} height={16} />
                 </div>
                 <div className="langBox">
                   <Image src="/arab.png" alt="Arab" width={24} height={16} />
@@ -76,10 +77,10 @@ export default function RootLayout({
               <div>
                 <h4>Menu</h4>
                 <ul>
-                  <li>Beranda</li>
-                  <li>Berita</li>
-                  <li>Kajian</li>
-                  <li>Tentang Kami</li>
+                  <li><Link href="/">Beranda</Link></li>
+                  <li><Link href="/Berita">Berita</Link></li>
+                  <li><Link href="/Kajian">Kajian</Link></li>
+                  <li><Link href="/TentangKami">Tentang Kami</Link></li>
                 </ul>
               </div>
               <div>

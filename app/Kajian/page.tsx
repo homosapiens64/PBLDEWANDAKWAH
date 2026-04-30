@@ -3,7 +3,15 @@
 
 import React, { useState } from 'react'
 
-function Card({ item }: { item: any }) {
+type KajianItem = {
+  id: number
+  title: string
+  author: string
+  date: string
+  excerpt: string
+}
+
+function Card({ item }: { item: KajianItem }) {
   return (
     <div style={{ background: '#fff', borderRadius: 8, overflow: 'hidden', boxShadow: '0 1px 4px #0001' }}>
       <div style={{ width: '100%', height: 160, background: '#e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
@@ -30,7 +38,7 @@ function SectionPager({
   items,
   pageSize = 3,
 }: {
-  items: any[]
+  items: KajianItem[]
   pageSize?: number
 }) {
   const [page, setPage] = useState(0)

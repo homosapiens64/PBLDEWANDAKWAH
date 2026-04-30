@@ -1,8 +1,20 @@
-'use client';
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
+const beritaMenu = [
+  { label: "Kegiatan", href: "/Berita/Kegiatan" },
+  { label: "Nasional", href: "/Berita/Nasional" },
+  { label: "Internasional", href: "/Berita/Internasional" },
+];
+
+const tentangKamiMenu = [
+  { label: "AD dan ART", href: "/TentangKami/AdDanArt" },
+  { label: "Struktur Kepengurusan", href: "/TentangKami/StrukturKepengurusan" },
+  { label: "Program", href: "/TentangKami/Program" },
+];
 
 export default function SiteHeader() {
   const pathname = usePathname();
@@ -27,14 +39,52 @@ export default function SiteHeader() {
           <Link className={isActive("/") ? "navActive" : undefined} href="/">
             Beranda
           </Link>
-          <Link className={isActive("/Berita") ? "navActive" : undefined} href="/Berita">
-            Berita
+
+          <div className={`navGroup ${isActive("/Berita") ? "navGroupActive" : ""}`}>
+            <Link
+              className={isActive("/Berita") ? "navActive navLabel" : "navLabel"}
+              href="/Berita"
+            >
+              <span>Berita</span>
+              <span className="navCaret" aria-hidden="true">
+                ▾
+              </span>
+            </Link>
+            <div className="navMenu" role="menu" aria-label="Menu Berita">
+              {beritaMenu.map((item) => (
+                <Link key={item.href} className="navMenuItem" href={item.href} role="menuitem">
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <Link className={isActive("/Kajian") ? "navActive" : undefined} href="/Kajian">
+            Kajian
           </Link>
-          <a href="#">Kajian</a>
+
           <Link className={isActive("/Konsultasi") ? "navActive" : undefined} href="/Konsultasi">
             Konsultasi
           </Link>
-          <a href="#">Tentang Kami</a>
+
+          <div className={`navGroup ${isActive("/TentangKami") ? "navGroupActive" : ""}`}>
+            <Link
+              className={isActive("/TentangKami") ? "navActive navLabel" : "navLabel"}
+              href="/TentangKami"
+            >
+              <span>Tentang Kami</span>
+              <span className="navCaret" aria-hidden="true">
+                ▾
+              </span>
+            </Link>
+            <div className="navMenu" role="menu" aria-label="Menu Tentang Kami">
+              {tentangKamiMenu.map((item) => (
+                <Link key={item.href} className="navMenuItem" href={item.href} role="menuitem">
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
         </nav>
 
         <div className="searchWrap">

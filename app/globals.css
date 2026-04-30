@@ -34,6 +34,92 @@ textarea {
   color: #20354d;
 }
 
+.simpleRoutePage {
+  padding: 2rem 0 3rem;
+}
+
+.routeHero {
+  display: grid;
+  gap: 0.45rem;
+  margin-bottom: 1rem;
+}
+
+.routeEyebrow {
+  margin: 0;
+  color: #5aa08a;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.routeTitle {
+  margin: 0;
+  color: #234f46;
+  font-size: clamp(1.7rem, 2.8vw, 2.5rem);
+  line-height: 1.05;
+  font-weight: 900;
+}
+
+.routeLead {
+  margin: 0;
+  max-width: 760px;
+  color: #667a79;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.routeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.routeCard {
+  background: #fff;
+  border: 1px solid #dbe8e3;
+  border-radius: 14px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(38, 70, 64, 0.05);
+}
+
+.routeCard h3 {
+  margin: 0 0 0.35rem;
+  color: #234f46;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.routeCard p {
+  margin: 0;
+  color: #607472;
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+.routeList {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: #607472;
+  font-size: 0.84rem;
+  line-height: 1.7;
+}
+
+.routeTag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  background: #edf8f5;
+  color: #1f8b72;
+  border: 1px solid #d6ece5;
+  border-radius: 999px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
 .container {
   width: min(1140px, calc(100% - 2rem));
   margin: 0 auto;
@@ -139,6 +225,72 @@ textarea {
   position: relative;
 }
 
+.navGroup {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.navGroup > a {
+  text-decoration: none;
+  color: #395364;
+  font-size: 0.92rem;
+  padding: 1.25rem 0 1rem;
+  position: relative;
+}
+
+.navLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.navCaret {
+  font-size: 0.7rem;
+  line-height: 1;
+  transform: translateY(1px);
+  color: #6a8792;
+}
+
+.navGroupActive > a {
+  color: #2c9f7d !important;
+  font-weight: 700;
+}
+
+.navMenu {
+  position: absolute;
+  top: calc(100% - 0.2rem);
+  left: 0;
+  min-width: 220px;
+  background: #ffffff;
+  border: 1px solid #dbe9e5;
+  border-radius: 14px;
+  box-shadow: 0 18px 36px rgba(35, 78, 75, 0.12);
+  padding: 0.45rem;
+  display: none;
+  z-index: 20;
+}
+
+.navGroup:hover .navMenu,
+.navGroup:focus-within .navMenu {
+  display: grid;
+}
+
+.navMenuItem {
+  display: block;
+  text-decoration: none;
+  color: #395364;
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem;
+  font-size: 0.84rem;
+  line-height: 1.3;
+}
+
+.navMenuItem:hover {
+  background: #edf8f5;
+  color: #1f8b72;
+}
+
 .navActive {
   color: #2c9f7d !important;
   font-weight: 700;
@@ -188,6 +340,51 @@ textarea {
 
 .hero {
   padding: 1.6rem 0 1.2rem;
+}
+
+.homeHeroWrap {
+  padding: 1.1rem 0 0.4rem;
+}
+
+.homeHeroBanner {
+  position: relative;
+  height: clamp(250px, 42vw, 420px);
+  overflow: hidden;
+  border-radius: 22px;
+  background: #d9d3c4;
+  box-shadow: 0 18px 42px rgba(35, 78, 75, 0.12);
+}
+
+.homeHeroBannerPlain {
+  background: #d9d3c4;
+}
+
+.homeHeroImage {
+  object-fit: cover;
+  object-position: center center;
+}
+
+.homeHeroButton {
+  position: absolute;
+  left: 1.2rem;
+  bottom: 1.1rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.66);
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  padding: 0.7rem 1rem;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+}
+
+.homeHeroButton:hover {
+  background: rgba(255, 255, 255, 0.26);
 }
 
 .heroEyebrow {
@@ -1410,6 +1607,15 @@ textarea {
   color: #ecfffd;
 }
 
+.footer a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
 .footer ul {
   margin: 0;
   padding: 0;
@@ -1465,6 +1671,15 @@ textarea {
     padding: 1rem 0 0.85rem;
   }
 
+  .navGroup > a {
+    font-size: 0.82rem;
+    padding: 1rem 0 0.85rem;
+  }
+
+  .navLabel {
+    gap: 0.28rem;
+  }
+
   .searchWrap input {
     width: 110px;
   }
@@ -1516,6 +1731,15 @@ textarea {
     padding: 0.85rem 0 0.7rem;
   }
 
+  .navGroup > a {
+    font-size: 0.76rem;
+    padding: 0.85rem 0 0.7rem;
+  }
+
+  .navLabel {
+    gap: 0.24rem;
+  }
+
   .logoImage {
     width: 100px;
   }
@@ -1560,8 +1784,17 @@ textarea {
     min-height: 240px;
   }
 
+  .homeHeroBanner {
+    height: 290px;
+    border-radius: 18px;
+  }
+
   .consultFormGrid,
   .consultTopicRow {
+    grid-template-columns: 1fr;
+  }
+
+  .routeGrid {
     grid-template-columns: 1fr;
   }
 
@@ -1596,6 +1829,12 @@ textarea {
   .topStripRight {
     width: 100%;
     gap: 0.35rem;
+  }
+
+  .navMenu {
+    left: auto;
+    right: 0;
+    min-width: 200px;
   }
 
   .topContactItem {

@@ -476,12 +476,12 @@ export default function TentangKami() {
                 yang menyerang.
               </p>
               <p>
-                "korupsi pemerintah, asosisisme Jawa, liberalisme Muslim dan
-                dominasi ekonomi orang Cina" sebagai gejala konspirasi yang lebih
+                &quot;korupsi pemerintah, asosisisme Jawa, liberalisme Muslim dan
+                dominasi ekonomi orang Cina&quot; sebagai gejala konspirasi yang lebih
                 besar untuk mengkristentkan Indonesia.
                 Pada 26 Februari 1967, atas undangan pengurus masjid Al-
                 Munawwarah, Kampung Bali, Tanah Abang, Jakarta Pusat, para
-                alim ulama dan da'wah berkumpul untuk bermusyawarah, membahas,
+                alim ulama dan da&apos;wah berkumpul untuk bermusyawarah, membahas,
                 meneliti, dan menilai berbagai masalah, terutama yang rapat
                 hubungannya dengan usaha pembangunan umat. Juga tentang usaha
                 mempertahankan aqidah di dalam kesimpangsiuran kekuatan-
@@ -496,9 +496,9 @@ export default function TentangKami() {
           <div className="tk-cabang-inner">
             <h2>Cabang Kota Semarang</h2>
             <p>
-              Dikukuhkan pada tanggal 2 Februari 2026 di Semarang, Dewan Da'wah Kota Semarang
+              Dikukuhkan pada tanggal 2 Februari 2026 di Semarang, Dewan Da&apos;wah Kota Semarang
               berkomitmen untuk terus berperan aktif dalam mendukung pembinaan umat di tingkat daerah.
-              Dengan program kerja yang strategis dan berbasis kebutuhan nyata, Dewan Da'wah Kabupaten
+              Dengan program kerja yang strategis dan berbasis kebutuhan nyata, Dewan Da&apos;wah Kabupaten
               Sidoarjo dapat lebih maksimal dalam memberikan kontribusi nyata kepada masyarakat.
               Program kerja yang dirumuskan diharapkan mampu memberikan solusi atas permasalahan
               yang dihadapi umat sekaligus memperkuat karakter Islami di tengah masyarakat.

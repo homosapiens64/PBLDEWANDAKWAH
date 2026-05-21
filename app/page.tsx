@@ -5,7 +5,26 @@ import Link from "next/link";
 import { useState } from "react";
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
+<<<<<<< HEAD
 
+=======
+const headerMenu = [
+  { name: "Beranda", href: "/" },
+  { name: "Berita", href: "/berita" },
+  { name: "Kajian", href: "/kajian" },
+  { name: "Konsultasi", href: "/konsultasi" },
+  {
+    name: "Pendidikan",
+    href: "#",
+    dropdown: [
+      { name: "ADI", href: "/pendidikan/adi" },
+      { name: "Ponpes", href: "/pendidikan/ponpes" },
+      { name: "Saintek", href: "/pendidikan/saintek" },
+    ],
+  },
+  { name: "Tentang Kami", href: "/tentang-kami" },
+];
+>>>>>>> bf0a6b78364cb7f2d5fa1b740737249ad4d29c33
 const beritaUtama = [
   {
     id: 1,

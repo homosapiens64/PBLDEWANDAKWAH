@@ -1385,8 +1385,13 @@ textarea {
 .consultSidebar {
   display: grid;
   gap: 0.8rem;
+<<<<<<< HEAD
   /* Make sidebar static so it doesn't follow page scroll */
   position: static;
+=======
+  position: sticky;
+  top: 0.75rem;
+>>>>>>> bf0a6b78364cb7f2d5fa1b740737249ad4d29c33
 }
 
 .sidebarCard {

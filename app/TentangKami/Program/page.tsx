@@ -1,7 +1,7 @@
 const programs = [
   {
     title: "Pembinaan Dai",
-    points: ["Pelatihan berkala", "Mentoring lapangan", "Penguatan dakwah digital"],
+    points: ["Pelatihan berkala", "Mentoring lapangan", "Penguatan da'wah digital"],
   },
   {
     title: "Pendidikan Umat",
@@ -20,7 +20,7 @@ export default function ProgramPage() {
         <p className="routeEyebrow">Tentang Kami</p>
         <h1 className="routeTitle">Program</h1>
         <p className="routeLead">
-          Program kerja DDII disusun untuk menjawab kebutuhan dakwah, pendidikan, dan pelayanan
+          Program kerja DDII disusun untuk menjawab kebutuhan da'wah, pendidikan, dan pelayanan
           sosial yang nyata di tingkat masyarakat.
         </p>
       </section>

@@ -134,7 +134,7 @@ export default function Home() {
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 20px' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <div style={{ fontSize: 16, color: '#888', letterSpacing: 2, marginBottom: 8 }}>ARTIKEL ISLAMI</div>
-            <div style={{ fontSize: 38, fontWeight: 700, color: '#F9A826', marginBottom: 8 }}>Kajian & Materi Dakwah</div>
+            <div style={{ fontSize: 38, fontWeight: 700, color: '#F9A826', marginBottom: 8 }}>Kajian & Materi Da'wah</div>
           </div>
 
           {/* Featured Article */}

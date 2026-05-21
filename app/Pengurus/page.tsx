@@ -347,13 +347,13 @@ export default function StrukturKepengurusan() {
 
         {/* ── Hero Banner ── */}
         <section className="sk-hero">
-          <p className="sk-hero-org">Dewan Dakwah Islamiyah Indonesia — Cabang Semarang</p>
+          <p className="sk-hero-org">Dewan Da'wah Islamiyah Indonesia — Cabang Semarang</p>
           <h1 className="sk-hero-title">
             Struktur <em>Kepengurusan</em>
           </h1>
           <p className="sk-hero-periode">Periode 2024 – 2028</p>
           <div className="sk-hero-tagline">
-            Amanah · Dakwah · Khidmah
+            Amanah · Da'wah · Khidmah
           </div>
         </section>
 

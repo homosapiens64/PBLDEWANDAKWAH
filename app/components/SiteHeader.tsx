@@ -5,12 +5,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const beritaMenu = [
+  { label: "Terkini", href: "/Berita/Terkini" },
   { label: "Kegiatan", href: "/Berita/Kegiatan" },
   { label: "Nasional", href: "/Berita/Nasional" },
   { label: "Internasional", href: "/Berita/Internasional" },
 ];
 
 const tentangKamiMenu = [
+  { label: "Profile", href: "/TentangKami/Profile" },
   { label: "AD dan ART", href: "/TentangKami/AdDanArt" },
   { label: "Struktur Kepengurusan", href: "/TentangKami/StrukturKepengurusan" },
   { label: "Program", href: "/TentangKami/Program" },
@@ -24,10 +26,10 @@ export default function SiteHeader() {
   return (
     <header className="header">
       <div className="container headerInner">
-        <Link className="logo" href="/" aria-label="Dewan Dakwah Kota Semarang">
+        <Link className="logo" href="/" aria-label="Dewan Da'wah Kota Semarang">
           <Image
             src="/logo.png"
-            alt="Logo Dewan Dakwah Kota Semarang"
+            alt="Logo Dewan Da'wah Kota Semarang"
             width={160}
             height={64}
             className="logoImage"
@@ -41,15 +43,12 @@ export default function SiteHeader() {
           </Link>
 
           <div className={`navGroup ${isActive("/Berita") ? "navGroupActive" : ""}`}>
-            <Link
-              className={isActive("/Berita") ? "navActive navLabel" : "navLabel"}
-              href="/Berita"
-            >
+            <span className={isActive("/Berita") ? "navActive navLabel navTrigger" : "navLabel navTrigger"}>
               <span>Berita</span>
               <span className="navCaret" aria-hidden="true">
                 ▾
               </span>
-            </Link>
+            </span>
             <div className="navMenu" role="menu" aria-label="Menu Berita">
               {beritaMenu.map((item) => (
                 <Link key={item.href} className="navMenuItem" href={item.href} role="menuitem">
@@ -68,15 +67,12 @@ export default function SiteHeader() {
           </Link>
 
           <div className={`navGroup ${isActive("/TentangKami") ? "navGroupActive" : ""}`}>
-            <Link
-              className={isActive("/TentangKami") ? "navActive navLabel" : "navLabel"}
-              href="/TentangKami"
-            >
+            <span className={isActive("/TentangKami") ? "navActive navLabel navTrigger" : "navLabel navTrigger"}>
               <span>Tentang Kami</span>
               <span className="navCaret" aria-hidden="true">
                 ▾
               </span>
-            </Link>
+            </span>
             <div className="navMenu" role="menu" aria-label="Menu Tentang Kami">
               {tentangKamiMenu.map((item) => (
                 <Link key={item.href} className="navMenuItem" href={item.href} role="menuitem">

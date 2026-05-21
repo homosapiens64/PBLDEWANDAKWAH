@@ -1,7 +1,7 @@
 const internationalStories = [
   {
-    title: "Jaringan Dakwah Digital Menjangkau Komunitas Global",
-    summary: "Kolaborasi antarwilayah membuka ruang baru untuk dakwah lintas negara dan budaya.",
+    title: "Jaringan Da'wah Digital Menjangkau Komunitas Global",
+    summary: "Kolaborasi antarwilayah membuka ruang baru untuk da'wah lintas negara dan budaya.",
   },
   {
     title: "Pertukaran Ilmu Antar-Lembaga Islam di Asia Tenggara",
@@ -9,7 +9,7 @@ const internationalStories = [
   },
   {
     title: "Relawan Muslim Membangun Program Kemanusiaan Global",
-    summary: "Aksi lintas negara memperlihatkan peran dakwah dalam kerja-kerja kemanusiaan modern.",
+    summary: "Aksi lintas negara memperlihatkan peran da'wah dalam kerja-kerja kemanusiaan modern.",
   },
 ];
 
@@ -20,7 +20,7 @@ export default function BeritaInternasionalPage() {
         <p className="routeEyebrow">Berita</p>
         <h1 className="routeTitle">Internasional</h1>
         <p className="routeLead">
-          Ringkasan berita internasional yang menyoroti aktivitas dakwah, jejaring umat,
+          Ringkasan berita internasional yang menyoroti aktivitas da'wah, jejaring umat,
           dan isu-isu lintas negara yang relevan.
         </p>
       </section>

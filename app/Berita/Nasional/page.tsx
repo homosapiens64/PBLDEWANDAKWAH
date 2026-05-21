@@ -1,6 +1,6 @@
 const nasionalNews = [
   {
-    title: "Munas DDII Menetapkan Arah Dakwah Nasional",
+    title: "Munas DDII Menetapkan Arah Da'wah Nasional",
     summary: "Rapat kerja memperkuat sinergi cabang daerah dengan program pembinaan yang lebih terukur.",
   },
   {
@@ -9,7 +9,7 @@ const nasionalNews = [
   },
   {
     title: "Pelatihan Dai dan Guru Ngaji Meningkat Pesat",
-    summary: "Konsolidasi sumber daya dakwah menjadi fokus utama pemberitaan nasional.",
+    summary: "Konsolidasi sumber daya da'wah menjadi fokus utama pemberitaan nasional.",
   },
 ];
 
@@ -20,7 +20,7 @@ export default function BeritaNasionalPage() {
         <p className="routeEyebrow">Berita</p>
         <h1 className="routeTitle">Nasional</h1>
         <p className="routeLead">
-          Kumpulan berita nasional yang berkaitan dengan pergerakan dakwah, pendidikan umat,
+          Kumpulan berita nasional yang berkaitan dengan pergerakan da'wah, pendidikan umat,
           dan agenda strategis DDII di Indonesia.
         </p>
       </section>

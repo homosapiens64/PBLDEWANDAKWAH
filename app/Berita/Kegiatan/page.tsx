@@ -2,7 +2,7 @@ const activities = [
   {
     title: "Pelatihan Dai Muda di Semarang",
     date: "Agustus 2026",
-    description: "Pembinaan dai muda untuk memperkuat dakwah digital dan pelayanan umat di tingkat kota.",
+    description: "Pembinaan dai muda untuk memperkuat da'wah digital dan pelayanan umat di tingkat kota.",
   },
   {
     title: "Bakti Sosial Ramadan",
@@ -12,7 +12,7 @@ const activities = [
   {
     title: "Kajian Akbar Bersama Ustadz Tamu",
     date: "Januari 2026",
-    description: "Rangkaian kajian publik yang mempertemukan pengurus, jamaah, dan relawan dakwah.",
+    description: "Rangkaian kajian publik yang mempertemukan pengurus, jamaah, dan relawan da'wah.",
   },
 ];
 
@@ -23,7 +23,7 @@ export default function BeritaKegiatanPage() {
         <p className="routeEyebrow">Berita</p>
         <h1 className="routeTitle">Kegiatan</h1>
         <p className="routeLead">
-          Halaman ini menampilkan agenda, dokumentasi, dan laporan kegiatan Dewan Dakwah
+          Halaman ini menampilkan agenda, dokumentasi, dan laporan kegiatan Dewan Da'wah
           Kota Semarang yang paling relevan untuk jamaah dan relawan.
         </p>
       </section>

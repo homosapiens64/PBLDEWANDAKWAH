@@ -1,7 +1,7 @@
 const sections = [
   {
     title: "Anggaran Dasar",
-    text: "Menjelaskan landasan, tujuan, dan prinsip organisasi yang menjadi acuan gerak dakwah DDII.",
+    text: "Menjelaskan landasan, tujuan, dan prinsip organisasi yang menjadi acuan gerak da'wah DDII.",
   },
   {
     title: "Anggaran Rumah Tangga",
@@ -21,7 +21,7 @@ export default function AdDanArtPage() {
         <h1 className="routeTitle">AD dan ART</h1>
         <p className="routeLead">
           Halaman ini memuat ringkasan dasar organisasi dan aturan rumah tangga yang menjadi
-          acuan resmi Dewan Dakwah.
+          acuan resmi Dewan Da'wah.
         </p>
       </section>
 

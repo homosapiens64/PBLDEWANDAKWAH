@@ -61,7 +61,7 @@ export default function KonsultasiPage() {
           Konsultasi<span>Agama</span>
         </h1>
         <p className="consultLead">
-          Tim Ustadz Dewan Dakwah siap menjawab pertanyaan seputar hukum Islam dan keluarga
+          Tim Ustadz Dewan Da'wah siap menjawab pertanyaan seputar hukum Islam dan keluarga
           secara gratis, terpercaya, dan berlandaskan Al-Qur&apos;an serta Sunnah.
         </p>
 

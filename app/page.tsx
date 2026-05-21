@@ -95,7 +95,7 @@ const programData = [
     badgeColor: "bg-red-600",
     image: "/images/program1.jpg",
     title: "Zakat untuk Muallaf Pedalaman bersama Koh Dondy Tan",
-    org: "LAZNAS Dewan Dakwah",
+    org: "LAZNAS Dewan Da'wah",
     sisaWaktu: "3 Bulan",
     terkumpul: "Rp 135.199.400",
     progress: 45,
@@ -106,7 +106,7 @@ const programData = [
     badgeColor: "bg-red-600",
     image: "/images/program2.jpg",
     title: "Beasiswa untuk Santri Penghafal Quran di Depok",
-    org: "LAZNAS Dewan Dakwah",
+    org: "LAZNAS Dewan Da'wah",
     sisaWaktu: "9 Bulan",
     terkumpul: "Rp 146.000",
     progress: 10,
@@ -117,7 +117,7 @@ const programData = [
     badgeColor: "bg-green-600",
     image: "/images/program3.jpg",
     title: "Pembebasan Lahan Ponthok Tahfidz Darul Qur'an - Bedugul, Bali",
-    org: "LAZNAS Dewan Dakwah",
+    org: "LAZNAS Dewan Da'wah",
     sisaWaktu: "2 Bulan",
     terkumpul: "Rp 1.000.225",
     progress: 30,
@@ -251,26 +251,16 @@ function BeritaSection() {
   );
 }
 
-// ─── SECTION 3: KAJIAN & MATERI DAKWAH ───────────────────────────────────────
+// ─── SECTION 3: KAJIAN & MATERI DA'WAH ───────────────────────────────────────
 
 function KajianSection() {
   const [activeTab, setActiveTab] = useState("Semua");
-
   return (
-    <section
-      className="py-12"
-      style={{ background: "linear-gradient(180deg, #e8f5f1 0%, #d4ede6 100%)" }}
-    >
+    <section className="py-12 bg-white">
       <div className="max-w-6xl mx-auto px-6">
-        {/* Label */}
-        <p
-          className="text-center tracking-[0.25em] uppercase font-medium mb-1"
-          style={{ fontSize: "0.72rem", color: "#2d8f76" }}
-        >
+        <p className="text-center" style={{ fontSize: "0.72rem", color: "#2d8f76" }}>
           ARTIKEL ISLAMI
         </p>
-
-        {/* Heading */}
         <h2
           className="text-center font-bold mb-6"
           style={{
@@ -279,7 +269,7 @@ function KajianSection() {
             fontFamily: "'Georgia', serif",
           }}
         >
-          Kajian &amp; Materi Dakwah
+          Kajian &amp; Materi Da'wah
         </h2>
 
         {/* Tabs */}

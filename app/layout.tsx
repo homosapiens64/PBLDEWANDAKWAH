@@ -70,7 +70,4 @@ export default function RootLayout({
     </html>
   );
 }
-<<<<<<< HEAD
-=======
-// Update the SiteHeader component to include the new "Pendidikan"
->>>>>>> bf0a6b78364cb7f2d5fa1b740737249ad4d29c33
+ 

@@ -11,15 +11,12 @@ const beritaMenu = [
   { label: "Internasional", href: "/Berita/Internasional" },
 ];
 
-<<<<<<< HEAD
-=======
 const pendidikanMenu = [
   { label: "ADI", href: "/Pendidikan/ADI" },
   { label: "Ponpes Suruh", href: "/Pendidikan/PonpesSuruh" },
   { label: "Sekolah Saintek", href: "/Pendidikan/Saintek" },
 ];
-
->>>>>>> bf0a6b78364cb7f2d5fa1b740737249ad4d29c33
+ 
 const tentangKamiMenu = [
   { label: "Profile", href: "/TentangKami/Profile" },
   { label: "AD dan ART", href: "/TentangKami/AdDanArt" },
@@ -75,9 +72,7 @@ export default function SiteHeader() {
             Konsultasi
           </Link>
 
-<<<<<<< HEAD
-=======
-          <div className={`navGroup ${isActive("/Berita") ? "navGroupActive" : ""}`}>
+          <div className={`navGroup ${isActive("/Pendidikan") ? "navGroupActive" : ""}`}>
             <button type="button" className={isActive("/Pendidikan") ? "navActive navLabel navTrigger" : "navLabel navTrigger"} aria-haspopup="true" aria-expanded="false">
               <span>Pendidikan</span>
               <span className="navCaret" aria-hidden="true">
@@ -92,9 +87,6 @@ export default function SiteHeader() {
               ))}
             </div>
           </div>
-
-
->>>>>>> bf0a6b78364cb7f2d5fa1b740737249ad4d29c33
           <div className={`navGroup ${isActive("/TentangKami") ? "navGroupActive" : ""}`}>
             <button type="button" className={isActive("/TentangKami") ? "navActive navLabel navTrigger" : "navLabel navTrigger"} aria-haspopup="true" aria-expanded="false">
               <span>Tentang Kami</span>

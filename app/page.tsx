@@ -5,9 +5,6 @@ import Link from "next/link";
 import { useState } from "react";
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
-<<<<<<< HEAD
-
-=======
 const headerMenu = [
   { name: "Beranda", href: "/" },
   { name: "Berita", href: "/berita" },
@@ -24,7 +21,6 @@ const headerMenu = [
   },
   { name: "Tentang Kami", href: "/tentang-kami" },
 ];
->>>>>>> bf0a6b78364cb7f2d5fa1b740737249ad4d29c33
 const beritaUtama = [
   {
     id: 1,

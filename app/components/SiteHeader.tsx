@@ -43,12 +43,12 @@ export default function SiteHeader() {
           </Link>
 
           <div className={`navGroup ${isActive("/Berita") ? "navGroupActive" : ""}`}>
-            <span className={isActive("/Berita") ? "navActive navLabel navTrigger" : "navLabel navTrigger"}>
+            <button type="button" className={isActive("/Berita") ? "navActive navLabel navTrigger" : "navLabel navTrigger"} aria-haspopup="true" aria-expanded="false">
               <span>Berita</span>
               <span className="navCaret" aria-hidden="true">
                 ▾
               </span>
-            </span>
+            </button>
             <div className="navMenu" role="menu" aria-label="Menu Berita">
               {beritaMenu.map((item) => (
                 <Link key={item.href} className="navMenuItem" href={item.href} role="menuitem">
@@ -67,12 +67,12 @@ export default function SiteHeader() {
           </Link>
 
           <div className={`navGroup ${isActive("/TentangKami") ? "navGroupActive" : ""}`}>
-            <span className={isActive("/TentangKami") ? "navActive navLabel navTrigger" : "navLabel navTrigger"}>
+            <button type="button" className={isActive("/TentangKami") ? "navActive navLabel navTrigger" : "navLabel navTrigger"} aria-haspopup="true" aria-expanded="false">
               <span>Tentang Kami</span>
               <span className="navCaret" aria-hidden="true">
                 ▾
               </span>
-            </span>
+            </button>
             <div className="navMenu" role="menu" aria-label="Menu Tentang Kami">
               {tentangKamiMenu.map((item) => (
                 <Link key={item.href} className="navMenuItem" href={item.href} role="menuitem">

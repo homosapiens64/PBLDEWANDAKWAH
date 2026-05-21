@@ -8,16 +8,17 @@ export default function ProfilePage() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Poppins:wght@300;400;500;600;700&display=swap');
 
-        * {
+        /* Scope resets to this page only to avoid affecting global layout */
+        .tk-body,
+        .tk-body * {
           box-sizing: border-box;
-          margin: 0;
-          padding: 0;
         }
 
         .tk-body {
           font-family: 'Poppins', sans-serif;
           color: #333;
           overflow-x: hidden;
+          padding-bottom: 4rem; /* ensure space above footer */
         }
 
         .tk-sejarah {
@@ -100,7 +101,7 @@ export default function ProfilePage() {
           height: 80px;
           background: #fff;
           border-radius: 50% 50% 0 0;
-          z-index: 1;
+          z-index: 0; /* keep pseudo-element behind other content so it doesn't overlap footer */
         }
 
         .tk-cabang-inner {

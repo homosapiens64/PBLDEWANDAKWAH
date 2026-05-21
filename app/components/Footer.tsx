@@ -38,8 +38,8 @@ const menuLeft = [
   { label: "Berita", href: "/Berita/Terkini" },
   { label: "Kajian", href: "/Kajian" },
   { label: "Konsultasi", href: "/Konsultasi" },
-  { label: "Tentang Kami", href: "/TentangKami/Profile" },
   { label: "Pendidikan", href: "/TentangKami/Pendidikan" },
+  { label: "Tentang Kami", href: "/TentangKami/Profile" },
 ];
 
 const menuRight = [

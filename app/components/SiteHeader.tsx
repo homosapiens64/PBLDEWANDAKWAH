@@ -14,8 +14,8 @@ const beritaMenu = [
 const pendidikanMenu = [
   { label: "Institusi", href: "/Pendidikan/Institusi" },
   { label: "ADI", href: "/Pendidikan/ADI" },
-  { label: "Ponpes Suruh", href: "/Pendidikan/PonpesSuruh" },
-  { label: "Sekolah Saintek", href: "/Pendidikan/Saintek" },
+  { label: "Ponpes Suruh", href: "/Pendidikan/Ponpes Suruh" },
+  { label: "AlKhawarizmi", href: "/Pendidikan/Al Khawarizmi" },
 ];
  
 const tentangKamiMenu = [

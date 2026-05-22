@@ -12,6 +12,7 @@ const beritaMenu = [
 ];
 
 const pendidikanMenu = [
+  { label: "Institusi", href: "/Pendidikan/Institusi" },
   { label: "ADI", href: "/Pendidikan/ADI" },
   { label: "Ponpes Suruh", href: "/Pendidikan/PonpesSuruh" },
   { label: "Sekolah Saintek", href: "/Pendidikan/Saintek" },
@@ -39,6 +40,7 @@ export default function SiteHeader() {
             width={160}
             height={64}
             className="logoImage"
+            style={{ height: "auto" }}
             priority
           />
         </Link>

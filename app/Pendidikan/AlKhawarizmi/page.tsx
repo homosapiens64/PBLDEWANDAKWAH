@@ -81,7 +81,7 @@ const TEAL_DARK = "#00796b";
 const GOLD = "#f5a623";
 
 // ─── Component ────────────────────────────────────────────────────────────────
-export default function ADI() {
+export default function AlKhawarizmi() {
   return (
     <div style={{ fontFamily: "'Segoe UI', sans-serif", color: "#1a1a1a", backgroundColor: "#fff" }}>
 
@@ -90,7 +90,7 @@ export default function ADI() {
         {/* Title */}
         <div style={{ textAlign: "center", marginBottom: 32 }}>
           <h1 style={{ fontSize: 38, fontWeight: 900, margin: 0, letterSpacing: 1, textTransform: "uppercase", color: "#1a1a1a" }}>
-            PONPES SURUH
+            AL KHAWARIZMI
           </h1>
           <h1 style={{ fontSize: 48, fontWeight: 900, margin: 0, letterSpacing: 2, textTransform: "uppercase", color: GOLD }}>
             Indonesia
@@ -99,10 +99,10 @@ export default function ADI() {
 
         {/* Description */}
         <p style={{ fontSize: 14, lineHeight: 1.8, color: "#555", maxWidth: 860, margin: "0 auto 24px", textAlign: "center" }}>
-          ADI adalah lembaga pendidikan tinggi vokasi yang berfokus pada pembinaan kader da'i profesional.
-          Mahasiswa ADI dibekali ilmu syariah, metode dakwah, kepemimpinan Islam, dan keterampilan komunikasi
-          publik agar siap berdakwah di tengah masyarakat. Program ini dirancang untuk mencetak dai yang
-          memiliki wawasan luas, akhlak mulia, dan kemampuan adaptasi dakwah di era modern.
+          Al Khawarizmi adalah lembaga pendidikan Islam terpadu yang mengintegrasikan ilmu agama dengan ilmu
+          sains dan teknologi modern. Terinspirasi dari nama ilmuwan Muslim terbesar, Al-Khwarizmi, lembaga ini
+          bertekad melahirkan generasi Muslim yang unggul secara akademik, kuat secara aqidah, dan siap
+          menghadapi tantangan zaman.
         </p>
 
         {/* Tags */}

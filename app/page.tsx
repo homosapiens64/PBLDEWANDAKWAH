@@ -14,9 +14,10 @@ const headerMenu = [
     name: "Pendidikan",
     href: "#",
     dropdown: [
+      { name: "Institusi", href: "/pendidikan/institusi" },
       { name: "ADI", href: "/pendidikan/adi" },
       { name: "Ponpes", href: "/pendidikan/ponpes" },
-      { name: "Saintek", href: "/pendidikan/saintek" },
+      { name: "Al-Khawarizmi", href: "/pendidikan/khawarizmi" },
     ],
   },
   { name: "Tentang Kami", href: "/tentang-kami" },

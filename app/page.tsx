@@ -6,7 +6,6 @@ import { useState } from "react";
 import PublicContentFeed from "./components/PublicContentFeed";
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
-<<<<<<< HEAD
 const headerMenu = [
   { name: "Beranda", href: "/" },
   { name: "Berita", href: "/berita" },
@@ -24,8 +23,6 @@ const headerMenu = [
   },
   { name: "Tentang Kami", href: "/tentang-kami" },
 ];
-=======
->>>>>>> 9494b39 (Update Project)
 const beritaUtama = [
   {
     id: 1,

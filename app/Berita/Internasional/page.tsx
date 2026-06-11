@@ -20,10 +20,12 @@ export default function BeritaInternasionalPage() {
         <p className="routeEyebrow">Berita</p>
         <h1 className="routeTitle">Internasional</h1>
         <p className="routeLead">
-          Ringkasan berita internasional yang menyoroti aktivitas da'wah, jejaring umat,
+          Ringkasan berita internasional yang menyoroti aktivitas da&apos;wah, jejaring umat,
           dan isu-isu lintas negara yang relevan.
         </p>
       </section>
+
+      <PublicContentFeed module="website" section="internasional" />
 
       <section className="container routeGrid">
         {internationalStories.map((item) => (
@@ -37,3 +39,4 @@ export default function BeritaInternasionalPage() {
     </main>
   );
 }
+import PublicContentFeed from "../../components/PublicContentFeed";

@@ -20,10 +20,12 @@ export default function BeritaNasionalPage() {
         <p className="routeEyebrow">Berita</p>
         <h1 className="routeTitle">Nasional</h1>
         <p className="routeLead">
-          Kumpulan berita nasional yang berkaitan dengan pergerakan da'wah, pendidikan umat,
+          Kumpulan berita nasional yang berkaitan dengan pergerakan da&apos;wah, pendidikan umat,
           dan agenda strategis DDII di Indonesia.
         </p>
       </section>
+
+      <PublicContentFeed module="website" section="nasional" />
 
       <section className="container routeGrid">
         {nasionalNews.map((item) => (
@@ -37,3 +39,4 @@ export default function BeritaNasionalPage() {
     </main>
   );
 }
+import PublicContentFeed from "../../components/PublicContentFeed";

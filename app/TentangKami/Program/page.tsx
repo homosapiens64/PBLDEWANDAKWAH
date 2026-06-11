@@ -1,41 +1,52 @@
-const programs = [
-  {
-    title: "Pembinaan Dai",
-    points: ["Pelatihan berkala", "Mentoring lapangan", "Penguatan da'wah digital"],
-  },
-  {
-    title: "Pendidikan Umat",
-    points: ["Kajian rutin", "Beasiswa santri", "Program literasi Islam"],
-  },
-  {
-    title: "Sosial Kemanusiaan",
-    points: ["Bakti sosial", "Layanan dhuafa", "Penguatan relawan daerah"],
-  },
-];
+import { getAboutItems, parseAboutMeta, programFallback } from "../../lib/about";
 
-export default function ProgramPage() {
+export default async function ProgramPage() {
+  const items = await getAboutItems();
+  const managedPrograms = items
+    .filter((item) => item.section === "program-kerja")
+    .map((item) => ({
+      id: String(item.id),
+      title: item.title,
+      description: item.body,
+      ...parseAboutMeta(item.summary, {
+        status: "aktif",
+        startDate: "",
+        endDate: "",
+      }),
+    }));
+  const programs = managedPrograms.length
+    ? managedPrograms
+    : programFallback.map((item, index) => ({ ...item, id: `fallback-${index}` }));
+
   return (
-    <main className="page simpleRoutePage">
-      <section className="container routeHero">
-        <p className="routeEyebrow">Tentang Kami</p>
-        <h1 className="routeTitle">Program</h1>
-        <p className="routeLead">
-          Program kerja DDII disusun untuk menjawab kebutuhan da'wah, pendidikan, dan pelayanan
-          sosial yang nyata di tingkat masyarakat.
-        </p>
+    <main className="aboutPublicPage">
+      <section className="aboutPublicHero compact">
+        <div className="container">
+          <p>GERAKAN &amp; PELAYANAN</p>
+          <h1>Program Kerja</h1>
+          <span>Program dakwah, pendidikan, dan sosial yang dirancang untuk kebutuhan umat.</span>
+        </div>
       </section>
 
-      <section className="container routeGrid">
-        {programs.map((item) => (
-          <article key={item.title} className="routeCard">
-            <h3>{item.title}</h3>
-            <ul className="routeList">
-              {item.points.map((point) => (
-                <li key={point}>{point}</li>
-              ))}
-            </ul>
-          </article>
-        ))}
+      <section className="container aboutProgramPublic">
+        <div className="aboutProgramPublicStats">
+          <article><strong>{programs.length}</strong><span>Total Program</span></article>
+          <article><strong>{programs.filter((item) => item.status === "aktif").length}</strong><span>Aktif</span></article>
+          <article><strong>{programs.filter((item) => item.status === "selesai").length}</strong><span>Selesai</span></article>
+        </div>
+        <div className="aboutProgramPublicGrid">
+          {programs.map((program, index) => (
+            <article key={program.id}>
+              <span className={`aboutProgramPublicStatus ${program.status}`}>{program.status}</span>
+              <small>PROGRAM {String(index + 1).padStart(2, "0")}</small>
+              <h2>{program.title}</h2>
+              <p>{program.description}</p>
+              {program.startDate || program.endDate ? (
+                <footer>{program.startDate || "—"} {program.endDate ? `sampai ${program.endDate}` : ""}</footer>
+              ) : null}
+            </article>
+          ))}
+        </div>
       </section>
     </main>
   );

@@ -1,3 +1,5 @@
+import PublicContentFeed from "../../components/PublicContentFeed";
+
 type NewsItem = {
   title: string;
   category: string;
@@ -88,6 +90,8 @@ const tags = ["Da'wah", "Pendidikan", "Dai", "Semarang", "Sosial", "Program Kerj
 
 export default function BeritaTerkiniPage() {
   return (
+    <>
+      <PublicContentFeed module="website" section="terkini" />
     <main className="page">
       <section className="hero container">
         <p className="heroEyebrow">INFORMASI TERKINI</p>
@@ -102,7 +106,7 @@ export default function BeritaTerkiniPage() {
         >
           <div className="heroOverlay">
             <span className="pill">NASIONAL</span>
-            <h2>Munas Dewan Da&apos;wah 2026 Hasilkan Rekomendasi Strategis Untuk Da'wah Digital</h2>
+            <h2>Munas Dewan Da&apos;wah 2026 Hasilkan Rekomendasi Strategis Untuk Da&apos;wah Digital</h2>
             <p>
               <span>By Admin</span>
               <span>27 August, 2024</span>
@@ -268,5 +272,6 @@ export default function BeritaTerkiniPage() {
         </div>
       </section>
     </main>
+    </>
   );
 }

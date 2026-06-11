@@ -23,10 +23,12 @@ export default function BeritaKegiatanPage() {
         <p className="routeEyebrow">Berita</p>
         <h1 className="routeTitle">Kegiatan</h1>
         <p className="routeLead">
-          Halaman ini menampilkan agenda, dokumentasi, dan laporan kegiatan Dewan Da'wah
+          Halaman ini menampilkan agenda, dokumentasi, dan laporan kegiatan Dewan Da&apos;wah
           Kota Semarang yang paling relevan untuk jamaah dan relawan.
         </p>
       </section>
+
+      <PublicContentFeed module="website" section="kegiatan" />
 
       <section className="container routeGrid">
         {activities.map((item) => (
@@ -40,3 +42,4 @@ export default function BeritaKegiatanPage() {
     </main>
   );
 }
+import PublicContentFeed from "../../components/PublicContentFeed";

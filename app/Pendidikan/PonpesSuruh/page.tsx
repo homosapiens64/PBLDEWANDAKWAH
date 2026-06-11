@@ -77,7 +77,6 @@ const contactItems = [
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 const TEAL = "#009688";
-const TEAL_DARK = "#00796b";
 const GOLD = "#f5a623";
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -100,7 +99,7 @@ export default function ADI() {
         {/* Description */}
         <p style={{ fontSize: 14, lineHeight: 1.8, color: "#555", maxWidth: 860, margin: "0 auto 24px", textAlign: "center" }}>
           Pondok Pesantren Suruh adalah lembaga pendidikan Islam tradisional yang berada di bawah naungan 
-          Dewan Da'wah Islamiyah Indonesia Cabang Semarang. Pesantren ini menggabungkan pendidikan salaf 
+          Dewan Da&apos;wah Islamiyah Indonesia Cabang Semarang. Pesantren ini menggabungkan pendidikan salaf 
           yang kuat dengan kurikulum modern, menghasilkan santri yang hafiz, berakhlak mulia, dan siap berdakwah 
           di tengah masyarakat.
         </p>

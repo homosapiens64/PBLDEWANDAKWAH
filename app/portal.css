@@ -1,0 +1,3621 @@
+/* Final overrides for the internal login and dashboard surfaces. */
+.authPage.loginPage {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: clamp(1rem, 3vw, 2.5rem);
+  background:
+    radial-gradient(circle at 10% 15%, rgba(36, 143, 101, 0.12), transparent 28%),
+    radial-gradient(circle at 90% 90%, rgba(218, 166, 55, 0.11), transparent 25%),
+    #f2f7f4;
+}
+
+.loginShell {
+  width: min(1040px, 100%);
+  min-height: min(680px, calc(100svh - 3rem));
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(380px, 0.92fr);
+  overflow: hidden;
+  border: 1px solid rgba(20, 88, 60, 0.12);
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 30px 80px rgba(24, 67, 51, 0.16);
+}
+
+.loginBrandPanel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: clamp(2rem, 4vw, 3.5rem);
+  background: linear-gradient(145deg, #0b4c33, #1c7e57);
+  color: #fff;
+}
+
+.loginBrandPanel > img {
+  width: min(280px, 72%);
+  height: auto;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.96);
+  padding: 0.65rem;
+}
+
+.loginBrandEyebrow {
+  margin: 0 0 0.8rem;
+  color: #b9ead4;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.loginBrandPanel h1 {
+  max-width: 520px;
+  margin: 0;
+  color: #fff;
+  font-size: clamp(2rem, 4vw, 3.15rem);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+}
+
+.loginBrandPanel h1 + p {
+  max-width: 520px;
+  margin: 1.15rem 0 0;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.96rem;
+  line-height: 1.75;
+}
+
+.loginBrandFooter {
+  display: flex;
+  justify-content: space-between;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.loginFormPanel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(2rem, 4vw, 3.75rem);
+}
+
+.loginFormHeading {
+  margin-bottom: 1.6rem;
+}
+
+.loginFormHeading .loginIcon {
+  width: 52px;
+  height: 52px;
+  margin: 0 0 1.25rem;
+  border-radius: 14px;
+}
+
+.loginFormHeading .loginIcon svg {
+  width: 27px;
+  height: 27px;
+}
+
+.loginFormHeading > p {
+  margin: 0 0 0.35rem;
+  color: #176b4a;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.loginFormHeading h2 {
+  margin: 0;
+  color: #17251f;
+  font-size: clamp(1.75rem, 3vw, 2.15rem);
+  letter-spacing: -0.035em;
+}
+
+.loginFormHeading > span {
+  display: block;
+  margin-top: 0.55rem;
+  color: #718079;
+  font-size: 0.88rem;
+}
+
+.loginPage .loginFormWrap {
+  width: 100%;
+  margin: 0;
+}
+
+.loginPage .loginCard {
+  gap: 1.05rem;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+}
+
+.loginPage .roleSelectTrigger,
+.loginPage .passwordInputWrap {
+  min-height: 50px;
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+.loginPage .roleOptionActive,
+.loginPage .roleOptionActive:hover {
+  background: #e9f6ef;
+  color: #176b4a;
+  font-weight: 750;
+}
+
+.loginPage .roleSelectTrigger:focus-visible,
+.loginPage .loginSubmitButton:focus-visible,
+.loginPage .loginBackButton:focus-visible,
+.dashboardApp button:focus-visible,
+.dashboardApp a:focus-visible {
+  outline: 3px solid rgba(30, 139, 94, 0.24);
+  outline-offset: 2px;
+}
+
+.loginPage .passwordHint {
+  border-radius: 999px;
+  background: #e9f6ef;
+  padding: 0.28rem 0.55rem;
+  font-size: 0.68rem;
+}
+
+.loginPage .loginSubmitButton {
+  min-height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border-radius: 10px;
+  font-size: 0.92rem;
+}
+
+.loginPage .loginSubmitButton svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.loginPage .loginBackButton {
+  min-height: 46px;
+  border: 0;
+  background: transparent;
+  font-size: 0.82rem;
+}
+
+.dashboardApp {
+  grid-template-columns: 280px minmax(0, 1fr);
+  background: #f4f7f5;
+}
+
+.dashboardApp .dashboardSidebar {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1.5rem 1rem 1.25rem;
+}
+
+.dashboardApp .dashboardLogo {
+  margin: 0 0 1.4rem;
+  padding: 0 0.65rem 1.25rem;
+  border-bottom: 1px solid #dfe9e4;
+}
+
+.dashboardApp .dashboardLogo img {
+  width: 220px;
+  max-width: 100%;
+}
+
+.dashboardApp .dashboardNav {
+  gap: 0.5rem;
+}
+
+.dashboardApp .dashboardNavGroup {
+  gap: 0.25rem;
+}
+
+.dashboardApp .dashboardNavItem {
+  min-height: 44px;
+  grid-template-columns: 21px minmax(0, 1fr);
+  gap: 0.8rem;
+  border-radius: 10px;
+  padding: 0 0.85rem;
+  font-size: 0.88rem;
+  font-weight: 650;
+}
+
+.dashboardApp .dashboardNavItem::before {
+  left: -1rem;
+  width: 4px;
+}
+
+.dashboardApp .dashboardNavItem svg {
+  width: 19px;
+  height: 19px;
+}
+
+.dashboardApp .dashboardSubnav {
+  gap: 0.15rem;
+  padding: 0.15rem 0 0.35rem 2.85rem;
+}
+
+.dashboardApp .dashboardSubnav button,
+.dashboardApp .dashboardSubnav a {
+  width: 100%;
+  border-radius: 7px;
+  padding: 0.38rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.dashboardApp .dashboardSubnav a.active,
+.dashboardApp .dashboardSubnav a:hover {
+  background: #f0f7f3;
+}
+
+.dashboardApp .dashboardLogoutForm {
+  padding: 1rem 0.75rem 0;
+}
+
+.dashboardApp .dashboardLogoutButton {
+  width: 100%;
+  border-radius: 9px;
+  background: #fff3f2;
+  color: #b6423d;
+  padding: 0.72rem;
+  font-size: 0.82rem;
+  font-weight: 750;
+  text-align: left;
+}
+
+.dashboardApp .dashboardMain {
+  min-height: 100svh;
+  padding: 0 0 2.5rem;
+}
+
+.dashboardApp .dashboardTopbar {
+  position: sticky;
+  z-index: 20;
+  top: 0;
+  min-height: 74px;
+  padding: 0.7rem clamp(1rem, 2.5vw, 2rem);
+}
+
+.dashboardApp .dashboardTopbar h1 {
+  font-size: 1.12rem;
+}
+
+.dashboardApp .dashboardTopbar p {
+  font-size: 0.76rem;
+  font-weight: 550;
+}
+
+.dashboardApp .notificationButton {
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+}
+
+.dashboardApp .userProfileButton {
+  min-width: 205px;
+  min-height: 50px;
+  grid-template-columns: 36px minmax(0, 1fr) 16px;
+  border-radius: 12px;
+}
+
+.dashboardApp .userProfileButton > strong {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  font-size: 0.82rem;
+}
+
+.dashboardApp .userProfileButton b {
+  font-size: 0.82rem;
+}
+
+.dashboardApp .userProfileButton small {
+  font-size: 0.7rem;
+}
+
+.dashboardApp .dashboardStats {
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  gap: 1rem;
+  padding: 1.5rem clamp(1rem, 2.5vw, 2rem) 1rem;
+}
+
+.dashboardApp .dashboardStatCard {
+  min-height: 156px;
+  padding: 1.1rem;
+}
+
+.dashboardApp .statIcon {
+  width: 42px;
+  height: 42px;
+}
+
+.dashboardApp .statBadge {
+  padding: 0.3rem 0.55rem;
+  font-size: 0.7rem;
+}
+
+.dashboardApp .dashboardStatCard strong {
+  margin-top: 0.8rem;
+  font-size: clamp(1.45rem, 2vw, 1.9rem);
+}
+
+.dashboardApp .dashboardStatCard p {
+  min-height: 0;
+  margin: 0.3rem 0 0.75rem;
+  font-size: 0.78rem;
+}
+
+.dashboardApp .dashboardContentGrid {
+  grid-template-columns: minmax(0, 1.3fr) minmax(300px, 0.7fr);
+  gap: 1rem;
+  padding: 0 clamp(1rem, 2.5vw, 2rem);
+}
+
+.dashboardApp .financeWorkspace,
+.dashboardApp .moduleWorkspace,
+.dashboardApp .educationWorkspace,
+.dashboardApp .educationWorkspace.adi,
+.dashboardApp .educationWorkspace.edit {
+  padding: 1.5rem clamp(1rem, 2.5vw, 2rem) 2.5rem;
+}
+
+.dashboardApp .financeWorkspace.compact,
+.dashboardApp .financeWorkspace.history {
+  padding-top: 1.5rem;
+}
+
+.dashboardApp .financePageHead {
+  min-height: 88px;
+  margin-bottom: 1rem;
+  border: 1px solid #dfe9e4;
+  border-radius: 14px;
+  background: #fff;
+  padding: 1.15rem 1.3rem;
+}
+
+.dashboardApp .financePageHead h2 {
+  font-size: 1.2rem;
+}
+
+.dashboardApp .financePageHead p,
+.dashboardApp .financePageHead button {
+  font-size: 0.75rem;
+}
+
+.dashboardApp .financeTableCard,
+.dashboardApp .financeHistoryCard {
+  padding: 1rem;
+}
+
+.dashboardApp .financeTable {
+  font-size: 0.76rem;
+}
+
+.dashboardApp .financeTable th {
+  background: #edf7f2;
+  padding: 0.78rem 0.85rem;
+  font-size: 0.68rem;
+}
+
+.dashboardApp .financeTable td {
+  padding: 0.8rem 0.85rem;
+}
+
+.financeDatabaseNotice {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+  border: 1px solid #f0d28b;
+  border-radius: 12px;
+  background: #fff9e9;
+  padding: 0.85rem 1rem;
+  color: #73530d;
+}
+
+.financeDatabaseNoticeIcon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: #f5c85c;
+  color: #5e4308;
+  font-weight: 900;
+}
+
+.financeDatabaseNotice strong {
+  display: block;
+  font-size: 0.78rem;
+}
+
+.financeDatabaseNotice p {
+  margin: 0.2rem 0 0;
+  color: #8a702f;
+  font-size: 0.68rem;
+  line-height: 1.5;
+}
+
+.financePageHead button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* Compact education workspace for the internal dashboard. */
+.dashboardApp .educationWorkspace,
+.dashboardApp .educationWorkspace.adi,
+.dashboardApp .educationWorkspace.edit {
+  min-height: calc(100svh - 74px);
+  gap: 1rem;
+  padding: 1.5rem clamp(1rem, 2.5vw, 2rem) 2.5rem;
+  background:
+    radial-gradient(circle at 95% 5%, rgba(42, 157, 107, 0.08), transparent 24%),
+    #f8faf8;
+}
+
+.dashboardApp .educationHeader {
+  align-items: center;
+  padding: 0;
+}
+
+.dashboardApp .educationHeader h1 {
+  gap: 0.75rem;
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+  line-height: 1.2;
+}
+
+.dashboardApp .educationHeader h1 span {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 12px;
+  background: #e8f6ef;
+  color: #23835d;
+}
+
+.dashboardApp .educationHeader h1 span svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dashboardApp .educationHeader p {
+  margin-top: 0.3rem;
+  font-size: 0.76rem;
+}
+
+.dashboardApp .educationEditProfile {
+  min-width: 0;
+  min-height: 38px;
+  gap: 0.45rem;
+  border-radius: 9px;
+  padding: 0 0.8rem;
+  color: #237354;
+  font-size: 0.72rem;
+  box-shadow: none;
+}
+
+.dashboardApp .educationEditProfile svg {
+  width: 15px;
+  height: 15px;
+}
+
+.dashboardApp .educationSummaryCard,
+.dashboardApp .educationVisionCard,
+.dashboardApp .educationContactCard,
+.dashboardApp .educationEditForm {
+  border-radius: 13px;
+  box-shadow: 0 4px 18px rgba(30, 54, 43, 0.05);
+}
+
+.dashboardApp .educationSummaryCard {
+  position: relative;
+  overflow: hidden;
+  padding: 1.35rem 1.5rem;
+}
+
+.dashboardApp .educationSummaryCard::after {
+  content: "";
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  right: -70px;
+  bottom: -85px;
+  border-radius: 50%;
+  background: #edf8f2;
+}
+
+.dashboardApp .educationEyebrow {
+  display: inline-block;
+  margin-bottom: 0.45rem;
+  color: #26805d;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dashboardApp .educationSummaryCard h2 {
+  font-size: 1.15rem;
+}
+
+.dashboardApp .educationSummaryCard h3 {
+  margin: 0.35rem 0 0.65rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.dashboardApp .educationSummaryCard p {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  color: #63736b;
+  font-size: 0.73rem;
+  line-height: 1.65;
+}
+
+.dashboardApp .educationCardHeader {
+  min-height: 66px;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  padding: 0 1.25rem;
+}
+
+.dashboardApp .educationHeaderIcon {
+  width: 38px;
+  height: 38px;
+}
+
+.dashboardApp .educationHeaderIcon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.dashboardApp .educationCardHeader h2,
+.dashboardApp .educationContactCard h2 {
+  font-size: 0.88rem;
+}
+
+.dashboardApp .educationCardHeader p,
+.dashboardApp .educationInlineEdit {
+  font-size: 0.64rem;
+  text-decoration: none;
+}
+
+.dashboardApp .educationVisionGrid {
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.9fr);
+  gap: 1.25rem;
+  padding: 1.2rem 1.25rem 1.35rem;
+}
+
+.dashboardApp .educationVisionBlock h3,
+.dashboardApp .educationMissionBlock h3 {
+  margin-bottom: 0.7rem;
+  font-size: 0.78rem;
+}
+
+.dashboardApp .educationVisionBlock h3::before,
+.dashboardApp .educationMissionBlock h3::before {
+  width: 3px;
+  height: 20px;
+}
+
+.dashboardApp .educationVisionBlock blockquote {
+  border-left-width: 3px;
+  padding: 0.9rem 1rem;
+  font-size: 0.7rem;
+  line-height: 1.7;
+}
+
+.dashboardApp .educationMissionBlock ol {
+  gap: 0.55rem;
+}
+
+.dashboardApp .educationMissionBlock li {
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 0.65rem;
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+
+.dashboardApp .educationMissionBlock li span {
+  width: 24px;
+  height: 24px;
+  font-size: 0.62rem;
+}
+
+.dashboardApp .educationContactCard {
+  padding: 1.25rem 1.4rem;
+}
+
+.dashboardApp .educationContactList {
+  grid-template-columns: 1fr;
+  gap: 0.9rem 1.2rem;
+}
+
+.dashboardApp .educationContactItem {
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 0.7rem;
+}
+
+.dashboardApp .educationContactItem svg {
+  width: 18px;
+  height: 18px;
+}
+
+.dashboardApp .educationContactItem p {
+  font-size: 0.62rem;
+}
+
+.dashboardApp .educationContactItem strong {
+  font-size: 0.7rem;
+}
+
+.dashboardApp .educationEditForm {
+  min-height: 0;
+  gap: 1rem;
+  padding: 1.35rem;
+}
+
+.dashboardApp .educationEditHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid #edf1ef;
+  padding-bottom: 1rem;
+}
+
+.dashboardApp .educationEditHeading span {
+  color: #2a8060;
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.dashboardApp .educationEditHeading h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.dashboardApp .educationEditHeading a {
+  border-radius: 8px;
+  background: #edf7f2;
+  color: #237354;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.64rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.dashboardApp .educationEditForm label {
+  gap: 0.4rem;
+  font-size: 0.7rem;
+}
+
+.dashboardApp .educationEditForm input,
+.dashboardApp .educationEditForm textarea {
+  border-radius: 9px;
+  padding: 0.72rem 0.8rem;
+  font-size: 0.7rem;
+}
+
+.dashboardApp .educationEditForm textarea {
+  min-height: 120px;
+}
+
+.dashboardApp .educationContactFields {
+  align-items: end;
+}
+
+.dashboardApp .educationContactFields label:last-child:nth-child(odd) {
+  grid-column: 1 / 2;
+}
+
+.dashboardApp .educationFormActions {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.dashboardApp .educationSaveButton,
+.dashboardApp .educationCancelButton {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border-radius: 8px;
+  padding: 0 0.85rem;
+  font-size: 0.68rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.dashboardApp .educationSaveButton {
+  border: 0;
+  background: #249361;
+  color: #fff;
+  cursor: pointer;
+}
+
+.dashboardApp .educationCancelButton {
+  border: 1px solid #dce4e0;
+  background: #fff;
+  color: #3b4841;
+}
+
+/* Tentang Kami workspace */
+.aboutWorkspace {
+  min-height: calc(100svh - 74px);
+  padding: 1.5rem clamp(1rem, 2.5vw, 2rem) 3rem;
+  background: #fffaf1;
+  color: #17251f;
+}
+
+.aboutPageHeading {
+  margin-bottom: 1.1rem;
+}
+
+.aboutPageHeading.withAction {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.aboutPageHeading h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 850;
+  letter-spacing: -0.025em;
+}
+
+.aboutPageHeading p {
+  margin: 0.2rem 0 0;
+  color: #81928b;
+  font-size: 0.76rem;
+}
+
+.aboutGlobalMessage {
+  margin: 1rem clamp(1rem, 2.5vw, 2rem) 0;
+  border: 1px solid #bfe3d0;
+  border-radius: 10px;
+  background: #ecf9f2;
+  padding: 0.7rem 0.9rem;
+  color: #176b4a;
+  font-size: 0.7rem;
+}
+
+.aboutProfileList,
+.aboutDocumentList {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.aboutProfileCard,
+.aboutDocumentCard,
+.aboutLargeEmpty,
+.aboutProgramStats article,
+.aboutUnitCard,
+.aboutProgramCard {
+  border: 1px solid #dce6e1;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 7px rgba(26, 49, 38, 0.06);
+}
+
+.aboutProfileCard {
+  min-height: 100px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 1.35rem;
+}
+
+.aboutProfileCard h3,
+.aboutDocumentCard h3,
+.aboutUnitCard h3,
+.aboutProgramCard h3 {
+  margin: 0;
+  font-size: 0.77rem;
+  font-weight: 800;
+}
+
+.aboutProfileCard > div > p {
+  margin: 0.65rem 0 0;
+  color: #839089;
+  font-size: 0.7rem;
+  font-style: italic;
+  line-height: 1.55;
+}
+
+.aboutOutlineButton,
+.aboutItemActions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid #dce5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #314038;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.65rem;
+  cursor: pointer;
+}
+
+.aboutOutlineButton svg,
+.aboutItemActions svg,
+.aboutPrimaryButton svg,
+.aboutLargeEmpty svg,
+.aboutDocumentRows svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.aboutProfileCard.editing {
+  display: block;
+  padding: 1.35rem;
+}
+
+.aboutProfileCard form,
+.aboutModal form {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.aboutProfileCard form h3 {
+  margin-bottom: 0.1rem;
+}
+
+.aboutProfileCard label,
+.aboutModal label {
+  display: grid;
+  gap: 0.4rem;
+  color: #17251f;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.aboutProfileCard input,
+.aboutProfileCard textarea,
+.aboutModal input,
+.aboutModal textarea,
+.aboutModal select {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #d8e3de;
+  border-radius: 9px;
+  background: #fff;
+  padding: 0.7rem 0.8rem;
+  color: #34443c;
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 400;
+  outline: 0;
+}
+
+.aboutProfileCard textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.aboutProfileCard input:focus,
+.aboutProfileCard textarea:focus,
+.aboutModal input:focus,
+.aboutModal textarea:focus,
+.aboutModal select:focus {
+  border-color: #31a36d;
+  box-shadow: 0 0 0 3px rgba(36, 147, 97, 0.1);
+}
+
+.aboutFormActions,
+.aboutModalActions,
+.aboutItemActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.aboutPrimaryButton,
+.aboutCancelButton,
+.aboutDangerButton {
+  min-height: 35px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border-radius: 8px;
+  padding: 0 0.85rem;
+  font-size: 0.67rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.aboutPrimaryButton {
+  border: 0;
+  background: #249762;
+  color: #fff;
+}
+
+.aboutCancelButton {
+  border: 1px solid #dce5e1;
+  background: #fff;
+  color: #34423b;
+}
+
+.aboutDangerButton {
+  border: 0;
+  background: #d94842;
+  color: #fff;
+}
+
+.aboutPrimaryButton:disabled,
+.aboutDangerButton:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.aboutDocumentCard {
+  min-height: 170px;
+  padding: 1.35rem 1.5rem;
+}
+
+.aboutDocumentCard > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.aboutDocumentCard > header h3 {
+  font-size: 1rem;
+}
+
+.aboutEmptyText {
+  margin: 2.6rem 0 1.5rem;
+  color: #7e9188;
+  font-size: 0.85rem;
+  font-style: italic;
+  text-align: center;
+}
+
+.aboutDocumentRows {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 1rem;
+}
+
+.aboutDocumentRows > div {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.7rem;
+  border-top: 1px solid #edf1ef;
+  padding-top: 0.7rem;
+}
+
+.aboutDocumentRows > div > span {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #eaf7f0;
+  color: #249762;
+}
+
+.aboutDocumentRows strong {
+  display: block;
+  font-size: 0.72rem;
+}
+
+.aboutDocumentRows small {
+  display: block;
+  margin-top: 0.15rem;
+  color: #819089;
+  font-size: 0.6rem;
+}
+
+.aboutItemActions button {
+  padding: 0.38rem 0.5rem;
+}
+
+.aboutItemActions button:last-child {
+  color: #d94842;
+}
+
+.aboutLargeEmpty {
+  min-height: 290px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  color: #7b9186;
+  text-align: center;
+}
+
+.aboutLargeEmpty svg {
+  width: 48px;
+  height: 48px;
+  color: #d0dad5;
+}
+
+.aboutLargeEmpty h3 {
+  margin: 1rem 0 0.25rem;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.aboutLargeEmpty p {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.aboutUnitGrid,
+.aboutProgramGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.aboutUnitCard,
+.aboutProgramCard {
+  padding: 1.1rem;
+}
+
+.aboutUnitCard > span,
+.aboutStatus {
+  display: inline-flex;
+  border-radius: 999px;
+  background: #eaf7f0;
+  padding: 0.25rem 0.55rem;
+  color: #24815b;
+  font-size: 0.57rem;
+  font-weight: 750;
+  text-transform: capitalize;
+}
+
+.aboutUnitCard h3,
+.aboutProgramCard h3 {
+  margin-top: 0.65rem;
+}
+
+.aboutUnitCard p,
+.aboutProgramCard p {
+  min-height: 2.2rem;
+  margin: 0.4rem 0;
+  color: #74847c;
+  font-size: 0.65rem;
+  line-height: 1.55;
+}
+
+.aboutUnitCard > strong,
+.aboutUnitCard > small,
+.aboutProgramCard > small {
+  display: block;
+  color: #405047;
+  font-size: 0.61rem;
+}
+
+.aboutUnitCard .aboutItemActions,
+.aboutProgramCard .aboutItemActions {
+  justify-content: flex-end;
+  margin-top: 0.8rem;
+  border-top: 1px solid #edf1ef;
+  padding-top: 0.7rem;
+}
+
+.aboutProgramStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.aboutProgramStats article {
+  display: grid;
+  gap: 0.3rem;
+  padding: 1rem 1.15rem;
+}
+
+.aboutProgramStats span {
+  color: #7c8e85;
+  font-size: 0.72rem;
+}
+
+.aboutProgramStats strong {
+  color: #14241c;
+  font-size: 1.5rem;
+}
+
+.aboutProgramStats article:nth-child(2) strong {
+  color: #0fa66a;
+}
+
+.aboutProgramStats article:nth-child(3) strong {
+  color: #809188;
+}
+
+.aboutProgramStats + .aboutLargeEmpty {
+  min-height: 260px;
+}
+
+.aboutStatus.selesai {
+  background: #eff2f1;
+  color: #68776f;
+}
+
+.aboutStatus.rencana {
+  background: #fff5dc;
+  color: #a46c0c;
+}
+
+.aboutModalOverlay {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow-y: auto;
+  background: rgba(16, 25, 21, 0.58);
+  padding: 1.5rem;
+}
+
+.aboutModal,
+.aboutDeleteDialog {
+  width: min(570px, 100%);
+  border: 1px solid #dbe4df;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 24px 70px rgba(10, 22, 16, 0.25);
+}
+
+.aboutModal {
+  max-height: calc(100svh - 3rem);
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+.aboutModal > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.aboutModal > header h2,
+.aboutDeleteDialog h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.aboutModal > header button {
+  border: 0;
+  background: transparent;
+  color: #65756d;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.aboutModal textarea {
+  min-height: 92px;
+  resize: vertical;
+}
+
+.aboutModalGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.aboutFilePicker {
+  width: fit-content;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  border: 1px solid #dce5e1;
+  border-radius: 9px;
+  padding: 0 0.8rem;
+  color: #34423b;
+  font-size: 0.7rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.aboutFilePicker svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+.aboutFilePicker input {
+  display: none;
+}
+
+.aboutModalActions {
+  justify-content: flex-end;
+  margin-top: 0.3rem;
+}
+
+.aboutDeleteDialog {
+  padding: 1.4rem;
+}
+
+.aboutDeleteDialog p {
+  color: #6f7e76;
+  font-size: 0.72rem;
+}
+
+/* Kajian workspace */
+.kajianWorkspace {
+  min-height: calc(100svh - 74px);
+  padding: 1.45rem clamp(1rem, 2.5vw, 2rem) 3rem;
+  background: #fffaf1;
+}
+
+.kajianPageHead,
+.kajianHeading,
+.kajianHeading > span,
+.kajianStats article,
+.kajianSearch,
+.kajianCardMeta,
+.kajianCard footer,
+.kajianEditorBar,
+.kajianEditorActions,
+.kajianSettingsCard h3 {
+  display: flex;
+  align-items: center;
+}
+
+.kajianPageHead {
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.kajianHeading {
+  gap: 0.8rem;
+}
+
+.kajianHeading > span {
+  width: 42px;
+  height: 42px;
+  justify-content: center;
+  border-radius: 12px;
+  background: #ecebff;
+  color: #6658e8;
+}
+
+.kajianHeading svg,
+.kajianSettingsCard h3 svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.kajianHeading h2 {
+  margin: 0;
+  color: #151942;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.kajianHeading p {
+  margin: 0.15rem 0 0;
+  color: #566074;
+  font-size: 0.72rem;
+}
+
+.kajianPageHead > button {
+  border: 0;
+  border-radius: 7px;
+  background: #249361;
+  color: #fff;
+  padding: 0.68rem 1rem;
+  font-size: 0.72rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.kajianStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.kajianStats article {
+  min-height: 66px;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid;
+  border-radius: 9px;
+}
+
+.kajianStats strong {
+  font-size: 1.15rem;
+}
+
+.kajianStats span {
+  margin-top: 0.12rem;
+  font-size: 0.62rem;
+}
+
+.kajianStats .total {
+  border-color: #b8ccff;
+  background: #edf3ff;
+  color: #5141d8;
+}
+
+.kajianStats .published {
+  border-color: #afe8cf;
+  background: #ecfbf4;
+  color: #16874f;
+}
+
+.kajianStats .draft {
+  border-color: #efd47d;
+  background: #fffaf0;
+  color: #bd6600;
+}
+
+.kajianSearch {
+  width: min(330px, 100%);
+  height: 34px;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+  border: 1px solid #dfe7e3;
+  border-radius: 7px;
+  background: #fff;
+  padding: 0 0.65rem;
+  color: #7d8e87;
+}
+
+.kajianSearch svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.kajianSearch input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  font-size: 0.7rem;
+}
+
+.kajianCardGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.kajianCard {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #e2e8e5;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(38, 58, 48, 0.04);
+}
+
+.kajianCardCover {
+  height: 126px;
+  display: grid;
+  place-items: center;
+  background-color: #dfebff;
+  background-position: center;
+  background-size: cover;
+  color: #96a9ff;
+}
+
+.kajianCardCover svg {
+  width: 32px;
+  height: 32px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+}
+
+.kajianCardBody {
+  padding: 0.7rem 0.75rem 0.65rem;
+}
+
+.kajianCardMeta {
+  position: relative;
+  gap: 0.35rem;
+  color: #64716b;
+  font-size: 0.54rem;
+}
+
+.kajianCardMeta > span {
+  border-radius: 999px;
+  background: #f1f4f2;
+  padding: 0.2rem 0.4rem;
+}
+
+.kajianCardMeta > span.live {
+  background: #e9f8ef;
+  color: #21905a;
+}
+
+.kajianCardMeta > span.saved {
+  background: #fff2dd;
+  color: #b66b10;
+}
+
+.kajianCardMeta > button {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  color: #121715;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.kajianCardMenu {
+  position: absolute;
+  z-index: 5;
+  top: 20px;
+  right: -5px;
+  width: 112px;
+  overflow: hidden;
+  border: 1px solid #e0e7e3;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 10px 25px rgba(29, 44, 36, 0.14);
+}
+
+.kajianCardMenu button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 0;
+  background: #fff;
+  padding: 0.55rem 0.65rem;
+  color: #28332e;
+  font-size: 0.68rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.kajianCardMenu button:last-child {
+  color: #df443f;
+}
+
+.kajianCardMenu button:hover {
+  background: #f7faf8;
+}
+
+.kajianCardMenu svg,
+.kajianCard footer svg {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+.kajianCard h3 {
+  margin: 0.65rem 0 0.3rem;
+  overflow: hidden;
+  color: #19211d;
+  font-size: 0.74rem;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kajianCardBody > p {
+  height: 2.55rem;
+  margin: 0;
+  overflow: hidden;
+  color: #748079;
+  font-size: 0.61rem;
+  line-height: 1.4;
+}
+
+.kajianCard footer {
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.65rem;
+  border-top: 1px solid #eef2f0;
+  padding-top: 0.5rem;
+  color: #708079;
+  font-size: 0.53rem;
+}
+
+.kajianCard footer span {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kajianCard footer span:last-child {
+  color: #24875e;
+}
+
+.kajianEmpty {
+  grid-column: 1 / -1;
+  min-height: 220px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  border: 1px dashed #cfdad5;
+  border-radius: 10px;
+  background: rgba(255,255,255,.65);
+  color: #718079;
+  text-align: center;
+}
+
+.kajianEmpty svg {
+  width: 36px;
+  height: 36px;
+  fill: none;
+  stroke: #998df1;
+}
+
+.kajianEmpty h3 {
+  margin: 0.75rem 0 0.25rem;
+  color: #29362f;
+  font-size: 0.9rem;
+}
+
+.kajianEmpty p {
+  margin: 0;
+  font-size: 0.7rem;
+}
+
+.kajianEditor {
+  min-height: calc(100svh - 74px);
+  background: #fffaf1;
+}
+
+.kajianEditorBar {
+  min-height: 52px;
+  gap: 0.7rem;
+  border-bottom: 1px solid #dde5e1;
+  background: #fff;
+  padding: 0.55rem clamp(1rem, 2vw, 1.6rem);
+}
+
+.kajianBackButton,
+.kajianDraftButton,
+.kajianPublishButton {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.kajianBackButton {
+  color: #34443c;
+  font-size: 0.66rem;
+}
+
+.kajianEditorDivider {
+  width: 1px;
+  height: 18px;
+  background: #dce4e0;
+}
+
+.kajianEditorBar > strong {
+  max-width: 360px;
+  overflow: hidden;
+  color: #27332d;
+  font-size: 0.65rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kajianEditorActions {
+  gap: 0.45rem;
+  margin-left: auto;
+}
+
+.kajianEditorActions > span {
+  margin-right: 0.35rem;
+  color: #7c8a83;
+  font-size: 0.58rem;
+}
+
+.kajianDraftButton,
+.kajianPublishButton {
+  min-height: 32px;
+  border-radius: 6px;
+  padding: 0 0.7rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+}
+
+.kajianDraftButton {
+  border: 1px solid #d7e0dc;
+  background: #fff;
+  color: #53615a;
+}
+
+.kajianPublishButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #249361;
+  color: #fff;
+}
+
+.kajianPublishButton svg {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+.kajianEditorCanvas {
+  padding: 1.2rem clamp(1rem, 2.5vw, 2rem) 3rem;
+}
+
+.kajianTitleInput input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #12173c;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.kajianEditorGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 2.15fr) minmax(240px, 1fr);
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.kajianMainFields {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+}
+
+.kajianEditorField {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.kajianEditorField > span {
+  color: #48536a;
+  font-size: 0.62rem;
+}
+
+.kajianEditorField textarea {
+  width: 100%;
+  resize: vertical;
+  border: 1px solid #d8e2de;
+  border-radius: 8px;
+  background: #fff;
+  padding: 0.75rem;
+  color: #334039;
+  font: inherit;
+  font-size: 0.66rem;
+  line-height: 1.55;
+  outline: 0;
+}
+
+.kajianBodyField textarea {
+  min-height: 320px;
+}
+
+.kajianEditorField textarea:focus,
+.kajianSettings input:focus,
+.kajianSettings select:focus {
+  border-color: #79b89c;
+  box-shadow: 0 0 0 3px rgba(36,147,97,.1);
+}
+
+.kajianSettings {
+  display: grid;
+  align-content: start;
+  gap: 0.65rem;
+}
+
+.kajianSettingsCard {
+  display: grid;
+  gap: 0.6rem;
+  border: 1px solid #dfe7e3;
+  border-radius: 9px;
+  background: #fff;
+  padding: 0.8rem;
+}
+
+.kajianSettingsCard h3 {
+  gap: 0.35rem;
+  margin: 0;
+  color: #27342d;
+  font-size: 0.68rem;
+}
+
+.kajianSettingsCard label {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.kajianSettingsCard label > span {
+  color: #45524b;
+  font-size: 0.57rem;
+  font-weight: 650;
+}
+
+.kajianSettingsCard input,
+.kajianSettingsCard select {
+  width: 100%;
+  height: 31px;
+  border: 1px solid #dde5e1;
+  border-radius: 6px;
+  background: #fff;
+  padding: 0 0.55rem;
+  color: #53615a;
+  font-size: 0.6rem;
+  outline: 0;
+}
+
+.kajianCoverUpload {
+  min-height: 88px;
+  place-items: center;
+  align-content: center;
+  border: 1px dashed #cfdad5;
+  border-radius: 7px;
+  color: #85948c;
+}
+
+.kajianCoverUpload > svg {
+  width: 22px;
+  height: 22px;
+}
+
+.kajianCoverUpload input {
+  width: calc(100% - 1rem);
+  height: 26px;
+}
+
+.kajianPreview > p {
+  margin: 0 0 0.35rem;
+  color: #53615a;
+  font-size: 0.6rem;
+}
+
+.kajianPreview article {
+  border: 1px solid #dfe7e3;
+  border-radius: 8px;
+  background: #fff;
+  padding: 0.65rem;
+}
+
+.kajianPreview article > span {
+  border-radius: 999px;
+  background: #edf7f2;
+  padding: 0.17rem 0.4rem;
+  color: #318565;
+  font-size: 0.52rem;
+}
+
+.kajianPreview h4 {
+  margin: 0.4rem 0 0.2rem;
+  color: #26332c;
+  font-size: 0.65rem;
+}
+
+.kajianPreview article p {
+  max-height: 2rem;
+  margin: 0;
+  overflow: hidden;
+  color: #7b8781;
+  font-size: 0.55rem;
+  line-height: 1.35;
+}
+
+.kajianPreview small {
+  display: block;
+  margin-top: 0.4rem;
+  color: #24875e;
+  font-size: 0.52rem;
+}
+
+@media (max-width: 1180px) {
+  .dashboardApp {
+    grid-template-columns: 240px minmax(0, 1fr);
+  }
+
+  .dashboardApp .dashboardStats {
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+  }
+
+  .dashboardApp .dashboardContentGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .kajianCardGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .authPage.loginPage {
+    overflow: auto;
+  }
+
+  .loginShell {
+    min-height: 0;
+    grid-template-columns: 1fr;
+  }
+
+  .loginBrandPanel {
+    min-height: 280px;
+    gap: 2rem;
+  }
+
+  .dashboardApp {
+    display: block;
+  }
+
+  .dashboardApp .dashboardSidebar {
+    position: relative;
+    height: auto;
+  }
+
+  .dashboardApp .dashboardNav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboardApp .dashboardTopbar {
+    position: relative;
+  }
+
+  .kajianEditorGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboardApp .educationVisionGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .aboutUnitGrid,
+  .aboutProgramGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  .authPage.loginPage {
+    place-items: start center;
+    padding: 0;
+    background: #fff;
+  }
+
+  .loginShell {
+    width: 100%;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .loginBrandPanel {
+    min-height: 220px;
+    padding: 1.5rem;
+  }
+
+  .loginBrandPanel > img {
+    width: 190px;
+  }
+
+  .loginBrandPanel h1 {
+    max-width: 100%;
+    font-size: 1.55rem;
+    overflow-wrap: anywhere;
+  }
+
+  .loginBrandPanel h1 + p,
+  .loginBrandFooter {
+    display: none;
+  }
+
+  .loginFormPanel {
+    width: 100%;
+    min-width: 0;
+    padding: 1.5rem;
+  }
+
+  .loginPage .loginCard,
+  .loginPage .loginField,
+  .loginPage .roleSelect,
+  .loginPage .passwordInputWrap {
+    min-width: 0;
+  }
+
+  .loginPage .passwordHint {
+    display: none;
+  }
+
+  .dashboardApp .dashboardNav,
+  .dashboardApp .dashboardStats {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboardApp .dashboardTopbar {
+    align-items: stretch;
+  }
+
+  .dashboardApp .userProfileButton {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .dashboardApp .financePageHead,
+  .dashboardApp .financeFilters {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .dashboardApp .financePageHead button,
+  .dashboardApp .financeFilters select,
+  .dashboardApp .financeSearch {
+    width: 100%;
+  }
+
+  .kajianPageHead,
+  .kajianEditorBar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .kajianPageHead > button {
+    width: 100%;
+  }
+
+  .kajianStats,
+  .kajianCardGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .kajianEditorActions {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .kajianEditorActions > span {
+    display: none;
+  }
+
+  .dashboardApp .educationHeader,
+  .dashboardApp .educationEditHeading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .dashboardApp .educationEditProfile {
+    width: 100%;
+  }
+
+  .dashboardApp .educationContactList,
+  .dashboardApp .educationEditGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .aboutPageHeading.withAction,
+  .aboutProfileCard {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .aboutPageHeading.withAction > .aboutPrimaryButton {
+    width: 100%;
+  }
+
+  .aboutProgramStats,
+  .aboutModalGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .aboutDocumentRows > div {
+    grid-template-columns: 34px minmax(0, 1fr);
+  }
+
+  .aboutDocumentRows .aboutItemActions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+}
+
+/* Sidebar layout based on the approved navigation reference. */
+.dashboardApp {
+  grid-template-columns: 280px minmax(0, 1fr);
+}
+
+.dashboardApp .dashboardSidebar {
+  display: flex;
+  height: 100svh;
+  padding: 2.2rem 0.85rem 1rem;
+  overflow-y: auto;
+  flex-direction: column;
+  border-right: 1px solid #edf0ee;
+  background: #fff;
+}
+
+.dashboardApp .dashboardLogo {
+  display: flex;
+  min-height: 82px;
+  margin: 0 0 1rem;
+  padding: 0 1.1rem;
+  align-items: center;
+  border: 0;
+}
+
+.dashboardApp .dashboardLogo img {
+  width: 225px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.dashboardApp .dashboardNav {
+  display: flex;
+  gap: 0.75rem;
+  flex: 0 0 auto;
+  flex-direction: column;
+}
+
+.dashboardApp .dashboardNavGroup {
+  display: flex;
+  gap: 0.15rem;
+  flex-direction: column;
+}
+
+.dashboardApp .dashboardNavItem {
+  position: relative;
+  display: grid;
+  width: 100%;
+  min-height: 50px;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 1rem;
+  align-items: center;
+  padding: 0 1.55rem;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: #3e3c50;
+  font-size: 0.94rem;
+  font-weight: 500;
+  text-align: left;
+}
+
+.dashboardApp .dashboardNavItem::before {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: -0.85rem;
+  width: 5px;
+  border-radius: 0 6px 6px 0;
+  background: #00b779;
+  content: "";
+  opacity: 0;
+}
+
+.dashboardApp .dashboardNavItem svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.dashboardApp .dashboardNavItem:hover {
+  background: #f3faf7;
+  color: #07865d;
+}
+
+.dashboardApp .dashboardNavItem.active {
+  background: #d9f3e9;
+  color: #00a96f;
+  font-weight: 750;
+}
+
+.dashboardApp .dashboardNavItem.active::before {
+  opacity: 1;
+}
+
+.dashboardApp .dashboardSubnav {
+  display: flex;
+  gap: 0;
+  padding: 0.05rem 0 0.35rem 2.85rem;
+  flex-direction: column;
+}
+
+.dashboardApp .dashboardSubnav button,
+.dashboardApp .dashboardSubnav a {
+  display: flex;
+  width: 100%;
+  min-height: 35px;
+  align-items: center;
+  padding: 0.35rem 0.45rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #737378;
+  font-size: 0.7rem;
+  font-weight: 550;
+  line-height: 1.35;
+  text-align: left;
+}
+
+.dashboardApp .dashboardSubnav button:hover,
+.dashboardApp .dashboardSubnav a:hover,
+.dashboardApp .dashboardSubnav a.active {
+  background: #eef8f3;
+  color: #009967;
+}
+
+.dashboardApp .dashboardLogoutForm {
+  width: calc(100% - 2.2rem);
+  margin: auto auto 0;
+  padding: 3rem 0 0.35rem;
+  border-bottom: 1px solid #e8ebe9;
+}
+
+.dashboardApp .dashboardLogoutButton {
+  width: 100%;
+  min-height: 42px;
+  padding: 0.65rem 1rem;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #25242b;
+  font-size: 0.76rem;
+  font-weight: 500;
+  text-align: left;
+}
+
+.dashboardApp .dashboardLogoutButton:hover {
+  background: #fff2f1;
+  color: #b6423d;
+}
+
+@media (max-width: 1180px) and (min-width: 901px) {
+  .dashboardApp {
+    grid-template-columns: 245px minmax(0, 1fr);
+  }
+
+  .dashboardApp .dashboardLogo img {
+    width: 205px;
+  }
+
+  .dashboardApp .dashboardNavItem {
+    padding-inline: 1.2rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboardApp {
+    display: block;
+  }
+
+  .dashboardApp .dashboardSidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+    max-height: none;
+    padding: 1rem;
+  }
+
+  .dashboardApp .dashboardLogo {
+    min-height: 60px;
+    justify-content: center;
+  }
+
+  .dashboardApp .dashboardLogo img {
+    width: 190px;
+  }
+
+  .dashboardApp .dashboardNav {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  .dashboardApp .dashboardNavItem {
+    min-height: 44px;
+    justify-content: center;
+    padding: 0.5rem;
+    text-align: center;
+  }
+
+  .dashboardApp .dashboardNavItem::before {
+    display: none;
+  }
+
+  .dashboardApp .dashboardSubnav {
+    padding: 0.2rem;
+  }
+
+  .dashboardApp .dashboardSubnav a,
+  .dashboardApp .dashboardSubnav button {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .dashboardApp .dashboardLogoutForm {
+    width: 100%;
+    padding-top: 1rem;
+  }
+
+  .dashboardApp .dashboardLogoutButton {
+    text-align: center;
+  }
+}
+
+@media (max-width: 620px) {
+  .dashboardApp .dashboardNav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboardApp .dashboardNavItem {
+    grid-template-columns: 18px minmax(0, 1fr);
+    justify-content: initial;
+    text-align: left;
+  }
+
+  .dashboardApp .dashboardSubnav a,
+  .dashboardApp .dashboardSubnav button {
+    justify-content: flex-start;
+    text-align: left;
+  }
+}
+
+/* Berita workspace */
+.newsWorkspace,
+.newsEditorWorkspace {
+  min-height: calc(100svh - 68px);
+  padding: 1.45rem;
+  background: #fcf8ef;
+  color: #101536;
+}
+
+.newsPageHeader,
+.newsEditorHeader {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.newsHeading {
+  display: flex;
+  gap: 0.9rem;
+  align-items: center;
+}
+
+.newsHeading > span {
+  display: grid;
+  width: 56px;
+  height: 56px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 13px;
+  background: #e5f3ee;
+  color: #1ca36d;
+}
+
+.newsHeading svg {
+  width: 29px;
+  height: 29px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.newsHeading h2,
+.newsEditorHeader h2 {
+  margin: 0;
+  color: #101536;
+  font-size: 1.45rem;
+  line-height: 1.15;
+}
+
+.newsHeading p,
+.newsEditorHeader p {
+  margin: 0.22rem 0 0;
+  color: #38405f;
+  font-size: 0.88rem;
+}
+
+.newsAddButton,
+.newsPublishButton {
+  display: inline-flex;
+  min-height: 42px;
+  gap: 0.55rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.2rem;
+  border: 0;
+  border-radius: 9px;
+  background: #219667;
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.newsAddButton:hover,
+.newsPublishButton:hover {
+  background: #167e56;
+}
+
+.newsSearch {
+  display: flex;
+  width: min(340px, 100%);
+  min-height: 38px;
+  gap: 0.55rem;
+  align-items: center;
+  margin-bottom: 0.8rem;
+  padding: 0 0.75rem;
+  border: 1px solid #d7e0dc;
+  border-radius: 8px;
+  background: #fff;
+  color: #799087;
+  box-shadow: 0 2px 5px rgba(26, 63, 46, 0.04);
+}
+
+.newsSearch svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.newsSearch input {
+  width: 100%;
+  min-height: 36px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #3f4c46;
+  font-size: 0.72rem;
+}
+
+.newsStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 1.15rem;
+}
+
+.newsStats article {
+  display: grid;
+  min-height: 96px;
+  place-content: center;
+  border: 1px solid;
+  text-align: center;
+}
+
+.newsStats article:first-child {
+  border-radius: 13px 0 0 13px;
+}
+
+.newsStats article:last-child {
+  border-radius: 0 13px 13px 0;
+}
+
+.newsStats article.published {
+  border-color: #a5ebc8;
+  background: #effcf5;
+  color: #079054;
+}
+
+.newsStats article.draft {
+  border-color: #f0d06c;
+  background: #fffbee;
+  color: #be6500;
+}
+
+.newsStats article.images {
+  border-color: #b5d1fa;
+  background: #f0f6ff;
+  color: #245be5;
+}
+
+.newsStats strong {
+  font-size: 1.65rem;
+  line-height: 1;
+}
+
+.newsStats span {
+  display: inline-flex;
+  gap: 0.25rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.45rem;
+  font-size: 0.78rem;
+}
+
+.newsStats svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.newsGroups {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.newsMonthGroup {
+  min-width: 0;
+}
+
+.newsMonthHeader {
+  display: grid;
+  width: 100%;
+  grid-template-columns: auto minmax(20px, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  margin: 0 0 0.55rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #128a5f;
+}
+
+.newsMonthPill {
+  display: inline-flex;
+  min-height: 43px;
+  gap: 0.55rem;
+  align-items: center;
+  padding: 0 0.8rem;
+  border: 1px solid #b9e6d2;
+  border-radius: 999px;
+  background: #fbfffd;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.newsMonthPill svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.newsMonthPill b {
+  display: grid;
+  width: 25px;
+  height: 25px;
+  place-items: center;
+  border-radius: 50%;
+  background: #e7f5ef;
+  font-size: 0.68rem;
+}
+
+.newsMonthHeader > i {
+  height: 1px;
+  background: #d5d8d6;
+}
+
+.newsMonthChevron {
+  color: #888e8b;
+  font-size: 1.35rem;
+  font-style: normal;
+  transform: rotate(0);
+}
+
+.newsMonthChevron.collapsed {
+  transform: rotate(-90deg);
+}
+
+.newsList {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.newsListCard {
+  position: relative;
+  display: grid;
+  min-height: 140px;
+  grid-template-columns: 190px minmax(0, 1fr);
+  overflow: visible;
+  border: 1px solid #dce5e0;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 3px 10px rgba(38, 70, 54, 0.05);
+}
+
+.newsListImage {
+  display: grid;
+  min-height: 140px;
+  place-items: center;
+  border-radius: 11px 0 0 11px;
+  background-color: #e6eeea;
+  background-position: center;
+  background-size: cover;
+  color: #9eb1a8;
+}
+
+.newsListImage svg {
+  width: 34px;
+  height: 34px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+.newsListBody {
+  min-width: 0;
+  padding: 1rem 3.2rem 0.85rem 1rem;
+}
+
+.newsListBadges {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.newsListBadges span,
+.newsPreviewBadges span {
+  display: inline-flex;
+  min-height: 25px;
+  gap: 0.25rem;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.newsListBadges span.published,
+.newsPreviewBadges span {
+  background: #dcf8e8;
+  color: #068b51;
+}
+
+.newsListBadges span.draft {
+  background: #fff2bd;
+  color: #ad6700;
+}
+
+.newsListBadges svg {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.newsListBadges b,
+.newsPreviewBadges b {
+  padding: 0.22rem 0.6rem;
+  border: 1px solid #dce5e0;
+  border-radius: 999px;
+  color: #28372f;
+  font-size: 0.65rem;
+  font-weight: 650;
+}
+
+.newsListBody h3 {
+  margin: 0;
+  overflow: hidden;
+  color: #131b17;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.newsListBody > p {
+  margin: 0.35rem 0 0.6rem;
+  overflow: hidden;
+  color: #6b7d74;
+  font-size: 0.73rem;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.newsListBody footer {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  color: #70857b;
+  font-size: 0.68rem;
+}
+
+.newsListBody footer span {
+  display: inline-flex;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+.newsListBody footer svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+.newsMoreButton {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.75rem;
+  z-index: 3;
+  width: 34px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #141a17;
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.newsActionMenu {
+  position: absolute;
+  top: 2.35rem;
+  right: 0.8rem;
+  z-index: 5;
+  display: grid;
+  width: 142px;
+  padding: 0.35rem;
+  border: 1px solid #e1e7e3;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: 0 12px 24px rgba(26, 53, 40, 0.16);
+}
+
+.newsActionMenu button {
+  display: flex;
+  min-height: 36px;
+  gap: 0.65rem;
+  align-items: center;
+  padding: 0.45rem 0.65rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #25332c;
+  font-size: 0.75rem;
+  text-align: left;
+}
+
+.newsActionMenu button:hover {
+  background: #f3f8f5;
+}
+
+.newsActionMenu button.danger {
+  color: #e23636;
+}
+
+.newsActionMenu svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+.newsEmptyState {
+  display: grid;
+  min-height: 280px;
+  place-content: center;
+  border: 1px dashed #cddbd3;
+  border-radius: 12px;
+  color: #819087;
+  text-align: center;
+}
+
+.newsEmptyState svg {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 0.7rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+}
+
+.newsEmptyState h3,
+.newsEmptyState p {
+  margin: 0.2rem;
+}
+
+.newsEditorHeader {
+  align-items: flex-end;
+}
+
+.newsBackButton {
+  width: 38px;
+  height: 42px;
+  margin-right: -0.3rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #111b16;
+  font-size: 2rem;
+  font-weight: 300;
+}
+
+.newsEditorHeader > div:nth-child(2) {
+  margin-right: auto;
+}
+
+.newsEditorActions {
+  display: flex;
+  gap: 0.65rem;
+}
+
+.newsDraftButton {
+  min-height: 42px;
+  padding: 0.6rem 1rem;
+  border: 1px solid #cfdbd5;
+  border-radius: 9px;
+  background: #fff;
+  color: #25352d;
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+
+.newsPublishButton svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+.newsEditorGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 2.1fr) minmax(280px, 1fr);
+  gap: 0.8rem;
+  align-items: start;
+}
+
+.newsEditorMain,
+.newsEditorAside {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.newsEditorCard {
+  padding: 1rem;
+  border: 1px solid #d9e3de;
+  border-radius: 11px;
+  background: #fff;
+  box-shadow: 0 3px 9px rgba(34, 67, 51, 0.05);
+}
+
+.newsEditorCard label {
+  display: grid;
+  gap: 0.45rem;
+  color: #17231d;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.newsEditorCard label + label {
+  margin-top: 0.9rem;
+}
+
+.newsEditorCard label > span {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.newsEditorCard label svg,
+.newsEditorCard h3 svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+.newsEditorCard input,
+.newsEditorCard select,
+.newsEditorCard textarea {
+  width: 100%;
+  border: 1px solid #d5e0da;
+  border-radius: 8px;
+  background: #fff;
+  color: #26342d;
+  font-size: 0.76rem;
+  font-weight: 450;
+}
+
+.newsEditorCard input,
+.newsEditorCard select {
+  min-height: 40px;
+  padding: 0.65rem 0.75rem;
+}
+
+.newsEditorCard textarea {
+  padding: 0.75rem;
+  line-height: 1.55;
+  resize: vertical;
+}
+
+.newsIntroCard .newsTitleInput {
+  min-height: 52px;
+  padding: 0.35rem 0;
+  border: 0;
+  border-bottom: 1px solid #dbe3df;
+  border-radius: 0;
+  box-shadow: none;
+  color: #152019;
+  font-size: 1.28rem;
+  font-weight: 750;
+}
+
+.newsIntroCard .newsTitleInput::placeholder {
+  color: #b5c1bb;
+}
+
+.newsBodyCard textarea {
+  min-height: 380px;
+}
+
+.newsBodyLabel {
+  justify-content: space-between;
+}
+
+.newsBodyLabel small {
+  color: #819087;
+  font-size: 0.64rem;
+  font-weight: 500;
+}
+
+.newsEditorCard h3 {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  margin: 0 0 0.9rem;
+  color: #17231d;
+  font-size: 0.85rem;
+}
+
+.newsSettingsCard > label > span {
+  color: #71837a;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+}
+
+.newsStatusNotice {
+  display: flex;
+  gap: 0.55rem;
+  align-items: center;
+  margin: 0.9rem 0 0;
+  padding: 0.7rem;
+  border: 1px solid;
+  border-radius: 9px;
+  font-size: 0.66rem;
+  line-height: 1.35;
+}
+
+.newsStatusNotice span {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+}
+
+.newsStatusNotice.published {
+  border-color: #a9ebc7;
+  background: #effdf5;
+  color: #138853;
+}
+
+.newsStatusNotice.published span {
+  background: #18bd69;
+}
+
+.newsStatusNotice.draft {
+  border-color: #f1d66a;
+  background: #fffbed;
+  color: #a76d00;
+}
+
+.newsStatusNotice.draft span {
+  background: #f3bc14;
+}
+
+.newsCoverCard > button:not(.newsUploadArea) {
+  width: 100%;
+  min-height: 36px;
+  margin-top: 0.55rem;
+  border: 1px solid #d8e2dd;
+  border-radius: 8px;
+  background: #fff;
+  color: #3f5047;
+  font-size: 0.7rem;
+}
+
+.newsUploadArea {
+  display: grid;
+  width: 100%;
+  min-height: 160px;
+  place-content: center;
+  border: 2px dashed #cbd8d1;
+  border-radius: 10px;
+  background: #fff;
+  color: #739087;
+  text-align: center;
+}
+
+.newsUploadArea svg {
+  width: 30px;
+  height: 30px;
+  margin: 0 auto 0.6rem;
+  fill: none;
+  stroke: #a9bbb2;
+  stroke-width: 1.6;
+}
+
+.newsUploadArea span {
+  font-size: 0.73rem;
+}
+
+.newsUploadArea small {
+  margin-top: 0.25rem;
+  color: #a1b0a9;
+  font-size: 0.6rem;
+}
+
+.newsCoverPreview,
+.newsPreviewImage {
+  width: 100%;
+  height: 175px;
+  border-radius: 9px;
+  background-color: #e7eeea;
+  background-position: center;
+  background-size: cover;
+}
+
+.newsPreviewImage {
+  height: 132px;
+}
+
+.newsPreviewImage.empty {
+  background: linear-gradient(135deg, #e8f0ec, #dce7e1);
+}
+
+.newsLivePreview {
+  border-color: #b8ddd0;
+}
+
+.newsLivePreview > h3 {
+  color: #259567;
+}
+
+.newsPreviewBadges {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.7rem;
+}
+
+.newsLivePreview h4 {
+  margin: 0.7rem 0 0.35rem;
+  color: #16211b;
+  font-size: 0.84rem;
+  line-height: 1.35;
+}
+
+.newsLivePreview > p {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: #718078;
+  font-size: 0.68rem;
+  line-height: 1.5;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.newsLivePreview > small {
+  display: block;
+  margin-top: 0.55rem;
+  color: #159160;
+  font-size: 0.65rem;
+}
+
+.newsDeleteOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  padding: 1rem;
+  place-items: center;
+  background: rgba(8, 22, 15, 0.58);
+}
+
+.newsDeleteOverlay > section {
+  width: min(540px, 100%);
+  padding: 1.5rem;
+  border-radius: 11px;
+  background: #fff;
+  box-shadow: 0 22px 60px rgba(5, 22, 14, 0.25);
+}
+
+.newsDeleteOverlay h2 {
+  margin: 0;
+  color: #1c2922;
+  font-size: 1.05rem;
+}
+
+.newsDeleteOverlay p {
+  margin: 0.8rem 0 1.2rem;
+  color: #718078;
+  font-size: 0.8rem;
+}
+
+.newsDeleteOverlay section > div {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: flex-end;
+}
+
+.newsDeleteOverlay button {
+  min-height: 40px;
+  padding: 0.55rem 1rem;
+  border: 1px solid #d6e0db;
+  border-radius: 8px;
+  background: #fff;
+  color: #35463d;
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+
+.newsDeleteOverlay button.danger {
+  border-color: #e52e2e;
+  background: #e52e2e;
+  color: #fff;
+}
+
+@media (max-width: 1050px) {
+  .newsEditorGrid {
+    grid-template-columns: minmax(0, 1.6fr) minmax(260px, 0.8fr);
+  }
+
+  .newsListCard {
+    grid-template-columns: 160px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 820px) {
+  .newsWorkspace,
+  .newsEditorWorkspace {
+    padding: 1rem;
+  }
+
+  .newsEditorGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .newsEditorAside {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .newsSettingsCard {
+    grid-row: span 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .newsPageHeader,
+  .newsEditorHeader {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .newsAddButton {
+    width: 100%;
+  }
+
+  .newsEditorActions {
+    width: 100%;
+  }
+
+  .newsEditorActions button {
+    flex: 1;
+  }
+
+  .newsStats {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .newsStats article,
+  .newsStats article:first-child,
+  .newsStats article:last-child {
+    min-height: 78px;
+    border-radius: 10px;
+  }
+
+  .newsListCard {
+    grid-template-columns: 1fr;
+  }
+
+  .newsListImage {
+    min-height: 180px;
+    border-radius: 11px 11px 0 0;
+  }
+
+  .newsListBody {
+    padding-right: 1rem;
+  }
+
+  .newsListBody h3,
+  .newsListBody > p {
+    white-space: normal;
+  }
+
+  .newsMoreButton {
+    top: 187px;
+  }
+
+  .newsActionMenu {
+    top: 216px;
+  }
+
+  .newsEditorAside {
+    grid-template-columns: 1fr;
+  }
+
+  .newsBodyCard textarea {
+    min-height: 300px;
+  }
+}
+/* ===== Final internal portal polish ===== */
+.dashboardApp {
+  --portal-green: #16845b;
+  --portal-green-dark: #0c6042;
+  --portal-green-soft: #e4f5ed;
+  --portal-bg: #f5f7f5;
+  --portal-card: #ffffff;
+  --portal-text: #17261f;
+  --portal-muted: #748178;
+  --portal-border: #dce5df;
+  --portal-shadow: 0 8px 24px rgba(30, 71, 51, 0.07);
+  grid-template-columns: 252px minmax(0, 1fr);
+  min-height: 100vh;
+  background: var(--portal-bg);
+  color: var(--portal-text);
+}
+
+.dashboardApp .dashboardSidebar {
+  z-index: 35;
+  padding: 1rem 0.85rem;
+  border-right: 1px solid var(--portal-border);
+  background: #fff;
+  scrollbar-width: thin;
+  scrollbar-color: #c9d8d0 transparent;
+}
+
+.dashboardApp .sidebarLogo {
+  width: 190px;
+  max-width: 100%;
+  margin: 0 auto 1rem;
+  padding: 0.55rem;
+}
+
+.dashboardApp .sidebarNav {
+  gap: 0.25rem;
+}
+
+.dashboardApp .sidebarNavItem {
+  min-height: 40px;
+  padding: 0.6rem 0.72rem;
+  border-radius: 9px;
+  color: #26362e;
+  font-size: 0.76rem;
+  font-weight: 650;
+}
+
+.dashboardApp .sidebarNavItem:hover,
+.dashboardApp .sidebarNavItem.active {
+  background: var(--portal-green-soft);
+  color: var(--portal-green-dark);
+}
+
+.dashboardApp .sidebarSubnav {
+  margin: 0.15rem 0 0.45rem;
+  gap: 0.08rem;
+}
+
+.dashboardApp .sidebarSubnavItem {
+  min-height: 30px;
+  padding: 0.4rem 0.72rem 0.4rem 2.6rem;
+  border-radius: 7px;
+  color: #65736b;
+  font-size: 0.66rem;
+}
+
+.dashboardApp .sidebarSubnavItem:hover,
+.dashboardApp .sidebarSubnavItem.active {
+  background: #f1f8f4;
+  color: var(--portal-green);
+}
+
+.dashboardApp .sidebarLogout {
+  min-height: 40px;
+  margin-top: 0.65rem;
+  border-top: 1px solid var(--portal-border);
+  color: #8a463e;
+  font-size: 0.72rem;
+}
+
+.dashboardApp .dashboardContent {
+  min-width: 0;
+  background: var(--portal-bg);
+}
+
+.dashboardApp .dashboardTopbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  min-height: 68px;
+  padding: 0.7rem 1.4rem;
+  border-bottom: 1px solid var(--portal-border);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 3px 14px rgba(31, 65, 49, 0.04);
+  backdrop-filter: blur(12px);
+}
+
+.dashboardApp .topbarWelcome h1 {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.dashboardApp .topbarWelcome p {
+  margin: 0.1rem 0 0;
+  color: var(--portal-muted);
+  font-size: 0.62rem;
+}
+
+.dashboardApp .topbarNotification,
+.dashboardApp .topbarProfile {
+  border-color: var(--portal-border);
+  background: #fff;
+}
+
+.dashboardApp .topbarNotification:hover,
+.dashboardApp .topbarProfile:hover {
+  border-color: #bdd4c7;
+  background: #f7fbf9;
+}
+
+.dashboardApp .dashboardWorkspace,
+.dashboardApp .roleWorkspace {
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+  padding: 1.35rem;
+}
+
+.dashboardApp .roleHeader,
+.dashboardApp .pageHeader,
+.dashboardApp .workspaceHeader {
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.dashboardApp .roleHeader h1,
+.dashboardApp .pageHeader h1,
+.dashboardApp .workspaceHeader h1 {
+  margin: 0;
+  color: var(--portal-text);
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+  line-height: 1.2;
+}
+
+.dashboardApp .roleHeader p,
+.dashboardApp .pageHeader p,
+.dashboardApp .workspaceHeader p {
+  margin: 0.25rem 0 0;
+  color: var(--portal-muted);
+  font-size: 0.76rem;
+}
+
+.dashboardApp .roleStats,
+.dashboardApp .statsGrid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.85rem;
+}
+
+.dashboardApp .roleStatCard,
+.dashboardApp .statCard,
+.dashboardApp .rolePanel,
+.dashboardApp .dashboardCard,
+.dashboardApp .aboutAdminCard,
+.dashboardApp .educationProfileCard,
+.dashboardApp .educationVisionCard,
+.dashboardApp .educationInfoCard {
+  border: 1px solid var(--portal-border);
+  border-radius: 12px;
+  background: var(--portal-card);
+  box-shadow: var(--portal-shadow);
+}
+
+.dashboardApp .roleStatCard,
+.dashboardApp .statCard {
+  min-height: 102px;
+  padding: 1rem;
+}
+
+.dashboardApp .rolePanel,
+.dashboardApp .dashboardCard {
+  padding: 1.1rem;
+}
+
+.dashboardApp .rolePanelHeader,
+.dashboardApp .cardHeader {
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+}
+
+.dashboardApp .rolePanelHeader h2,
+.dashboardApp .cardHeader h2 {
+  font-size: 0.92rem;
+}
+
+.dashboardApp button,
+.dashboardApp .button,
+.dashboardApp .primaryButton,
+.dashboardApp .secondaryButton {
+  border-radius: 8px;
+}
+
+.dashboardApp button:hover,
+.dashboardApp .button:hover,
+.dashboardApp .primaryButton:hover,
+.dashboardApp .secondaryButton:hover {
+  transform: translateY(-1px);
+}
+
+.dashboardApp input,
+.dashboardApp select,
+.dashboardApp textarea {
+  border-color: var(--portal-border);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.dashboardApp input,
+.dashboardApp select {
+  min-height: 40px;
+}
+
+.dashboardApp input:focus,
+.dashboardApp select:focus,
+.dashboardApp textarea:focus {
+  border-color: var(--portal-green);
+  box-shadow: 0 0 0 3px rgba(22, 132, 91, 0.1);
+  outline: none;
+}
+
+.dashboardApp table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.dashboardApp th {
+  background: #f4f8f6;
+  color: #53645b;
+  font-size: 0.66rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.dashboardApp td {
+  color: #33453b;
+  font-size: 0.72rem;
+}
+
+.dashboardApp th,
+.dashboardApp td {
+  padding: 0.72rem 0.8rem;
+  border-bottom: 1px solid #e7ede9;
+}
+
+.dashboardApp tbody tr:hover td {
+  background: #fafcfb;
+}
+
+.dashboardApp .modalOverlay,
+.dashboardApp .dialogOverlay {
+  padding: 1rem;
+  background: rgba(8, 29, 20, 0.58);
+  backdrop-filter: blur(3px);
+}
+
+.dashboardApp .modalContent,
+.dashboardApp .dialogContent {
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  border: 1px solid var(--portal-border);
+  border-radius: 14px;
+  box-shadow: 0 22px 60px rgba(9, 44, 29, 0.22);
+}
+
+@media (max-width: 1180px) {
+  .dashboardApp {
+    grid-template-columns: 220px minmax(0, 1fr);
+  }
+
+  .dashboardApp .dashboardWorkspace,
+  .dashboardApp .roleWorkspace {
+    padding: 1.1rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboardApp {
+    display: block;
+  }
+
+  .dashboardApp .dashboardSidebar {
+    position: relative;
+    width: 100%;
+    max-height: none;
+    padding: 0.8rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--portal-border);
+  }
+
+  .dashboardApp .sidebarLogo {
+    width: 176px;
+    margin-bottom: 0.65rem;
+  }
+
+  .dashboardApp .sidebarNav {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.35rem;
+  }
+
+  .dashboardApp .sidebarGroup {
+    min-width: 0;
+  }
+
+  .dashboardApp .sidebarNavItem {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .dashboardApp .sidebarSubnav {
+    margin-bottom: 0;
+  }
+
+  .dashboardApp .sidebarSubnavItem {
+    justify-content: center;
+    padding-inline: 0.35rem;
+    text-align: center;
+  }
+
+  .dashboardApp .sidebarLogout {
+    justify-content: center;
+  }
+
+  .dashboardApp .dashboardTopbar {
+    position: sticky;
+    padding-inline: 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboardApp .sidebarNav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboardApp .dashboardTopbar {
+    min-height: 62px;
+    gap: 0.55rem;
+    padding: 0.55rem 0.7rem;
+  }
+
+  .dashboardApp .topbarWelcome h1 {
+    max-width: 190px;
+    overflow: hidden;
+    font-size: 0.76rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dashboardApp .topbarWelcome p {
+    display: none;
+  }
+
+  .dashboardApp .topbarProfile > div:not(.topbarAvatar) {
+    display: none;
+  }
+
+  .dashboardApp .dashboardWorkspace,
+  .dashboardApp .roleWorkspace {
+    padding: 0.85rem;
+  }
+
+  .dashboardApp .roleStats,
+  .dashboardApp .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboardApp .roleHeader,
+  .dashboardApp .pageHeader,
+  .dashboardApp .workspaceHeader {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .dashboardApp .roleHeader button,
+  .dashboardApp .pageHeader button,
+  .dashboardApp .workspaceHeader button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .dashboardApp .modalContent,
+  .dashboardApp .dialogContent {
+    width: 100%;
+    padding: 1rem;
+  }
+}

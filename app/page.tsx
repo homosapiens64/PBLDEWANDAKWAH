@@ -3,8 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import PublicContentFeed from "./components/PublicContentFeed";
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
+<<<<<<< HEAD
 const headerMenu = [
   { name: "Beranda", href: "/" },
   { name: "Berita", href: "/berita" },
@@ -22,6 +24,8 @@ const headerMenu = [
   },
   { name: "Tentang Kami", href: "/tentang-kami" },
 ];
+=======
+>>>>>>> 9494b39 (Update Project)
 const beritaUtama = [
   {
     id: 1,
@@ -285,7 +289,7 @@ function KajianSection() {
             fontFamily: "'Georgia', serif",
           }}
         >
-          Kajian &amp; Materi Da'wah
+          Kajian &amp; Materi Da&apos;wah
         </h2>
 
         {/* Tabs */}
@@ -648,6 +652,7 @@ export default function HomePage() {
   return (
     <main className="min-h-screen">
       <HeroSection />
+      <PublicContentFeed />
       <BeritaSection />
       <KajianSection />
       <KonsultasiSection />

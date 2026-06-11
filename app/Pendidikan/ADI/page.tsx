@@ -77,7 +77,6 @@ const contactItems = [
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 const TEAL = "#009688";
-const TEAL_DARK = "#00796b";
 const GOLD = "#f5a623";
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -90,7 +89,7 @@ export default function ADI() {
         {/* Title */}
         <div style={{ textAlign: "center", marginBottom: 32 }}>
           <h1 style={{ fontSize: 38, fontWeight: 900, margin: 0, letterSpacing: 1, textTransform: "uppercase", color: "#1a1a1a" }}>
-            AKADEMI DA'WAH ISLAM
+            AKADEMI DA&apos;WAH ISLAM
           </h1>
           <h1 style={{ fontSize: 48, fontWeight: 900, margin: 0, letterSpacing: 2, textTransform: "uppercase", color: GOLD }}>
             Indonesia
@@ -99,7 +98,7 @@ export default function ADI() {
 
         {/* Description */}
         <p style={{ fontSize: 14, lineHeight: 1.8, color: "#555", maxWidth: 860, margin: "0 auto 24px", textAlign: "center" }}>
-          ADI adalah lembaga pendidikan tinggi vokasi yang berfokus pada pembinaan kader da'i profesional.
+          ADI adalah lembaga pendidikan tinggi vokasi yang berfokus pada pembinaan kader da&apos;i profesional.
           Mahasiswa ADI dibekali ilmu syariah, metode dakwah, kepemimpinan Islam, dan keterampilan komunikasi
           publik agar siap berdakwah di tengah masyarakat. Program ini dirancang untuk mencetak dai yang
           memiliki wawasan luas, akhlak mulia, dan kemampuan adaptasi dakwah di era modern.

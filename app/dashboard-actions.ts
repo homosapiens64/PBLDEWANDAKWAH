@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import {
   educationInstitutions,
   getSession,
@@ -69,6 +70,25 @@ function revalidatePublicContent() {
   revalidatePath("/TentangKami/AdDanArt");
   revalidatePath("/TentangKami/StrukturKepengurusan");
   revalidatePath("/TentangKami/Program");
+}
+
+function capitalizeSegment(segment: string) {
+  return segment
+    .split(/[- _]/)
+    .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
+    .join(" ")
+    .replace(/\s+/g, "");
+}
+
+function getPublicPath(module: string, section: string) {
+  if (module === "website") {
+    return section ? `/Berita/${capitalizeSegment(section)}` : "/Berita";
+  }
+  if (module === "kajian") return "/Kajian";
+  if (module === "education") return section ? `/Pendidikan/${capitalizeSegment(section)}` : "/Pendidikan/Institusi";
+  if (module === "pmb") return "/Pendidikan/pendaftaran";
+  if (module === "tentang-kami") return section ? `/TentangKami/${capitalizeSegment(section)}` : "/TentangKami";
+  return "/";
 }
 
 export async function saveContentItem(input: ContentInput) {
@@ -154,6 +174,9 @@ export async function saveContentItem(input: ContentInput) {
 
   revalidatePublicContent();
   revalidatePath(roleHomePaths[session.role]);
+  const publicPath = getPublicPath(input.module, input.section);
+  try { revalidatePath(publicPath); } catch {}
+  redirect(publicPath);
 }
 
 export async function deleteContentItem(id: number, module: string) {
@@ -161,11 +184,15 @@ export async function deleteContentItem(id: number, module: string) {
   if (!session || !canEditModule(session.role, module)) {
     throw new Error("Anda tidak memiliki akses untuk menghapus konten ini.");
   }
-
+  let publicPath = "/";
   try {
     if (module === "website") {
+      const existing = await prisma.news.findUnique({ where: { id } });
+      publicPath = existing ? `/Berita/${capitalizeSegment(existing.section)}` : "/Berita";
       await prisma.news.delete({ where: { id } });
     } else if (module === "kajian") {
+      const existing = await prisma.studyArticle.findUnique({ where: { id } });
+      publicPath = "/Kajian";
       await prisma.studyArticle.delete({ where: { id } });
     } else if (module === "education" || module === "pmb") {
       const existing = await prisma.educationInformation.findUnique({
@@ -178,12 +205,14 @@ export async function deleteContentItem(id: number, module: string) {
       ) {
         throw new Error("Konten tidak ditemukan atau tidak dapat dihapus.");
       }
+      publicPath = `/Pendidikan/${capitalizeSegment(existing.section)}`;
       await prisma.educationInformation.delete({ where: { id } });
     } else {
       const existing = await prisma.contentItem.findUnique({ where: { id } });
       if (!existing || existing.module !== module) {
         throw new Error("Konten tidak ditemukan atau tidak dapat dihapus.");
       }
+      publicPath = getPublicPath(existing.module, existing.section);
       await prisma.contentItem.delete({ where: { id } });
     }
   } catch (error) {
@@ -194,6 +223,8 @@ export async function deleteContentItem(id: number, module: string) {
   }
   revalidatePublicContent();
   revalidatePath(roleHomePaths[session.role]);
+  try { revalidatePath(publicPath); } catch {}
+  redirect(publicPath);
 }
 
 export async function saveFinanceTransaction(input: FinanceInput) {

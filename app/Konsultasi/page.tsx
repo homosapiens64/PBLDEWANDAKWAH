@@ -52,7 +52,11 @@ const tips = [
   "Gunakan bahasa yang sopan dan mudah dipahami.",
 ];
 
-export default function KonsultasiPage() {
+import InlineContentEditor from "../components/InlineContentEditor";
+import { getContentItems, type PublicContentItem } from "../lib/content";
+
+export default async function KonsultasiPage() {
+  const items = await getContentItems("konsultasi", "konsultasi").catch(() => [] as PublicContentItem[]);
   return (
     <main className="page konsultasiPage">
       <section className="container consultHero">
@@ -249,6 +253,9 @@ export default function KonsultasiPage() {
           </section>
         </aside>
       </section>
+
+      {/* Inline Editor untuk Super Admin */}
+      <InlineContentEditor items={items} module="konsultasi" section="konsultasi" />
     </main>
   );
 }

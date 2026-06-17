@@ -185,7 +185,7 @@ function verifyPassword(password: string, storedPassword: string) {
   );
 }
 
-export async function findUser(username: string, password: string) {
+export async function findUser(username: string, password: string): Promise<SessionUser | null> {
   try {
     const { prisma } = await import("./prisma");
     const user = await prisma.user.findUnique({

@@ -1,4 +1,5 @@
 import { getPublishedContentItems, type PublicContentItem } from "../../lib/content";
+import InlineContentEditor from "../../components/InlineContentEditor";
 
 type NewsItem = {
   title: string;
@@ -323,6 +324,9 @@ export default async function BeritaTerkiniPage() {
           </div>
         </div>
       </section>
+
+      {/* Inline Editor untuk Super Admin */}
+      <InlineContentEditor items={managedItems} module="website" section="website" />
     </main>
   );
 }

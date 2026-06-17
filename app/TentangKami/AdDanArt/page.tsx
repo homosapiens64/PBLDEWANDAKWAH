@@ -1,4 +1,5 @@
 import { getAboutItems, parseAboutMeta } from "../../lib/about";
+import InlineContentEditor from "../../components/InlineContentEditor";
 
 export default async function AdDanArtPage() {
   const items = await getAboutItems();
@@ -66,6 +67,9 @@ export default async function AdDanArtPage() {
           );
         })}
       </section>
+
+      {/* Inline Editor untuk Super Admin */}
+      <InlineContentEditor items={items} module="tentang-kami" section="tentang-kami" />
     </main>
   );
 }

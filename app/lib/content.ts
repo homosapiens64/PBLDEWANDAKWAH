@@ -76,21 +76,21 @@ export async function getContentItems(module: string, section: string) {
         where: { section },
         orderBy: [{ updatedAt: "desc" }],
       });
-      return items.map((item) => serializeDomainContentItem(item, "website"));
+      return items.map((item: typeof items[0]) => serializeDomainContentItem(item, "website"));
     }
     if (module === "kajian") {
       const items = await prisma.studyArticle.findMany({
         where: { section },
         orderBy: [{ updatedAt: "desc" }],
       });
-      return items.map((item) => serializeDomainContentItem(item, "kajian"));
+      return items.map((item: typeof items[0]) => serializeDomainContentItem(item, "kajian"));
     }
     if (module === "education" || module === "pmb") {
       const items = await prisma.educationInformation.findMany({
         where: { module, section },
         orderBy: [{ updatedAt: "desc" }],
       });
-      return items.map((item) => serializeDomainContentItem(item, module));
+      return items.map((item: typeof items[0]) => serializeDomainContentItem(item, module));
     }
 
     const items = await prisma.contentItem.findMany({
@@ -104,7 +104,7 @@ export async function getContentItems(module: string, section: string) {
   }
 }
 
-export async function getModuleContentItems(module: string) {
+export async function getModuleContentItems(module: string): Promise<PublicContentItem[]> {
   try {
     const items = await prisma.contentItem.findMany({
       where: { module },
@@ -118,7 +118,7 @@ export async function getModuleContentItems(module: string) {
   }
 }
 
-export async function getPublishedContentItems(module: string, section?: string) {
+export async function getPublishedContentItems(module: string, section?: string): Promise<PublicContentItem[]> {
   try {
     const where = {
       status: "published",
@@ -131,18 +131,18 @@ export async function getPublishedContentItems(module: string, section?: string)
 
     if (module === "website") {
       const items = await prisma.news.findMany({ where, orderBy });
-      return items.map((item) => serializeDomainContentItem(item, "website"));
+      return items.map((item: typeof items[0]) => serializeDomainContentItem(item, "website"));
     }
     if (module === "kajian") {
       const items = await prisma.studyArticle.findMany({ where, orderBy });
-      return items.map((item) => serializeDomainContentItem(item, "kajian"));
+      return items.map((item: typeof items[0]) => serializeDomainContentItem(item, "kajian"));
     }
     if (module === "education" || module === "pmb") {
       const items = await prisma.educationInformation.findMany({
         where: { module, ...where },
         orderBy,
       });
-      return items.map((item) => serializeDomainContentItem(item, module));
+      return items.map((item: typeof items[0]) => serializeDomainContentItem(item, module));
     }
 
     const items = await prisma.contentItem.findMany({

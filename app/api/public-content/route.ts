@@ -38,12 +38,12 @@ export async function GET(request: Request) {
   ]);
 
   const totals = Object.fromEntries(
-    finance.map((entry) => [entry.type, entry._sum.amount ?? 0]),
+    finance.map((entry: typeof finance[0]) => [entry.type, entry._sum.amount ?? 0]),
   );
   const items = [
-    ...news.map((item) => serializeDomainContentItem(item, "website")),
-    ...studies.map((item) => serializeDomainContentItem(item, "kajian")),
-    ...education.map((item) => serializeDomainContentItem(item, "education")),
+    ...news.map((item: typeof news[0]) => serializeDomainContentItem(item, "website")),
+    ...studies.map((item: typeof studies[0]) => serializeDomainContentItem(item, "kajian")),
+    ...education.map((item: typeof education[0]) => serializeDomainContentItem(item, "education")),
   ].sort(
     (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
   );

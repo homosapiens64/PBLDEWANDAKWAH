@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState } from 'react'
 import type { PublicContentItem } from '../lib/content'
+import InlineContentEditor from '../components/InlineContentEditor'
 
 type KajianItem = {
   id: number
@@ -211,6 +212,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Inline Editor untuk Super Admin */}
+      <InlineContentEditor items={managedItems} module="kajian" section="kajian" />
     </>
   )
 }

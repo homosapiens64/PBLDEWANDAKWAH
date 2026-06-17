@@ -1,4 +1,5 @@
 import { findAboutItem, getAboutItems, profileFallback } from "../../lib/about";
+import InlineContentEditor from "../../components/InlineContentEditor";
 
 export default async function ProfilePage() {
   const items = await getAboutItems();
@@ -63,6 +64,9 @@ export default async function ProfilePage() {
           );
         })}
       </section>
+
+      {/* Inline Editor untuk Super Admin */}
+      <InlineContentEditor items={items} module="tentang-kami" section="tentang-kami" />
     </main>
   );
 }

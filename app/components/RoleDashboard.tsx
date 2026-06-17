@@ -961,7 +961,7 @@ export default async function RoleDashboard({
         orderBy: [{ institution: "asc" }, { name: "asc" }],
       });
 
-      educationAdmins = admins.flatMap((admin) => {
+      educationAdmins = admins.flatMap((admin: typeof admins[0]) => {
         if (!admin.institution || !isEducationInstitution(admin.institution)) {
           return [];
         }
@@ -987,7 +987,7 @@ export default async function RoleDashboard({
     try {
       financeTransactions = (await prisma.financeTransaction.findMany({
         orderBy: [{ date: "desc" }, { id: "desc" }],
-      })).map((transaction) => ({
+      })).map((transaction: Awaited<ReturnType<typeof prisma.financeTransaction.findMany>>[0]) => ({
         id: transaction.id,
         type: transaction.type === "pengeluaran" ? "pengeluaran" : "pemasukan",
         date: transaction.date.toISOString().slice(0, 10),
@@ -1081,8 +1081,8 @@ export default async function RoleDashboard({
       dashboardTransactions = transactions;
       dashboardContent = [
         ...genericContent,
-        ...news.map((item) => ({ ...item, module: "website" })),
-        ...studies.map((item) => ({ ...item, module: "kajian" })),
+        ...news.map((item: typeof news[0]) => ({ ...item, module: "website" })),
+        ...studies.map((item: typeof studies[0]) => ({ ...item, module: "kajian" })),
         ...education,
       ];
     } catch (error) {

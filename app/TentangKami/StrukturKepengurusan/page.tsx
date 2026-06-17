@@ -1,4 +1,5 @@
 import { getAboutItems, parseAboutMeta, structureFallback } from "../../lib/about";
+import InlineContentEditor from "../../components/InlineContentEditor";
 
 export default async function StrukturKepengurusanPage() {
   const items = await getAboutItems();
@@ -59,6 +60,9 @@ export default async function StrukturKepengurusanPage() {
           );
         })}
       </section>
+
+      {/* Inline Editor untuk Super Admin */}
+      <InlineContentEditor items={items} module="tentang-kami" section="tentang-kami" />
     </main>
   );
 }

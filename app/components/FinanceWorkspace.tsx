@@ -160,10 +160,12 @@ function FinanceModal({
 export default function FinanceWorkspace({
   databaseAvailable,
   initialTransactions,
+  readOnly = false,
   view,
 }: {
   databaseAvailable: boolean;
   initialTransactions: FinanceTransaction[];
+  readOnly?: boolean;
   view: FinanceView;
 }) {
   const router = useRouter();
@@ -288,8 +290,8 @@ export default function FinanceWorkspace({
   const title = isReport
     ? "Laporan Keuangan"
     : currentType === "pemasukan"
-      ? "Kelola Pemasukan"
-      : "Kelola Pengeluaran";
+      ? readOnly ? "Pemasukan" : "Kelola Pemasukan"
+      : readOnly ? "Pengeluaran" : "Kelola Pengeluaran";
   const description = currentType === "pemasukan"
     ? "Catat dan kelola semua sumber pemasukan"
     : "Catat dan kelola semua pengeluaran organisasi";
@@ -318,14 +320,14 @@ export default function FinanceWorkspace({
               <h2>{title}</h2>
               <p>{description}</p>
             </div>
-            <button
+            {!readOnly ? <button
               className={currentType === "pengeluaran" ? "expenseAddButton" : ""}
               type="button"
               onClick={() => openCreate(currentType)}
               disabled={!databaseAvailable}
             >
               + Tambah {currentType === "pemasukan" ? "Pemasukan" : "Pengeluaran"}
-            </button>
+            </button> : null}
           </div>
         ) : null}
 
@@ -383,7 +385,11 @@ export default function FinanceWorkspace({
                       <>
                         <td className={transaction.type === "pemasukan" ? "amountIn" : "amountOut"}>{formatAmount(transaction.amount)}</td>
                         <td>{transaction.author}</td>
-                        <td><FinanceActionButtons onEdit={() => openEdit(transaction)} onDelete={() => setDeleteId(transaction.id)} /></td>
+                        <td>
+                          {readOnly
+                            ? "-"
+                            : <FinanceActionButtons onEdit={() => openEdit(transaction)} onDelete={() => setDeleteId(transaction.id)} />}
+                        </td>
                       </>
                     )}
                   </tr>
@@ -403,7 +409,7 @@ export default function FinanceWorkspace({
         </article>
       </section>
 
-      {modalType ? (
+      {modalType && !readOnly ? (
         <FinanceModal
           editing={editingId !== null}
           form={form}
@@ -414,7 +420,7 @@ export default function FinanceWorkspace({
         />
       ) : null}
 
-      {deleteId !== null ? (
+      {deleteId !== null && !readOnly ? (
         <div className="financeModalOverlay" role="presentation" onMouseDown={() => setDeleteId(null)}>
           <section className="financeDeleteDialog" role="alertdialog" aria-modal="true" aria-labelledby="delete-title" onMouseDown={(event) => event.stopPropagation()}>
             <h2 id="delete-title">Hapus Transaksi?</h2>

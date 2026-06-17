@@ -1,3 +1,5 @@
+import { getPublishedContentItems } from "../../lib/content";
+
 const activities = [
   {
     title: "Pelatihan Dai Muda di Semarang",
@@ -16,7 +18,19 @@ const activities = [
   },
 ];
 
-export default function BeritaKegiatanPage() {
+export default async function BeritaKegiatanPage() {
+  const managedActivities = await getPublishedContentItems("website", "kegiatan");
+  const displayedActivities = managedActivities.length
+    ? managedActivities.map((item) => ({
+        title: item.title,
+        date: new Intl.DateTimeFormat("id-ID", {
+          month: "long",
+          year: "numeric",
+        }).format(new Date(item.publishedAt)),
+        description: item.summary || item.body,
+      }))
+    : activities;
+
   return (
     <main className="page simpleRoutePage">
       <section className="container routeHero">
@@ -28,10 +42,8 @@ export default function BeritaKegiatanPage() {
         </p>
       </section>
 
-      <PublicContentFeed module="website" section="kegiatan" />
-
       <section className="container routeGrid">
-        {activities.map((item) => (
+        {displayedActivities.map((item) => (
           <article key={item.title} className="routeCard">
             <span className="routeTag">{item.date}</span>
             <h3>{item.title}</h3>
@@ -42,4 +54,3 @@ export default function BeritaKegiatanPage() {
     </main>
   );
 }
-import PublicContentFeed from "../../components/PublicContentFeed";

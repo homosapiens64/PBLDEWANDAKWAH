@@ -8,14 +8,16 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique @db.VarChar(50)
-  password  String   @db.VarChar(255)
-  name      String   @db.VarChar(100)
-  role      String   @db.VarChar(20)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id          Int      @id @default(autoincrement())
+  username    String   @unique @db.VarChar(50)
+  password    String   @db.VarChar(255)
+  name        String   @db.VarChar(100)
+  role        String   @db.VarChar(20)
+  institution String?  @db.VarChar(30)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
+  @@index([role, institution])
   @@map("users")
 }
 
@@ -37,6 +39,64 @@ model ContentItem {
 
   @@index([module, section, status])
   @@map("content_items")
+}
+
+model News {
+  id          Int       @id @default(autoincrement())
+  section     String    @db.VarChar(50)
+  title       String    @db.VarChar(180)
+  summary     String?   @db.Text
+  body        String    @db.Text
+  imageUrl    String?   @map("image_url") @db.LongText
+  tags        String?   @db.VarChar(300)
+  status      String    @default("published") @db.VarChar(20)
+  authorRole  String    @map("author_role") @db.VarChar(20)
+  authorName  String    @map("author_name") @db.VarChar(100)
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@index([section, status])
+  @@map("news")
+}
+
+model StudyArticle {
+  id          Int       @id @default(autoincrement())
+  section     String    @db.VarChar(50)
+  title       String    @db.VarChar(180)
+  summary     String?   @db.Text
+  body        String    @db.Text
+  imageUrl    String?   @map("image_url") @db.LongText
+  tags        String?   @db.VarChar(300)
+  status      String    @default("published") @db.VarChar(20)
+  authorRole  String    @map("author_role") @db.VarChar(20)
+  authorName  String    @map("author_name") @db.VarChar(100)
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@index([section, status])
+  @@map("study_articles")
+}
+
+model EducationInformation {
+  id          Int       @id @default(autoincrement())
+  module      String    @default("education") @db.VarChar(20)
+  section     String    @db.VarChar(50)
+  title       String    @db.VarChar(180)
+  summary     String?   @db.Text
+  body        String    @db.Text
+  imageUrl    String?   @map("image_url") @db.LongText
+  tags        String?   @db.VarChar(300)
+  status      String    @default("published") @db.VarChar(20)
+  authorRole  String    @map("author_role") @db.VarChar(20)
+  authorName  String    @map("author_name") @db.VarChar(100)
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@index([module, section, status])
+  @@map("education_information")
 }
 
 model FinanceTransaction {

@@ -1,3 +1,5 @@
+import { getPublishedContentItems } from "../../lib/content";
+
 const internationalStories = [
   {
     title: "Jaringan Da'wah Digital Menjangkau Komunitas Global",
@@ -13,7 +15,15 @@ const internationalStories = [
   },
 ];
 
-export default function BeritaInternasionalPage() {
+export default async function BeritaInternasionalPage() {
+  const managedStories = await getPublishedContentItems("website", "internasional");
+  const displayedStories = managedStories.length
+    ? managedStories.map((item) => ({
+        title: item.title,
+        summary: item.summary || item.body,
+      }))
+    : internationalStories;
+
   return (
     <main className="page simpleRoutePage">
       <section className="container routeHero">
@@ -25,10 +35,8 @@ export default function BeritaInternasionalPage() {
         </p>
       </section>
 
-      <PublicContentFeed module="website" section="internasional" />
-
       <section className="container routeGrid">
-        {internationalStories.map((item) => (
+        {displayedStories.map((item) => (
           <article key={item.title} className="routeCard">
             <span className="routeTag">INTERNASIONAL</span>
             <h3>{item.title}</h3>
@@ -39,4 +47,3 @@ export default function BeritaInternasionalPage() {
     </main>
   );
 }
-import PublicContentFeed from "../../components/PublicContentFeed";

@@ -7,6 +7,7 @@ import {
 } from "./app/lib/auth";
 
 const protectedRoutes: Record<string, UserRole> = {
+  "/super-admin": "super_admin",
   "/admin": "admin",
   "/pengurus": "pengurus",
   "/bendahara": "bendahara",
@@ -42,5 +43,12 @@ export function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/login", "/admin/:path*", "/pengurus/:path*", "/bendahara/:path*", "/ustadz/:path*"],
+  matcher: [
+    "/login",
+    "/super-admin/:path*",
+    "/admin/:path*",
+    "/pengurus/:path*",
+    "/bendahara/:path*",
+    "/ustadz/:path*",
+  ],
 };

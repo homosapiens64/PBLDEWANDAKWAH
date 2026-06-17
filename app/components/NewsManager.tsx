@@ -178,9 +178,11 @@ function formatDate(value: string) {
 
 export default function NewsManager({
   items,
+  readOnly = false,
   section,
 }: {
   items: PublicContentItem[];
+  readOnly?: boolean;
   section: string;
 }) {
   const activeSection = (section in sectionConfig ? section : "terkini") as NewsSection;
@@ -284,7 +286,7 @@ export default function NewsManager({
     if (!deleteItem) return;
     startTransition(async () => {
       try {
-        await deleteContentItem(deleteItem.id);
+        await deleteContentItem(deleteItem.id, "website");
         setDeleteItem(null);
         setMessage("Berita berhasil dihapus.");
         router.refresh();
@@ -451,7 +453,11 @@ export default function NewsManager({
             <p>{items.length} berita total</p>
           </div>
         </div>
-        <button className="newsAddButton" type="button" onClick={openCreate}>+ <span>{config.addLabel}</span></button>
+        {!readOnly ? (
+          <button className="newsAddButton" type="button" onClick={openCreate}>
+            + <span>{config.addLabel}</span>
+          </button>
+        ) : null}
       </header>
 
       {message ? <p className="dashboardActionMessage">{message}</p> : null}
@@ -515,15 +521,15 @@ export default function NewsManager({
                             <span>✍ {item.authorName}</span>
                           </footer>
                         </div>
-                        <button
+                        {!readOnly ? <button
                           className="newsMoreButton"
                           type="button"
                           aria-label={`Aksi untuk ${item.title}`}
                           onClick={() => setOpenMenuId((current) => current === item.id ? null : item.id)}
                         >
                           •••
-                        </button>
-                        {openMenuId === item.id ? (
+                        </button> : null}
+                        {!readOnly && openMenuId === item.id ? (
                           <div className="newsActionMenu">
                             <button type="button" onClick={() => openEdit(item)}><NewsIcon name="edit" /> Edit</button>
                             <button type="button" className="danger" onClick={() => {

@@ -1,4 +1,4 @@
-import PublicContentFeed from "../../components/PublicContentFeed";
+import { getPublishedContentItems, type PublicContentItem } from "../../lib/content";
 
 type NewsItem = {
   title: string;
@@ -88,10 +88,58 @@ const videos = [
 
 const tags = ["Da'wah", "Pendidikan", "Dai", "Semarang", "Sosial", "Program Kerja", "Kajian", "Internasional", "Ramadan", "Pelatihan", "JT"];
 
-export default function BeritaTerkiniPage() {
+function toNewsItem(item: PublicContentItem, category: string): NewsItem {
+  return {
+    title: item.title,
+    category,
+    date: new Intl.DateTimeFormat("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(new Date(item.publishedAt)).toLocaleUpperCase("id-ID"),
+    excerpt: item.summary || item.body,
+    image: item.imageUrl,
+  };
+}
+
+export default async function BeritaTerkiniPage() {
+  const managedItems = await getPublishedContentItems("website");
+  const managedTerkini = managedItems.filter((item) => item.section === "terkini");
+  const managedNasional = managedItems.filter((item) => item.section === "nasional");
+  const managedInternasional = managedItems.filter((item) => item.section === "internasional");
+  const displayedNasional = managedNasional.length
+    ? managedNasional.map((item) => toNewsItem(item, "NASIONAL"))
+    : beritaNasional;
+  const displayedInternasional = managedInternasional.length
+    ? managedInternasional.map((item) => toNewsItem(item, "INTERNASIONAL"))
+    : beritaInternasional;
+  const featured = managedTerkini[0] ?? managedItems[0];
+  const managedTags = [...new Set(
+    managedItems.flatMap((item) =>
+      item.tags.split(",").map((tag) => tag.trim()).filter(Boolean),
+    ),
+  )];
+  const displayedTags = managedTags.length ? managedTags : tags;
+  const categoryCounts = {
+    all: managedItems.length || 48,
+    nasional: managedNasional.length || 18,
+    internasional: managedInternasional.length || 12,
+    kegiatan: managedItems.filter((item) => item.section === "kegiatan").length || 18,
+  };
+  const displayedKategori = kategori.map((item) => ({
+    ...item,
+    count: String(
+      item.name === "Semua Berita"
+        ? categoryCounts.all
+        : item.name === "Nasional"
+          ? categoryCounts.nasional
+          : item.name === "Internasional"
+            ? categoryCounts.internasional
+            : categoryCounts.kegiatan,
+    ),
+  }));
+
   return (
-    <>
-      <PublicContentFeed module="website" section="terkini" />
     <main className="page">
       <section className="hero container">
         <p className="heroEyebrow">INFORMASI TERKINI</p>
@@ -101,15 +149,19 @@ export default function BeritaTerkiniPage() {
           className="heroCard"
           style={{
             backgroundImage:
-              "linear-gradient(90deg, rgba(17,35,45,0.54) 0%, rgba(17,35,45,0.35) 100%), url('/munas.png')",
+              `linear-gradient(90deg, rgba(17,35,45,0.54) 0%, rgba(17,35,45,0.35) 100%), url('${featured?.imageUrl || "/munas.png"}')`,
           }}
         >
           <div className="heroOverlay">
-            <span className="pill">NASIONAL</span>
-            <h2>Munas Dewan Da&apos;wah 2026 Hasilkan Rekomendasi Strategis Untuk Da&apos;wah Digital</h2>
+            <span className="pill">{featured?.section.toLocaleUpperCase("id-ID") || "NASIONAL"}</span>
+            <h2>{featured?.title || "Munas Dewan Da'wah 2026 Hasilkan Rekomendasi Strategis Untuk Da'wah Digital"}</h2>
             <p>
-              <span>By Admin</span>
-              <span>27 August, 2024</span>
+              <span>By {featured?.authorName || "Admin"}</span>
+              <span>
+                {featured
+                  ? new Intl.DateTimeFormat("id-ID", { dateStyle: "long" }).format(new Date(featured.publishedAt))
+                  : "27 Agustus 2024"}
+              </span>
               <span>20 Mins</span>
             </p>
           </div>
@@ -124,7 +176,7 @@ export default function BeritaTerkiniPage() {
           </div>
 
           <div className="cardsGrid">
-            {beritaNasional.map((item) => (
+            {displayedNasional.map((item) => (
               <article key={item.title} className="newsCard">
                 <div className="newsImage" style={{ backgroundImage: `url('${item.image}')` }} />
                 <div className="newsBody">
@@ -182,7 +234,7 @@ export default function BeritaTerkiniPage() {
           <section className="sideCard">
             <h4>Kategori Berita</h4>
             <div className="categoryList">
-              {kategori.map((item) => (
+              {displayedKategori.map((item) => (
                 <div key={item.name} className="categoryItem">
                   <div className="categoryIcon" style={{ background: item.color }} />
                   <div>
@@ -223,7 +275,7 @@ export default function BeritaTerkiniPage() {
           <section className="sideCard">
             <h4>Topik Berita</h4>
             <div className="tagCloud">
-              {tags.map((tag) => (
+              {displayedTags.map((tag) => (
                 <span key={tag}>{tag}</span>
               ))}
             </div>
@@ -236,7 +288,7 @@ export default function BeritaTerkiniPage() {
           <h3>Berita Internasional</h3>
         </div>
         <div className="internationalGrid">
-          {beritaInternasional.map((item, idx) => (
+          {displayedInternasional.map((item, idx) => (
             <article key={item.title} className={idx === 0 ? "intlFeature" : "intlCard"}>
               <div
                 className={idx === 0 ? "intlFeatureImage" : "intlCardImage"}
@@ -272,6 +324,5 @@ export default function BeritaTerkiniPage() {
         </div>
       </section>
     </main>
-    </>
   );
 }

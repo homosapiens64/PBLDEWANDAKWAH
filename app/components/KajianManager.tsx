@@ -86,9 +86,11 @@ function formatDate(value: string) {
 
 export default function KajianManager({
   items,
+  readOnly = false,
   section,
 }: {
   items: PublicContentItem[];
+  readOnly?: boolean;
   section: string;
 }) {
   const router = useRouter();
@@ -170,7 +172,7 @@ export default function KajianManager({
     if (deleteId === null) return;
     startTransition(async () => {
       try {
-        await deleteContentItem(deleteId);
+        await deleteContentItem(deleteId, "kajian");
         setDeleteId(null);
         setMessage("Materi kajian berhasil dihapus.");
         router.refresh();
@@ -333,7 +335,7 @@ export default function KajianManager({
             <p>Akidah, Tauhid &amp; Keimanan</p>
           </div>
         </div>
-        <button type="button" onClick={openCreate}>＋ &nbsp; Tambah Materi</button>
+        {!readOnly ? <button type="button" onClick={openCreate}>＋ &nbsp; Tambah Materi</button> : null}
       </header>
 
       {message ? <p className="dashboardActionMessage">{message}</p> : null}
@@ -368,14 +370,14 @@ export default function KajianManager({
                 <span className={item.status === "published" ? "live" : "saved"}>
                   ◎ {item.status === "published" ? "Terbit" : "Draf"}
                 </span>
-                <button
+                {!readOnly ? <button
                   type="button"
                   aria-label={`Menu ${item.title}`}
                   onClick={() => setOpenMenuId((current) => current === item.id ? null : item.id)}
                 >
                   •••
-                </button>
-                {openMenuId === item.id ? (
+                </button> : null}
+                {!readOnly && openMenuId === item.id ? (
                   <div className="kajianCardMenu">
                     <button type="button" onClick={() => openEdit(item)}>
                       <Icon name="edit" /> Edit

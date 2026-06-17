@@ -142,9 +142,11 @@ function AboutIcon({
 function ProfileWorkspace({
   items,
   onMessage,
+  readOnly,
 }: {
   items: PublicContentItem[];
   onMessage: (message: string) => void;
+  readOnly: boolean;
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -216,9 +218,9 @@ function ProfileWorkspace({
                         : "Belum ada konten. Klik “Edit” untuk menambahkan."}
                     </p>
                   </div>
-                  <button type="button" className="aboutOutlineButton" onClick={() => openEdit(block)}>
+                  {!readOnly ? <button type="button" className="aboutOutlineButton" onClick={() => openEdit(block)}>
                     <AboutIcon name="edit" /> Edit
-                  </button>
+                  </button> : null}
                 </>
               ) : (
                 <form onSubmit={submit}>
@@ -409,10 +411,12 @@ function DynamicWorkspace({
   items,
   mode,
   onMessage,
+  readOnly,
 }: {
   items: PublicContentItem[];
   mode: "ad-art" | "struktur-kepengurusan" | "program-kerja";
   onMessage: (message: string) => void;
+  readOnly: boolean;
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -515,7 +519,7 @@ function DynamicWorkspace({
     if (deleteId === null) return;
     startTransition(async () => {
       try {
-        await deleteContentItem(deleteId);
+        await deleteContentItem(deleteId, "tentang-kami");
         setDeleteId(null);
         onMessage("Data berhasil dihapus.");
         router.refresh();
@@ -525,7 +529,7 @@ function DynamicWorkspace({
     });
   };
 
-  const renderActions = (item: PublicContentItem, kind: Exclude<EditorKind, null>) => (
+  const renderActions = (item: PublicContentItem, kind: Exclude<EditorKind, null>) => readOnly ? null : (
     <div className="aboutItemActions">
       <button type="button" onClick={() => openEdit(item, kind)}><AboutIcon name="edit" /> Edit</button>
       <button type="button" onClick={() => setDeleteId(item.id)}><AboutIcon name="trash" /> Hapus</button>
@@ -548,9 +552,9 @@ function DynamicWorkspace({
               <article className="aboutDocumentCard" key={group.kind}>
                 <header>
                   <h3>{group.title}</h3>
-                  <button className="aboutPrimaryButton" type="button" onClick={() => openCreate(group.kind)}>
+                  {!readOnly ? <button className="aboutPrimaryButton" type="button" onClick={() => openCreate(group.kind)}>
                     <AboutIcon name="plus" /> Tambah
-                  </button>
+                  </button> : null}
                 </header>
                 {group.data.length === 0 ? (
                   <p className="aboutEmptyText">Belum ada dokumen {group.title}</p>
@@ -584,9 +588,9 @@ function DynamicWorkspace({
               <h2>Struktur Kepengurusan</h2>
               <p>Kelola unit dan anggota pengurus</p>
             </div>
-            <button className="aboutPrimaryButton" type="button" onClick={() => openCreate("unit")}>
+            {!readOnly ? <button className="aboutPrimaryButton" type="button" onClick={() => openCreate("unit")}>
               <AboutIcon name="folder" /> Tambah Unit
-            </button>
+            </button> : null}
           </header>
           {units.length === 0 ? (
             <div className="aboutLargeEmpty">
@@ -626,9 +630,9 @@ function DynamicWorkspace({
               <h2>Program Kerja</h2>
               <p>Kelola program kerja Dewan Da&apos;wah Semarang</p>
             </div>
-            <button className="aboutPrimaryButton" type="button" onClick={() => openCreate("program")}>
+            {!readOnly ? <button className="aboutPrimaryButton" type="button" onClick={() => openCreate("program")}>
               <AboutIcon name="plus" /> Tambah Program
-            </button>
+            </button> : null}
           </header>
           <div className="aboutProgramStats">
             <article><span>Total Program</span><strong>{programs.length}</strong></article>
@@ -659,7 +663,7 @@ function DynamicWorkspace({
         </>
       ) : null}
 
-      {editorKind ? (
+      {editorKind && !readOnly ? (
         <AboutModal
           form={form}
           kind={editorKind}
@@ -670,7 +674,7 @@ function DynamicWorkspace({
         />
       ) : null}
 
-      {deleteId !== null ? (
+      {deleteId !== null && !readOnly ? (
         <div className="aboutModalOverlay" role="presentation" onMouseDown={() => setDeleteId(null)}>
           <section className="aboutDeleteDialog" role="alertdialog" aria-modal="true" onMouseDown={(event) => event.stopPropagation()}>
             <h2>Hapus Data?</h2>
@@ -690,9 +694,11 @@ function DynamicWorkspace({
 
 export default function AboutManager({
   items,
+  readOnly = false,
   section,
 }: {
   items: PublicContentItem[];
+  readOnly?: boolean;
   section: string;
 }) {
   const [message, setMessage] = useState("");
@@ -706,9 +712,9 @@ export default function AboutManager({
     <>
       {message ? <p className="aboutGlobalMessage">{message}</p> : null}
       {activeSection === "profil-organisasi" ? (
-        <ProfileWorkspace items={items} onMessage={setMessage} />
+        <ProfileWorkspace items={items} onMessage={setMessage} readOnly={readOnly} />
       ) : (
-        <DynamicWorkspace items={items} mode={activeSection} onMessage={setMessage} />
+        <DynamicWorkspace items={items} mode={activeSection} onMessage={setMessage} readOnly={readOnly} />
       )}
     </>
   );

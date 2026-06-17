@@ -1,8 +1,8 @@
 
 'use client'
 
-import React, { useState } from 'react'
-import PublicContentFeed from '../components/PublicContentFeed'
+import React, { useEffect, useState } from 'react'
+import type { PublicContentItem } from '../lib/content'
 
 type KajianItem = {
   id: number
@@ -98,8 +98,17 @@ function SectionPager({
 }
 
 export default function Home() {
+  const [managedItems, setManagedItems] = useState<PublicContentItem[]>([])
+
+  useEffect(() => {
+    fetch('/api/public-content?module=kajian')
+      .then((response) => response.ok ? response.json() : null)
+      .then((payload) => setManagedItems(payload?.items ?? []))
+      .catch(() => setManagedItems([]))
+  }, [])
+
   // sample data to replace the previous [1,2,3] maps
-  const tauhid = [
+  const fallbackTauhid = [
     { id: 1, title: 'Perumahan Tauhid & Bahaya Syrik', author: 'Jaka SKB', date: 'Juli 2023', excerpt: 'This article was written by Jake Williams from HealthlineSlam. Strength is fundamental part of one\'s overall health.' },
     { id: 2, title: 'Pemurnian Tauhid', author: 'Fran Lareza', date: 'Juli 2023', excerpt: 'The Vegas Golden Knights will play the Florida Panthers in the Stanley Cup Final beginning Saturday.' },
     { id: 3, title: 'Tauhid Praktis', author: 'King Locado', date: 'Juli 2023', excerpt: 'An Badminton and the country\'s governing body, Philippine Badminton Association.' },
@@ -107,30 +116,51 @@ export default function Home() {
     { id: 5, title: 'Tauhid untuk Keluarga', author: 'Penulis Y', date: 'September 2023', excerpt: 'Pembahasan ringkas tentang penerapan tauhid dalam keluarga.' },
   ]
 
-  const ekonomi = [
+  const fallbackEkonomi = [
     { id: 1, title: 'Golden Knights out to fulfill owner\'s quest', author: 'Fran Lareza', date: 'Juli 2023', excerpt: 'The Vegas Golden Knights will play the Florida Panthers in the Stanley Cup Final beginning Saturday.' },
     { id: 2, title: 'Ekonomi Islam Dasar', author: 'Jaka SKB', date: 'Juli 2023', excerpt: 'This article was written by Jake Williams from HealthlineSlam.' },
     { id: 3, title: 'Zakat dan Investasi', author: 'King Locado', date: 'Juli 2023', excerpt: 'Pembahasan singkat tentang zakat dan investasi syariah.' },
     { id: 4, title: 'Keuangan Syariah', author: 'Penulis Y', date: 'Agustus 2023', excerpt: 'Contoh artikel tambahan untuk halaman kedua.' },
   ]
 
-  const tazkiyah = [
+  const fallbackTazkiyah = [
     { id: 1, title: 'Tazkiyah Jiwa', author: 'Jaka SKB', date: 'Juli 2023', excerpt: 'This article was written by Jake Williams.' },
     { id: 2, title: 'Tazkiyah Praktis', author: 'Fran Lareza', date: 'Juli 2023', excerpt: 'Praktik tazkiyah sehari-hari untuk remaja.' },
     { id: 3, title: 'Tazkiyah untuk Remaja', author: 'King Locado', date: 'Juli 2023', excerpt: 'Panduan singkat tazkiyah untuk pelajar.' },
     { id: 4, title: 'Tazkiyah Lanjutan', author: 'Penulis Z', date: 'Agustus 2023', excerpt: 'Materi lanjutan tazkiyah.' },
   ]
 
-  const khutbah = [
+  const fallbackKhutbah = [
     { id: 1, title: 'Khutbah Jumat: Tema 1', author: 'Jaka SKB', date: 'Juli 2023', excerpt: 'This article was written by Jake Williams from HealthlineSlam.' },
     { id: 2, title: 'Khutbah Idul Fitri', author: 'Fran Lareza', date: 'Juli 2023', excerpt: 'Khutbah singkat untuk Idul Fitri.' },
     { id: 3, title: 'Khutbah Pendidikan', author: 'King Locado', date: 'Juli 2023', excerpt: 'Khutbah bertema pendidikan dan akhlak.' },
     { id: 4, title: 'Khutbah Keluarga', author: 'Penulis A', date: 'Agustus 2023', excerpt: 'Khutbah tentang peran keluarga dalam pendidikan agama.' },
   ]
 
+  const managedSection = (section: string, fallback: KajianItem[]) => {
+    const items = managedItems.filter((item) => item.section === section)
+    if (!items.length) return fallback
+
+    return items.map((item) => ({
+      id: item.id,
+      title: item.title,
+      author: item.authorName,
+      date: new Intl.DateTimeFormat('id-ID', {
+        month: 'long',
+        year: 'numeric',
+      }).format(new Date(item.publishedAt)),
+      excerpt: item.summary || item.body,
+    }))
+  }
+
+  const tauhid = managedSection('tauhid', fallbackTauhid)
+  const ekonomi = managedSection('artikel-kajian', fallbackEkonomi)
+  const tazkiyah = managedSection('tazkiyah', fallbackTazkiyah)
+  const khutbah = managedSection('khutbah', fallbackKhutbah)
+  const featured = managedItems.find((item) => item.section === 'artikel-kajian')
+
   return (
     <>
-      <PublicContentFeed module="kajian" />
       {/* ARTIKEL ISLAMI */}
       <section style={{ background: '#fff', padding: '48px 0' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 20px' }}>
@@ -142,10 +172,10 @@ export default function Home() {
           {/* Featured Article */}
           <div style={{ display: 'flex', gap: 40, marginBottom: 60, alignItems: 'flex-start' }}>
             <div style={{ flex: 1 }}>
-              <h3 style={{ fontSize: 28, fontWeight: 700, color: '#333', marginBottom: 16 }}>Puasa Investasi Tak Terlihat, Keuntungan Tak Terbatas</h3>
+              <h3 style={{ fontSize: 28, fontWeight: 700, color: '#333', marginBottom: 16 }}>{featured?.title || 'Puasa Investasi Tak Terlihat, Keuntungan Tak Terbatas'}</h3>
               <div style={{ fontSize: 13, color: '#888', marginBottom: 20 }}>Penulis • Tanggal</div>
-              <p style={{ fontSize: 15, color: '#555', lineHeight: 1.6, marginBottom: 16 }}>Puasa adalah investasi tak terlihat, istigal keuntungannya tak terbatas. Tanya agak pasti, tempa halasan ilumina. Belumannya ilunya bain ogling biaia dengan-Nya cantuk kebahagian ahir?</p>
-              <p style={{ fontSize: 15, color: '#555', lineHeight: 1.6, marginBottom: 20 }}>Puasa adalah investasi tak terlihat, istigal keuntungannya tak terbatas. Tanya agak pasti, tempa halasan ilumina. Belumannya ilunya bain ogling biaia dengan-Nya cantuk kebahagian ahir?</p>
+              <p style={{ fontSize: 15, color: '#555', lineHeight: 1.6, marginBottom: 16 }}>{featured?.summary || 'Puasa adalah investasi tak terlihat, keuntungannya tak terbatas.'}</p>
+              <p style={{ fontSize: 15, color: '#555', lineHeight: 1.6, marginBottom: 20 }}>{featured?.body || 'Materi kajian membimbing umat untuk memahami ibadah dan mengamalkannya dalam kehidupan sehari-hari.'}</p>
             </div>
             <div style={{ flex: 1, minWidth: 300 }}>
               <div style={{ width: '100%', height: 280, background: '#e0e0e0', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>

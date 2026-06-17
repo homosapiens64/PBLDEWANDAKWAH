@@ -2,72 +2,67 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { logoutAction } from "../login/actions";
-import { requireRole, roleLabels, type UserRole } from "../lib/auth";
+import {
+  institutionLabels,
+  isEducationInstitution,
+  requireRole,
+  roleHomePaths,
+  roleLabels,
+  type UserRole,
+} from "../lib/auth";
 import FinanceWorkspace, { type FinanceView } from "./FinanceWorkspace";
 import type { FinanceTransaction } from "./FinanceWorkspace";
 import ContentManager from "./ContentManager";
 import KajianManager from "./KajianManager";
 import AboutManager from "./AboutManager";
 import NewsManager from "./NewsManager";
-import { getContentItems, getModuleContentItems } from "../lib/content";
+import AdminManagement, { type EducationAdminRow } from "./AdminManagement";
+import {
+  getContentItems,
+  getModuleContentItems,
+  type PublicContentItem,
+} from "../lib/content";
 import { prisma } from "../lib/prisma";
 
 const roleTitles: Record<UserRole, string> = {
-  admin: "Administrator",
+  super_admin: "Super Administrator",
+  admin: "Admin Pendidikan",
   pengurus: "Pengurus",
   bendahara: "Bendahara",
   ustadz: "Ustadz",
 };
 
-const roleStats: Record<
-  UserRole,
-  Array<{
-    accent: string;
-    icon: string;
-    label: string;
-    tone: string;
-    value: string;
-    width: string;
-  }>
-> = {
-  admin: [
-    { icon: "down", value: "Rp 48,5jt", label: "Total Pemasukan Bulan Ini", tone: "+12%", accent: "green", width: "72%" },
-    { icon: "up", value: "Rp 31,2jt", label: "Total Pengeluaran Bulan Ini", tone: "+5%", accent: "red", width: "48%" },
-    { icon: "wallet", value: "Rp 17,3jt", label: "Saldo Kas Akhir", tone: "Surplus", accent: "blue", width: "56%" },
-    { icon: "users", value: "47", label: "Total Pendaftar PMB", tone: "+8", accent: "gold", width: "60%" },
-    { icon: "chat", value: "3", label: "Konsultasi Belum Dijawab", tone: "Perlu Jawab", accent: "purple", width: "30%" },
-  ],
-  pengurus: [
-    { icon: "down", value: "18", label: "Program Aktif Bulan Ini", tone: "+6", accent: "green", width: "70%" },
-    { icon: "up", value: "9", label: "Agenda Perlu Review", tone: "+3", accent: "red", width: "42%" },
-    { icon: "wallet", value: "24", label: "Data Pengurus Terverifikasi", tone: "Stabil", accent: "blue", width: "58%" },
-    { icon: "users", value: "47", label: "Total Pendaftar PMB", tone: "+8", accent: "gold", width: "60%" },
-    { icon: "chat", value: "6", label: "Pesan Internal Masuk", tone: "Baru", accent: "purple", width: "36%" },
-  ],
-  bendahara: [
-    { icon: "down", value: "Rp 48,5jt", label: "Total Pemasukan Bulan Ini", tone: "+12%", accent: "green", width: "72%" },
-    { icon: "up", value: "Rp 31,2jt", label: "Total Pengeluaran Bulan Ini", tone: "+5%", accent: "red", width: "48%" },
-    { icon: "wallet", value: "Rp 17,3jt", label: "Saldo Kas Akhir", tone: "Surplus", accent: "blue", width: "56%" },
-    { icon: "users", value: "14", label: "Donatur Baru", tone: "+4", accent: "gold", width: "52%" },
-    { icon: "chat", value: "5", label: "Bukti Transfer Perlu Cek", tone: "Cek", accent: "purple", width: "38%" },
-  ],
-  ustadz: [
-    { icon: "down", value: "26", label: "Konsultasi Masuk Bulan Ini", tone: "+10", accent: "green", width: "70%" },
-    { icon: "up", value: "3", label: "Konsultasi Belum Dijawab", tone: "Perlu Jawab", accent: "red", width: "28%" },
-    { icon: "wallet", value: "12", label: "Materi Kajian Tersimpan", tone: "Aktif", accent: "blue", width: "56%" },
-    { icon: "users", value: "47", label: "Total Pendaftar PMB", tone: "+8", accent: "gold", width: "60%" },
-    { icon: "chat", value: "8", label: "Komentar Kajian Baru", tone: "Baru", accent: "purple", width: "45%" },
-  ],
+type DashboardTransaction = {
+  id: number;
+  type: string;
+  date: Date;
+  category: string;
+  detail: string;
+  amount: number;
+  authorName: string;
+  updatedAt: Date;
 };
 
-const activities = [
-  { accent: "green", icon: "down", title: "Infaq Jumat masuk -- Rp 1.200.000", meta: "Dicatat oleh Bendahara - 2 jam lalu" },
-  { accent: "blue", icon: "user", title: "Ahmad Fauzi lolos ke tahap seleksi", meta: "Admin PMB - 3 jam lalu" },
-  { accent: "red", icon: "up", title: "Pengeluaran konsumsi kajian -- Rp 320.000", meta: "Dicatat oleh Bendahara - 5 jam lalu" },
-  { accent: "gold", icon: "file", title: "Rizki Pratama upload bukti pembayaran", meta: "Portal Pendaftar - 6 jam lalu" },
-];
+type DashboardContent = {
+  id: number;
+  module: string;
+  section: string;
+  title: string;
+  status: string;
+  authorName: string;
+  updatedAt: Date;
+};
 
-const allRoles: UserRole[] = ["admin", "pengurus", "bendahara", "ustadz"];
+type DashboardStat = {
+  accent: string;
+  icon: string;
+  label: string;
+  tone: string;
+  value: string;
+  width: string;
+};
+
+const allRoles: UserRole[] = ["super_admin", "admin", "pengurus", "bendahara", "ustadz"];
 
 type DashboardNavItem = {
   active?: boolean;
@@ -84,53 +79,50 @@ const navItems: DashboardNavItem[] = [
     icon: "list",
     label: "Berita",
     children: ["Terkini", "Kegiatan", "Nasional", "Internasional"],
-    roles: ["admin", "pengurus"] satisfies UserRole[],
+    roles: ["super_admin", "pengurus"] satisfies UserRole[],
   },
   {
     icon: "list",
     label: "Tentang Kami",
     children: ["Profil", "AD/ART", "Struktur Kepengurusan", "Program Kerja"],
-    roles: ["admin", "pengurus"] satisfies UserRole[],
+    roles: ["super_admin", "pengurus"] satisfies UserRole[],
   },
   {
     icon: "list",
     label: "Kajian",
     children: ["Artikel Kajian", "Tauhid", "Tazkiyah", "Khutbah"],
-    roles: ["admin", "ustadz"] satisfies UserRole[],
+    roles: ["super_admin", "ustadz"] satisfies UserRole[],
   },
   {
     icon: "list",
     label: "Konsultasi",
     children: ["Pertanyaan Masuk", "Jawaban"],
-    roles: ["admin", "ustadz"] satisfies UserRole[],
+    roles: ["super_admin", "ustadz"] satisfies UserRole[],
   },
   {
     icon: "file",
     label: "Pendidikan",
     children: ["ADI", "Ponpes Suruh", "Al Khawarizmi"],
-    roles: ["admin", "pengurus"] satisfies UserRole[],
+    roles: ["super_admin", "admin", "pengurus"] satisfies UserRole[],
+  },
+  {
+    icon: "file",
+    label: "PMB",
+    children: ["ADI", "Ponpes Suruh", "Al Khawarizmi"],
+    roles: ["super_admin", "admin", "pengurus"] satisfies UserRole[],
   },
   {
     icon: "wallet",
     label: "Keuangan",
     children: ["Pemasukan", "Pengeluaran", "Laporan Keuangan", "Riwayat Transaksi"],
-    roles: ["admin", "bendahara"] satisfies UserRole[],
+    roles: ["super_admin", "bendahara"] satisfies UserRole[],
   },
   {
     icon: "users",
     label: "Manajemen",
-    children: ["Pengurus", "Ustadz", "Admin PMB", "Hak Akses"],
-    roles: ["admin"] satisfies UserRole[],
+    children: ["Admin Pendidikan"],
+    roles: ["super_admin"] satisfies UserRole[],
   },
-];
-
-const chartData = [
-  { month: "Jan", income: 60, expense: 38 },
-  { month: "Feb", income: 54, expense: 34 },
-  { month: "Mar", income: 66, expense: 46 },
-  { month: "Apr", income: 57, expense: 32 },
-  { month: "Mei", income: 64, expense: 42 },
-  { month: "Jun", income: 85, expense: 30 },
 ];
 
 type EducationView = "adi" | "ponpes-suruh" | "al-khawarizmi";
@@ -146,7 +138,8 @@ const moduleLabels: Record<DashboardModule, string> = {
 };
 
 const moduleAccess: Record<UserRole, DashboardModule[]> = {
-  admin: ["kajian", "konsultasi", "website", "manajemen", "tentang-kami"],
+  super_admin: ["kajian", "konsultasi", "website", "manajemen", "tentang-kami"],
+  admin: [],
   pengurus: ["website", "tentang-kami"],
   bendahara: [],
   ustadz: ["kajian", "konsultasi"],
@@ -413,11 +406,164 @@ function DashboardIcon({ name }: { name: IconName | string }) {
   );
 }
 
+function formatDashboardRupiah(value: number) {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0,
+  }).format(value);
+}
+
+function isSameMonth(value: Date, reference: Date) {
+  return value.getUTCFullYear() === reference.getUTCFullYear()
+    && value.getUTCMonth() === reference.getUTCMonth();
+}
+
+function buildDashboardStats(
+  role: UserRole,
+  transactions: DashboardTransaction[],
+  content: DashboardContent[],
+): DashboardStat[] {
+  const now = new Date();
+  const monthlyTransactions = transactions.filter((item) => isSameMonth(item.date, now));
+  const monthlyIncome = monthlyTransactions
+    .filter((item) => item.type === "pemasukan")
+    .reduce((total, item) => total + item.amount, 0);
+  const monthlyExpense = monthlyTransactions
+    .filter((item) => item.type === "pengeluaran")
+    .reduce((total, item) => total + item.amount, 0);
+  const totalIncome = transactions
+    .filter((item) => item.type === "pemasukan")
+    .reduce((total, item) => total + item.amount, 0);
+  const totalExpense = transactions
+    .filter((item) => item.type === "pengeluaran")
+    .reduce((total, item) => total + item.amount, 0);
+  const balance = totalIncome - totalExpense;
+  const roleContent = role === "ustadz"
+    ? content.filter((item) => ["kajian", "konsultasi"].includes(item.module))
+    : role === "pengurus"
+      ? content.filter((item) => ["website", "tentang-kami", "education"].includes(item.module))
+      : content;
+  const published = roleContent.filter((item) => item.status === "published").length;
+  const drafts = roleContent.length - published;
+  const monthlyPeak = Math.max(monthlyIncome, monthlyExpense, 1);
+  const balancePeak = Math.max(totalIncome + totalExpense, 1);
+  const contentPeak = Math.max(roleContent.length, 1);
+
+  return [
+    {
+      icon: "down",
+      value: formatDashboardRupiah(monthlyIncome),
+      label: "Pemasukan Bulan Ini",
+      tone: `${monthlyTransactions.filter((item) => item.type === "pemasukan").length} transaksi`,
+      accent: "green",
+      width: `${Math.max(4, (monthlyIncome / monthlyPeak) * 100)}%`,
+    },
+    {
+      icon: "up",
+      value: formatDashboardRupiah(monthlyExpense),
+      label: "Pengeluaran Bulan Ini",
+      tone: `${monthlyTransactions.filter((item) => item.type === "pengeluaran").length} transaksi`,
+      accent: "red",
+      width: `${Math.max(4, (monthlyExpense / monthlyPeak) * 100)}%`,
+    },
+    {
+      icon: "wallet",
+      value: formatDashboardRupiah(balance),
+      label: "Saldo Kas Keseluruhan",
+      tone: balance >= 0 ? "Surplus" : "Defisit",
+      accent: "blue",
+      width: `${Math.max(4, (Math.abs(balance) / balancePeak) * 100)}%`,
+    },
+    {
+      icon: "file",
+      value: String(published),
+      label: "Konten Diterbitkan",
+      tone: `${roleContent.length} total`,
+      accent: "gold",
+      width: `${Math.max(4, (published / contentPeak) * 100)}%`,
+    },
+    {
+      icon: "chat",
+      value: String(drafts),
+      label: "Konten Masih Draft",
+      tone: drafts ? "Perlu ditinjau" : "Semua selesai",
+      accent: "purple",
+      width: `${Math.max(4, (drafts / contentPeak) * 100)}%`,
+    },
+  ];
+}
+
+function buildChartData(transactions: DashboardTransaction[]) {
+  const now = new Date();
+  const months = Array.from({ length: 6 }, (_, index) => {
+    const date = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - (5 - index), 1));
+    const income = transactions
+      .filter((item) => item.type === "pemasukan" && isSameMonth(item.date, date))
+      .reduce((total, item) => total + item.amount, 0);
+    const expense = transactions
+      .filter((item) => item.type === "pengeluaran" && isSameMonth(item.date, date))
+      .reduce((total, item) => total + item.amount, 0);
+
+    return {
+      key: `${date.getUTCFullYear()}-${date.getUTCMonth()}`,
+      month: new Intl.DateTimeFormat("id-ID", { month: "short", timeZone: "UTC" }).format(date),
+      income,
+      expense,
+    };
+  });
+  const peak = Math.max(...months.flatMap((item) => [item.income, item.expense]), 1);
+
+  return months.map((item) => ({
+    ...item,
+    incomeHeight: item.income ? Math.max(8, (item.income / peak) * 100) : 0,
+    expenseHeight: item.expense ? Math.max(8, (item.expense / peak) * 100) : 0,
+  }));
+}
+
+function formatActivityDate(value: Date) {
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Asia/Jakarta",
+  }).format(value);
+}
+
+function buildActivities(
+  transactions: DashboardTransaction[],
+  content: DashboardContent[],
+) {
+  return [
+    ...transactions.map((item) => ({
+      key: `transaction-${item.id}`,
+      accent: item.type === "pemasukan" ? "green" : "red",
+      icon: item.type === "pemasukan" ? "down" : "up",
+      title: `${item.detail} - ${formatDashboardRupiah(item.amount)}`,
+      meta: `${item.category} oleh ${item.authorName} - ${formatActivityDate(item.updatedAt)}`,
+      date: item.updatedAt,
+    })),
+    ...content.map((item) => ({
+      key: `content-${item.id}`,
+      accent: item.status === "published" ? "blue" : "gold",
+      icon: "file",
+      title: `${item.status === "published" ? "Konten diterbitkan" : "Draft diperbarui"}: ${item.title}`,
+      meta: `${item.module.replaceAll("-", " ")} / ${item.section.replaceAll("-", " ")} oleh ${item.authorName} - ${formatActivityDate(item.updatedAt)}`,
+      date: item.updatedAt,
+    })),
+  ]
+    .sort((a, b) => b.date.getTime() - a.date.getTime())
+    .slice(0, 4);
+}
+
 type RoleDashboardProps = {
   educationMode?: string;
   educationView?: string;
   financeView?: string;
   moduleView?: string;
+  pmbView?: string;
   role: UserRole;
   sectionView?: string;
 };
@@ -486,10 +632,12 @@ function EditPencilIcon() {
 }
 
 function VisionMissionCard({
+  editable,
   profile,
   role,
   view,
 }: {
+  editable: boolean;
   profile: EducationDisplayProfile;
   role: UserRole;
   view: EducationView;
@@ -505,13 +653,15 @@ function VisionMissionCard({
           <h2>Visi & Misi</h2>
           <p>Tujuan pendirian lembaga</p>
         </div>
-        <Link
-          className="educationInlineEdit"
-          href={`/${role}?education=${view}&educationMode=edit`}
-        >
-          <EditPencilIcon />
-          <span>Edit</span>
-        </Link>
+        {editable ? (
+          <Link
+            className="educationInlineEdit"
+            href={`${roleHomePaths[role]}?education=${view}&educationMode=edit`}
+          >
+            <EditPencilIcon />
+            <span>Edit</span>
+          </Link>
+        ) : null}
       </header>
 
       <div className="educationVisionGrid">
@@ -559,7 +709,7 @@ function EducationHeader({
         <p>{profile.subtitle}</p>
       </div>
       {editable ? (
-        <Link className="educationEditProfile" href={`/${role}?education=${view}&educationMode=edit`}>
+        <Link className="educationEditProfile" href={`${roleHomePaths[role]}?education=${view}&educationMode=edit`}>
           <EditPencilIcon />
           <span>Edit Profil</span>
         </Link>
@@ -647,7 +797,7 @@ function EducationEditForm({
           <button type="button" className="educationSaveButton">
             <span aria-hidden="true">▣</span> Simpan
           </button>
-          <Link href={`/${role}?education=${view}`} className="educationCancelButton">
+          <Link href={`${roleHomePaths[role]}?education=${view}`} className="educationCancelButton">
             <span aria-hidden="true">×</span> Batal
           </Link>
         </div>
@@ -657,27 +807,54 @@ function EducationEditForm({
 }
 
 function EducationWorkspace({
+  items,
   mode,
+  module,
+  readOnly,
   role,
   view,
 }: {
+  items: PublicContentItem[];
   mode: EducationMode;
+  module: "education" | "pmb";
+  readOnly: boolean;
   role: UserRole;
   view: EducationView;
 }) {
-  if (mode === "edit") {
+  if (mode === "edit" && module === "education" && !readOnly) {
     return <EducationEditForm role={role} view={view} />;
   }
 
   const profile = educationContent[view];
 
+  if (module === "pmb") {
+    return (
+      <ContentManager
+        items={items}
+        module="pmb"
+        readOnly={readOnly}
+        section={view}
+        sectionLabel={`PMB ${profile.institutionName}`}
+      />
+    );
+  }
+
   return (
-    <section className={`educationWorkspace ${view}`}>
-      <EducationHeader profile={profile} role={role} view={view} />
-      <EducationProfileSummary profile={profile} />
-      <VisionMissionCard profile={profile} role={role} view={view} />
-      <EducationContactCard profile={profile} />
-    </section>
+    <>
+      <ContentManager
+        items={items}
+        module="education"
+        readOnly={readOnly}
+        section={view}
+        sectionLabel={`Informasi ${profile.institutionName}`}
+      />
+      <section className={`educationWorkspace ${view}`}>
+        <EducationHeader editable={!readOnly} profile={profile} role={role} view={view} />
+        <EducationProfileSummary profile={profile} />
+        <VisionMissionCard editable={!readOnly} profile={profile} role={role} view={view} />
+        <EducationContactCard profile={profile} />
+      </section>
+    </>
   );
 }
 
@@ -687,22 +864,56 @@ export default async function RoleDashboard({
   educationView,
   educationMode,
   moduleView,
+  pmbView,
   sectionView,
 }: RoleDashboardProps) {
   const session = await requireRole(role);
   const label = roleLabels[role];
-  const canAccessFinance = role === "admin" || role === "bendahara";
-  const canAccessEducation = role === "admin" || role === "pengurus";
+  const readOnly = role === "super_admin";
+  const canAccessFinance = role === "super_admin" || role === "bendahara";
+  const canAccessEducation = role === "super_admin" || role === "admin" || role === "pengurus";
   const activeFinanceView = canAccessFinance ? normalizeFinanceView(financeView) : null;
-  const activeEducationView = canAccessEducation ? normalizeEducationView(educationView) : null;
+  const requestedEducationView = canAccessEducation
+    ? normalizeEducationView(educationView)
+    : null;
+  const requestedPmbView = canAccessEducation ? normalizeEducationView(pmbView) : null;
+  const isAllowedInstitution = (view: EducationView | null) => (
+    view && (role !== "admin" || session.institution === view)
+  );
+  const activeEducationView = isAllowedInstitution(requestedEducationView)
+    ? requestedEducationView
+    : null;
+  const activePmbView = isAllowedInstitution(requestedPmbView)
+    ? requestedPmbView
+    : null;
+  const activeInstitutionView = activeEducationView || activePmbView;
+  const activeEducationModule = activePmbView ? "pmb" : "education";
   const requestedModule = normalizeModule(moduleView);
   const activeModule =
     requestedModule && moduleAccess[role].includes(requestedModule)
       ? requestedModule
       : null;
-  const activeEducationMode = normalizeEducationMode(educationMode);
-  const hasWorkspace = Boolean(activeFinanceView || activeEducationView || activeModule);
-  const visibleNavItems = navItems.filter((item) => item.roles.includes(role));
+  const activeEducationMode = readOnly ? "view" : normalizeEducationMode(educationMode);
+  const hasWorkspace = Boolean(
+    activeFinanceView || activeInstitutionView || activeModule,
+  );
+  const visibleNavItems = navItems
+    .filter((item) => item.roles.includes(role))
+    .map((item) => {
+      if (
+        role !== "admin"
+        || (item.label !== "Pendidikan" && item.label !== "PMB")
+      ) {
+        return item;
+      }
+
+      return {
+        ...item,
+        children: item.children.filter(
+          (child) => educationLinks[child] === session.institution,
+        ),
+      };
+    });
   const initials = session.name
     .split(" ")
     .map((part) => part[0])
@@ -724,8 +935,53 @@ export default async function RoleDashboard({
     : activeModule
       ? await getContentItems(activeModule, activeSection)
       : [];
+  const educationItems = activeInstitutionView
+    ? await getContentItems(activeEducationModule, activeInstitutionView)
+    : [];
   let databaseAvailable = true;
   let financeTransactions: FinanceTransaction[] = [];
+  let dashboardTransactions: DashboardTransaction[] = [];
+  let dashboardContent: DashboardContent[] = [];
+  let educationAdmins: EducationAdminRow[] = [];
+
+  if (activeModule === "manajemen" && role === "super_admin") {
+    try {
+      const admins = await prisma.user.findMany({
+        where: {
+          role: "admin",
+          institution: { not: null },
+        },
+        select: {
+          createdAt: true,
+          id: true,
+          institution: true,
+          name: true,
+          username: true,
+        },
+        orderBy: [{ institution: "asc" }, { name: "asc" }],
+      });
+
+      educationAdmins = admins.flatMap((admin) => {
+        if (!admin.institution || !isEducationInstitution(admin.institution)) {
+          return [];
+        }
+
+        return [{
+          ...admin,
+          createdAt: new Intl.DateTimeFormat("id-ID", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+            timeZone: "Asia/Jakarta",
+          }).format(admin.createdAt),
+          institution: admin.institution,
+        }];
+      });
+    } catch (error) {
+      databaseAvailable = false;
+      console.error("Admin database is unavailable:", error);
+    }
+  }
 
   if (activeFinanceView) {
     try {
@@ -747,6 +1003,98 @@ export default async function RoleDashboard({
     }
   }
 
+  if (!hasWorkspace) {
+    try {
+      const [transactions, genericContent, news, studies, education] = await Promise.all([
+        prisma.financeTransaction.findMany({
+          where: canAccessFinance ? {} : { id: -1 },
+          select: {
+            id: true,
+            type: true,
+            date: true,
+            category: true,
+            detail: true,
+            amount: true,
+            authorName: true,
+            updatedAt: true,
+          },
+          orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
+        }),
+        prisma.contentItem.findMany({
+          where: {
+            ...(role === "admin" ? { id: -1 } : {}),
+            module: { notIn: ["website", "kajian", "education", "pmb"] },
+          },
+          select: {
+            id: true,
+            module: true,
+            section: true,
+            title: true,
+            status: true,
+            authorName: true,
+            updatedAt: true,
+          },
+          orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
+        }),
+        prisma.news.findMany({
+          where: role === "super_admin" || role === "pengurus" ? {} : { id: -1 },
+          select: {
+            id: true,
+            section: true,
+            title: true,
+            status: true,
+            authorName: true,
+            updatedAt: true,
+          },
+          orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
+        }),
+        prisma.studyArticle.findMany({
+          where: role === "super_admin" || role === "ustadz" ? {} : { id: -1 },
+          select: {
+            id: true,
+            section: true,
+            title: true,
+            status: true,
+            authorName: true,
+            updatedAt: true,
+          },
+          orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
+        }),
+        prisma.educationInformation.findMany({
+          where: role === "admin" && session.institution
+            ? { section: session.institution }
+            : role === "super_admin" || role === "pengurus"
+              ? {}
+              : { id: -1 },
+          select: {
+            id: true,
+            module: true,
+            section: true,
+            title: true,
+            status: true,
+            authorName: true,
+            updatedAt: true,
+          },
+          orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
+        }),
+      ]);
+      dashboardTransactions = transactions;
+      dashboardContent = [
+        ...genericContent,
+        ...news.map((item) => ({ ...item, module: "website" })),
+        ...studies.map((item) => ({ ...item, module: "kajian" })),
+        ...education,
+      ];
+    } catch (error) {
+      databaseAvailable = false;
+      console.error("Dashboard database is unavailable:", error);
+    }
+  }
+
+  const dashboardStats = buildDashboardStats(role, dashboardTransactions, dashboardContent);
+  const dashboardChart = buildChartData(dashboardTransactions);
+  const dashboardActivities = buildActivities(dashboardTransactions, dashboardContent);
+
   return (
     <main className="dashboardApp">
       <aside className="dashboardSidebar">
@@ -764,7 +1112,7 @@ export default async function RoleDashboard({
                       ? "dashboardNavItem active"
                       : "dashboardNavItem"
                   }
-                  href={`/${role}`}
+                  href={roleHomePaths[role]}
                 >
                   <DashboardIcon name={item.icon} />
                   <span>{item.label}</span>
@@ -774,14 +1122,20 @@ export default async function RoleDashboard({
                   <DashboardIcon name={item.icon} />
                   <span>{item.label}</span>
                 </Link>
-              ) : item.label === "Pendidikan" ? (
+              ) : item.label === "Pendidikan" || item.label === "PMB" ? (
                 <Link
                   className={
-                    activeEducationView
+                    item.label === "Pendidikan" && activeEducationView
+                      ? "dashboardNavItem active"
+                      : item.label === "PMB" && activePmbView
                       ? "dashboardNavItem active"
                       : "dashboardNavItem"
                   }
-                  href={`/${role}?education=adi`}
+                  href={`${roleHomePaths[role]}?${item.label === "PMB" ? "pmb" : "education"}=${
+                    role === "admin" && session.institution
+                      ? session.institution
+                      : "adi"
+                  }`}
                 >
                   <DashboardIcon name={item.icon} />
                   <span>{item.label}</span>
@@ -793,7 +1147,7 @@ export default async function RoleDashboard({
                       ? "dashboardNavItem active"
                       : "dashboardNavItem"
                   }
-                  href={`/${role}?module=${moduleLinks[item.label]}&section=${getSectionSlug(item.label, item.children[0])}`}
+                  href={`${roleHomePaths[role]}?module=${moduleLinks[item.label]}&section=${getSectionSlug(item.label, item.children[0])}`}
                 >
                   <DashboardIcon name={item.icon} />
                   <span>{item.label}</span>
@@ -825,15 +1179,21 @@ export default async function RoleDashboard({
                     return financeLink ? (
                       <Link
                         className={activeFinanceView === financeLink ? "active" : ""}
-                        href={`/${role}?finance=${financeLink}`}
+                        href={`${roleHomePaths[role]}?finance=${financeLink}`}
                         key={child}
                       >
                         {child}
                       </Link>
                     ) : educationLink ? (
                       <Link
-                        className={activeEducationView === educationLink ? "active" : ""}
-                        href={`/${role}?education=${educationLink}`}
+                        className={
+                          item.label === "PMB"
+                            ? activePmbView === educationLink ? "active" : ""
+                            : activeEducationView === educationLink ? "active" : ""
+                        }
+                        href={`${roleHomePaths[role]}?${
+                          item.label === "PMB" ? "pmb" : "education"
+                        }=${educationLink}`}
                         key={child}
                       >
                         {child}
@@ -846,7 +1206,7 @@ export default async function RoleDashboard({
                             ? "active"
                             : ""
                         }
-                        href={`/${role}?module=${moduleLink}&section=${childSection}`}
+                        href={`${roleHomePaths[role]}?module=${moduleLink}&section=${childSection}`}
                         key={child}
                       >
                         {child}
@@ -886,7 +1246,12 @@ export default async function RoleDashboard({
               <strong>{initials}</strong>
               <span>
                 <b>{session.name}</b>
-                <small>{roleTitles[role]}</small>
+                <small>
+                  {roleTitles[role]}
+                  {role === "admin" && session.institution
+                    ? ` - ${institutionLabels[session.institution]}`
+                    : ""}
+                </small>
               </span>
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="m6 9 6 6 6-6" />
@@ -900,20 +1265,31 @@ export default async function RoleDashboard({
             databaseAvailable={databaseAvailable}
             view={activeFinanceView}
             initialTransactions={financeTransactions}
+            readOnly={readOnly}
           />
-        ) : activeEducationView ? (
-          <EducationWorkspace view={activeEducationView} mode={activeEducationMode} role={role} />
+        ) : activeInstitutionView ? (
+          <EducationWorkspace
+            items={educationItems}
+            view={activeInstitutionView}
+            mode={activeEducationMode}
+            module={activeEducationModule}
+            readOnly={readOnly}
+            role={role}
+          />
         ) : activeModule ? (
           activeModule === "kajian" ? (
-            <KajianManager items={contentItems} section={activeSection} />
+            <KajianManager items={contentItems} readOnly={readOnly} section={activeSection} />
           ) : activeModule === "website" ? (
-            <NewsManager items={contentItems} section={activeSection} />
+            <NewsManager items={contentItems} readOnly={readOnly} section={activeSection} />
           ) : activeModule === "tentang-kami" ? (
-            <AboutManager items={contentItems} section={activeSection} />
+            <AboutManager items={contentItems} readOnly={readOnly} section={activeSection} />
+          ) : activeModule === "manajemen" ? (
+            <AdminManagement admins={educationAdmins} />
           ) : (
             <ContentManager
               items={contentItems}
               module={activeModule}
+              readOnly={readOnly}
               section={activeSection}
               sectionLabel={activeSection
                 .split("-")
@@ -923,8 +1299,13 @@ export default async function RoleDashboard({
           )
         ) : (
           <>
+            {!databaseAvailable ? (
+              <div className="dashboardDatabaseNotice">
+                Data dashboard belum dapat dibaca. Pastikan MySQL sedang berjalan.
+              </div>
+            ) : null}
             <section className="dashboardStats" aria-label={`Ringkasan ${label}`}>
-              {roleStats[role].map((stat) => (
+              {dashboardStats.map((stat) => (
                 <article className={`dashboardStatCard ${stat.accent}`} key={stat.label}>
                   <div className="statTopline">
                     <span className="statIcon">
@@ -952,17 +1333,24 @@ export default async function RoleDashboard({
                     <p>Pemasukan vs Pengeluaran</p>
                   </div>
                   <div className="chartTabs" aria-label="Filter grafik">
-                    <button type="button">Bulanan</button>
-                    <span>Tahunan</span>
+                    <span>6 Bulan Terakhir</span>
                   </div>
                 </div>
 
                 <div className="barChart" aria-label="Grafik batang keuangan">
-                  {chartData.map((item) => (
-                    <div className="barMonth" key={item.month}>
+                  {dashboardChart.map((item) => (
+                    <div className="barMonth" key={item.key}>
                       <div className="barPair">
-                        <span className="incomeBar" style={{ height: `${item.income}%` }} />
-                        <span className="expenseBar" style={{ height: `${item.expense}%` }} />
+                        <span
+                          className={`incomeBar ${item.income ? "" : "empty"}`}
+                          style={{ height: `${item.incomeHeight}%` }}
+                          title={`Pemasukan ${item.month}: ${formatDashboardRupiah(item.income)}`}
+                        />
+                        <span
+                          className={`expenseBar ${item.expense ? "" : "empty"}`}
+                          style={{ height: `${item.expenseHeight}%` }}
+                          title={`Pengeluaran ${item.month}: ${formatDashboardRupiah(item.expense)}`}
+                        />
                       </div>
                       <small>{item.month}</small>
                     </div>
@@ -982,14 +1370,18 @@ export default async function RoleDashboard({
                   </span>
                   <div>
                     <h2>Aktivitas Terbaru</h2>
-                    <p>Hari ini</p>
+                    <p>Berdasarkan data tersimpan</p>
                   </div>
-                  <Link href="/">Lihat semua {"->"}</Link>
+                  <Link href={role === "super_admin" || role === "bendahara"
+                    ? `${roleHomePaths[role]}?finance=riwayat`
+                    : roleHomePaths[role]}>
+                    Lihat semua {"->"}
+                  </Link>
                 </div>
 
                 <div className="activityList">
-                  {activities.map((activity) => (
-                    <div className="activityItem" key={activity.title}>
+                  {dashboardActivities.map((activity) => (
+                    <div className="activityItem" key={activity.key}>
                       <span className={`activityIcon ${activity.accent}`}>
                         <DashboardIcon name={activity.icon} />
                       </span>
@@ -999,6 +1391,11 @@ export default async function RoleDashboard({
                       </div>
                     </div>
                   ))}
+                  {dashboardActivities.length === 0 ? (
+                    <div className="activityEmpty">
+                      Belum ada transaksi atau perubahan konten.
+                    </div>
+                  ) : null}
                 </div>
               </article>
             </section>

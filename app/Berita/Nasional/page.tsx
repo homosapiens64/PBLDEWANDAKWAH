@@ -1,3 +1,5 @@
+import { getPublishedContentItems } from "../../lib/content";
+
 const nasionalNews = [
   {
     title: "Munas DDII Menetapkan Arah Da'wah Nasional",
@@ -13,7 +15,15 @@ const nasionalNews = [
   },
 ];
 
-export default function BeritaNasionalPage() {
+export default async function BeritaNasionalPage() {
+  const managedNews = await getPublishedContentItems("website", "nasional");
+  const displayedNews = managedNews.length
+    ? managedNews.map((item) => ({
+        title: item.title,
+        summary: item.summary || item.body,
+      }))
+    : nasionalNews;
+
   return (
     <main className="page simpleRoutePage">
       <section className="container routeHero">
@@ -25,10 +35,8 @@ export default function BeritaNasionalPage() {
         </p>
       </section>
 
-      <PublicContentFeed module="website" section="nasional" />
-
       <section className="container routeGrid">
-        {nasionalNews.map((item) => (
+        {displayedNews.map((item) => (
           <article key={item.title} className="routeCard">
             <span className="routeTag">NASIONAL</span>
             <h3>{item.title}</h3>
@@ -39,4 +47,3 @@ export default function BeritaNasionalPage() {
     </main>
   );
 }
-import PublicContentFeed from "../../components/PublicContentFeed";

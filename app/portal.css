@@ -11,6 +11,164 @@
     #f2f7f4;
 }
 
+.dashboardApp .adminManagement {
+  display: grid;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+  padding: 1.35rem;
+}
+
+.dashboardApp .adminManagementHeader,
+.dashboardApp .adminCreateCard,
+.dashboardApp .adminListCard {
+  border: 1px solid #dfe8e4;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(24, 74, 61, 0.06);
+}
+
+.dashboardApp .adminManagementHeader {
+  padding: 1.4rem 1.6rem;
+}
+
+.dashboardApp .adminManagementHeader > span {
+  color: #2d8f76;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.dashboardApp .adminManagementHeader h1,
+.dashboardApp .adminCreateCard h2,
+.dashboardApp .adminListCard h2 {
+  margin: 0.35rem 0;
+  color: #173e34;
+}
+
+.dashboardApp .adminManagementHeader p,
+.dashboardApp .adminCreateCard p,
+.dashboardApp .adminListCard p {
+  margin: 0;
+  color: #6a7c76;
+}
+
+.dashboardApp .adminManagementGrid {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.7fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.dashboardApp .adminCreateCard {
+  display: grid;
+  gap: 1rem;
+  padding: 1.4rem;
+}
+
+.dashboardApp .adminCreateCard label {
+  display: grid;
+  gap: 0.4rem;
+  color: #31584e;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.dashboardApp .adminCreateCard input,
+.dashboardApp .adminCreateCard select {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid #cadbd5;
+  border-radius: 10px;
+  background: #fff;
+  padding: 0 0.75rem;
+  color: #173e34;
+  font: inherit;
+}
+
+.dashboardApp .adminCreateCard button {
+  min-height: 46px;
+  border: 0;
+  border-radius: 10px;
+  background: #217a63;
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.dashboardApp .adminCreateCard button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.dashboardApp .adminFormMessage {
+  border-radius: 9px;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.78rem;
+}
+
+.dashboardApp .adminFormMessage.success {
+  background: #eaf8f1;
+  color: #176447;
+}
+
+.dashboardApp .adminFormMessage.error {
+  background: #fff0f0;
+  color: #a63232;
+}
+
+.dashboardApp .adminListCard {
+  overflow: hidden;
+}
+
+.dashboardApp .adminListHeading {
+  padding: 1.25rem 1.4rem;
+  border-bottom: 1px solid #e4ece9;
+}
+
+.dashboardApp .adminTableWrap {
+  overflow-x: auto;
+}
+
+.dashboardApp .adminTableWrap table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dashboardApp .adminTableWrap th,
+.dashboardApp .adminTableWrap td {
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid #edf2f0;
+  color: #46645c;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.dashboardApp .adminTableWrap th {
+  background: #f7faf9;
+  color: #71847e;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.dashboardApp .adminInstitutionBadge {
+  display: inline-flex;
+  border-radius: 999px;
+  background: #e9f6f1;
+  padding: 0.35rem 0.6rem;
+  color: #217a63;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+@media (max-width: 920px) {
+  .dashboardApp .adminManagementGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .loginShell {
   width: min(1040px, 100%);
   min-height: min(680px, calc(100svh - 3rem));
@@ -361,6 +519,70 @@
   grid-template-columns: minmax(0, 1.3fr) minmax(300px, 0.7fr);
   gap: 1rem;
   padding: 0 clamp(1rem, 2.5vw, 2rem);
+}
+
+.dashboardDatabaseNotice {
+  margin: 1.25rem clamp(1rem, 2.5vw, 2rem) 0;
+  border: 1px solid #f0d28b;
+  border-radius: 10px;
+  background: #fff9e9;
+  padding: 0.75rem 1rem;
+  color: #73530d;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.dashboardApp .dashboardStatCard {
+  grid-template-rows: auto auto auto auto;
+}
+
+.dashboardApp .dashboardStatCard strong {
+  overflow-wrap: anywhere;
+}
+
+.dashboardApp .barPair span {
+  transition: height 180ms ease;
+}
+
+.dashboardApp .barPair span.empty {
+  min-height: 3px;
+  opacity: 0.45;
+}
+
+.dashboardApp .activityItem {
+  min-height: 70px;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 0.8rem;
+  padding: 0.8rem 1.15rem;
+}
+
+.dashboardApp .activityIcon {
+  width: 38px;
+  height: 38px;
+}
+
+.dashboardApp .activityIcon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.dashboardApp .activityItem strong {
+  font-size: 0.76rem;
+}
+
+.dashboardApp .activityItem p {
+  font-size: 0.66rem;
+  line-height: 1.4;
+}
+
+.activityEmpty {
+  display: grid;
+  min-height: 280px;
+  place-items: center;
+  padding: 1.5rem;
+  color: #8b9690;
+  font-size: 0.74rem;
+  text-align: center;
 }
 
 .dashboardApp .financeWorkspace,
@@ -2365,6 +2587,7 @@
   margin: 0;
   color: #101536;
   font-size: 1.45rem;
+  font-weight: 700;
   line-height: 1.15;
 }
 

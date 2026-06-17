@@ -2,27 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import PublicContentFeed from "./components/PublicContentFeed";
+import { useEffect, useState } from "react";
+import type { PublicContentItem } from "./lib/content";
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
-const headerMenu = [
-  { name: "Beranda", href: "/" },
-  { name: "Berita", href: "/berita" },
-  { name: "Kajian", href: "/kajian" },
-  { name: "Konsultasi", href: "/konsultasi" },
-  {
-    name: "Pendidikan",
-    href: "#",
-    dropdown: [
-      { name: "Institusi", href: "/pendidikan/institusi" },
-      { name: "ADI", href: "/pendidikan/adi" },
-      { name: "Ponpes", href: "/pendidikan/ponpes" },
-      { name: "Al-Khawarizmi", href: "/pendidikan/khawarizmi" },
-    ],
-  },
-  { name: "Tentang Kami", href: "/tentang-kami" },
-];
 const beritaUtama = [
   {
     id: 1,
@@ -73,7 +56,7 @@ const beritaSamping = [
   },
 ];
 
-const kajianTabs = ["Semua", "Tauhid", "Ekonomi Islam", "Tarbiyah", "Khutbah"];
+const kajianTabs = ["Semua", "Artikel Kajian", "Tauhid", "Tazkiyah", "Khutbah"];
 
 const kajianData = [
   {
@@ -167,7 +150,56 @@ function HeroSection() {
 
 // ─── SECTION 2: BERITA & KEGIATAN ────────────────────────────────────────────
 
-function BeritaSection() {
+function formatPublicDate(value: string) {
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(value));
+}
+
+function sectionLabel(value: string) {
+  const labels: Record<string, string> = {
+    "artikel-kajian": "Artikel Kajian",
+    internasional: "Internasional",
+    kegiatan: "Kegiatan",
+    khutbah: "Khutbah",
+    nasional: "Nasional",
+    tauhid: "Tauhid",
+    terkini: "Terkini",
+    tazkiyah: "Tazkiyah",
+  };
+
+  return labels[value] ?? value.replaceAll("-", " ");
+}
+
+function BeritaSection({ items }: { items: PublicContentItem[] }) {
+  const managedItems = items.map((item) => ({
+    id: `managed-${item.id}`,
+    image: item.imageUrl,
+    title: item.title,
+    author: item.authorName,
+    source: item.summary || item.body,
+    location: sectionLabel(item.section),
+    date: formatPublicDate(item.publishedAt),
+  }));
+  const fallbackMain = beritaUtama.map((item) => ({
+    ...item,
+    id: `fallback-main-${item.id}`,
+    location: "Semarang",
+  }));
+  const fallbackSide = beritaSamping.map((item) => ({
+    ...item,
+    id: `fallback-side-${item.id}`,
+    author: "",
+    source: "",
+  }));
+  const displayedMain = [...managedItems, ...fallbackMain].slice(0, 2);
+  const mainIds = new Set(displayedMain.map((item) => item.id));
+  const displayedSide = [...managedItems, ...fallbackSide]
+    .filter((item) => !mainIds.has(item.id))
+    .slice(0, 4);
+
   return (
     <section className="py-12 bg-white">
       <div className="max-w-6xl mx-auto px-6">
@@ -208,12 +240,20 @@ function BeritaSection() {
         <div className="flex gap-6">
           {/* Left: 2 main image cards */}
           <div className="flex gap-4 flex-1">
-            {beritaUtama.map((item) => (
+            {displayedMain.map((item) => (
               <div
                 key={item.id}
                 className="flex-1 rounded overflow-hidden shadow-sm border border-gray-100 group cursor-pointer"
               >
-                <div className="bg-gray-200" style={{ height: 160 }} />
+                <div
+                  className="bg-gray-200"
+                  style={{
+                    height: 160,
+                    backgroundImage: item.image ? `url("${item.image.replaceAll('"', "%22")}")` : undefined,
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
+                  }}
+                />
                 <div className="p-3">
                   <h3
                     className="font-semibold leading-snug mb-2 group-hover:text-teal-700 transition-colors"
@@ -236,14 +276,20 @@ function BeritaSection() {
 
           {/* Right: list items */}
           <div className="flex flex-col gap-3" style={{ width: 280 }}>
-            {beritaSamping.map((item) => (
+            {displayedSide.map((item) => (
               <div
                 key={item.id}
                 className="flex gap-3 items-start cursor-pointer group"
               >
                 <div
                   className="flex-shrink-0 rounded bg-gray-200"
-                  style={{ width: 72, height: 56 }}
+                  style={{
+                    width: 72,
+                    height: 56,
+                    backgroundImage: item.image ? `url("${item.image.replaceAll('"', "%22")}")` : undefined,
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
+                  }}
                 />
                 <div className="flex-1">
                   <p
@@ -270,8 +316,26 @@ function BeritaSection() {
 
 // ─── SECTION 3: KAJIAN & MATERI DA'WAH ───────────────────────────────────────
 
-function KajianSection() {
+function KajianSection({ items }: { items: PublicContentItem[] }) {
   const [activeTab, setActiveTab] = useState("Semua");
+  const managedItems = items.map((item) => ({
+    id: `managed-${item.id}`,
+    image: item.imageUrl,
+    title: item.title,
+    author: item.authorName,
+    date: formatPublicDate(item.publishedAt),
+    readTime: `${Math.max(1, Math.ceil(item.body.trim().split(/\s+/).filter(Boolean).length / 200))} menit baca`,
+    tag: sectionLabel(item.section),
+  }));
+  const fallbackItems = kajianData.map((item) => ({
+    ...item,
+    id: `fallback-${item.id}`,
+  }));
+  const availableItems = managedItems.length ? managedItems : fallbackItems;
+  const displayedItems = availableItems
+    .filter((item) => activeTab === "Semua" || item.tag === activeTab)
+    .slice(0, 6);
+
   return (
     <section className="py-12 bg-white">
       <div className="max-w-6xl mx-auto px-6">
@@ -317,7 +381,7 @@ function KajianSection() {
 
         {/* Article list */}
         <div className="flex flex-col gap-4 mb-8">
-          {kajianData.map((item) => (
+          {displayedItems.map((item) => (
             <div
               key={item.id}
               className="flex items-center gap-4 bg-white rounded-lg p-3 shadow-sm group cursor-pointer hover:shadow-md transition-shadow"
@@ -325,7 +389,13 @@ function KajianSection() {
               {/* Thumbnail */}
               <div
                 className="flex-shrink-0 rounded bg-gray-200"
-                style={{ width: 90, height: 68 }}
+                style={{
+                  width: 90,
+                  height: 68,
+                  backgroundImage: item.image ? `url("${item.image.replaceAll('"', "%22")}")` : undefined,
+                  backgroundPosition: "center",
+                  backgroundSize: "cover",
+                }}
               />
               {/* Info */}
               <div className="flex-1">
@@ -355,12 +425,17 @@ function KajianSection() {
               </div>
             </div>
           ))}
+          {displayedItems.length === 0 ? (
+            <div className="rounded-lg border border-dashed border-gray-200 p-8 text-center text-sm text-gray-400">
+              Belum ada kajian terbit pada kategori ini.
+            </div>
+          ) : null}
         </div>
 
         {/* SELENGKAPNYA button */}
         <div className="flex justify-center">
           <Link
-            href="/kajian"
+            href="/Kajian"
             className="flex items-center gap-2 border px-6 py-2.5 font-semibold text-sm hover:bg-teal-700 hover:text-white transition-colors"
             style={{
               borderColor: "#2d8f76",
@@ -377,6 +452,100 @@ function KajianSection() {
 }
 
 // ─── SECTION 4: KONSULTASI AGAMA ─────────────────────────────────────────────
+
+function EducationSection({ items }: { items: PublicContentItem[] }) {
+  const fallbackItems = [
+    {
+      id: "fallback-adi",
+      section: "adi",
+      title: "Pendaftaran Akademi Da'wah Islam",
+      summary: "Informasi program, jadwal, dan penerimaan mahasiswa ADI Semarang.",
+      imageUrl: "",
+      tags: "Pendaftaran",
+    },
+    {
+      id: "fallback-ponpes",
+      section: "ponpes-suruh",
+      title: "Penerimaan Santri Ponpes Suruh",
+      summary: "Informasi pendidikan pesantren dan penerimaan santri putra maupun putri.",
+      imageUrl: "",
+      tags: "Penerimaan Santri",
+    },
+    {
+      id: "fallback-khawarizmi",
+      section: "al-khawarizmi",
+      title: "Informasi Al Khawarizmi",
+      summary: "Pendidikan Islam terpadu yang menggabungkan agama, sains, dan teknologi.",
+      imageUrl: "",
+      tags: "Informasi Sekolah",
+    },
+  ];
+  const displayedItems = items.length
+    ? items.slice(0, 3).map((item) => ({
+        id: `managed-${item.id}`,
+        section: item.section,
+        title: item.title,
+        summary: item.summary || item.body,
+        imageUrl: item.imageUrl,
+        tags: item.tags || "Informasi Pendidikan",
+      }))
+    : fallbackItems;
+  const educationLinks: Record<string, string> = {
+    adi: "/Pendidikan/ADI",
+    "al-khawarizmi": "/Pendidikan/AlKhawarizmi",
+    "ponpes-suruh": "/Pendidikan/PonpesSuruh",
+  };
+
+  return (
+    <section className="py-12 bg-slate-50 border-y border-slate-100">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="flex items-end justify-between gap-4 mb-8">
+          <div>
+            <p className="uppercase tracking-widest font-semibold mb-1" style={{ fontSize: "0.72rem", color: "#2d8f76" }}>
+              Pendidikan Dewan Da&apos;wah
+            </p>
+            <h2 className="font-bold" style={{ fontSize: "1.8rem", color: "#1a4a3f", fontFamily: "'Georgia', serif" }}>
+              Informasi &amp; Pendaftaran
+            </h2>
+          </div>
+          <Link href="/Pendidikan/Institusi" className="font-semibold text-sm" style={{ color: "#2d8f76" }}>
+            Lihat Semua <span>↗</span>
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {displayedItems.map((item) => (
+            <article key={item.id} className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+              <div
+                className="bg-slate-200"
+                style={{
+                  height: 150,
+                  backgroundImage: item.imageUrl ? `url("${item.imageUrl.replaceAll('"', "%22")}")` : undefined,
+                  backgroundPosition: "center",
+                  backgroundSize: "cover",
+                }}
+              />
+              <div className="p-4">
+                <span className="inline-block rounded-full px-3 py-1 text-xs font-semibold" style={{ background: "#e7f5ef", color: "#237b5f" }}>
+                  {item.tags.split(",")[0]}
+                </span>
+                <h3 className="font-bold mt-3 mb-2" style={{ color: "#183d34" }}>{item.title}</h3>
+                <p className="text-sm text-slate-500 leading-relaxed mb-4">{item.summary}</p>
+                <Link
+                  href={educationLinks[item.section] ?? "/Pendidikan/Institusi"}
+                  className="text-sm font-semibold"
+                  style={{ color: "#2d8f76" }}
+                >
+                  Selengkapnya <span>→</span>
+                </Link>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function KonsultasiSection() {
   return (
@@ -646,12 +815,25 @@ function ProgramSection() {
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
+  const [managedItems, setManagedItems] = useState<PublicContentItem[]>([]);
+
+  useEffect(() => {
+    fetch("/api/public-content")
+      .then((response) => response.ok ? response.json() : null)
+      .then((payload) => setManagedItems(payload?.items ?? []))
+      .catch(() => setManagedItems([]));
+  }, []);
+
+  const newsItems = managedItems.filter((item) => item.module === "website");
+  const kajianItems = managedItems.filter((item) => item.module === "kajian");
+  const educationItems = managedItems.filter((item) => item.module === "education");
+
   return (
     <main className="min-h-screen">
       <HeroSection />
-      <PublicContentFeed />
-      <BeritaSection />
-      <KajianSection />
+      <BeritaSection items={newsItems} />
+      <KajianSection items={kajianItems} />
+      <EducationSection items={educationItems} />
       <KonsultasiSection />
       <ProgramSection />
     </main>

@@ -18,6 +18,7 @@ export async function loginAction(formData: FormData) {
   }
 
   await createSession({
+    institution: user.institution,
     name: user.name,
     role: user.role,
   });

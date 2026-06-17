@@ -1,37 +1,83 @@
-import { createHmac, timingSafeEqual } from "crypto";
+import {
+  createHmac,
+  randomBytes,
+  scryptSync,
+  timingSafeEqual,
+} from "crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import {
+  educationInstitutions,
+  institutionLabels,
+  isEducationInstitution,
+  roleHomePaths,
+  roleLabels,
+  type EducationInstitution,
+  type UserRole,
+} from "./roles";
 
-export type UserRole = "admin" | "pengurus" | "bendahara" | "ustadz";
+export {
+  educationInstitutions,
+  institutionLabels,
+  isEducationInstitution,
+  roleHomePaths,
+  roleLabels,
+};
+export type { EducationInstitution, UserRole };
 
 export type SessionUser = {
+  institution: EducationInstitution | null;
   name: string;
   role: UserRole;
 };
 
 export const sessionCookieName = "dd_role_session";
 
-export const roleLabels: Record<UserRole, string> = {
-  admin: "Admin",
-  pengurus: "Pengurus",
-  bendahara: "Bendahara",
-  ustadz: "Ustadz",
-};
-
-export const roleHomePaths: Record<UserRole, string> = {
-  admin: "/admin",
-  pengurus: "/pengurus",
-  bendahara: "/bendahara",
-  ustadz: "/ustadz",
-};
-
 const sessionMaxAge = 60 * 60 * 6;
 
 const fallbackUsers: Record<string, SessionUser & { password: string }> = {
-  admin: { name: "Ahmad Hasan", password: "admin123", role: "admin" },
-  pengurus: { name: "Pengurus Harian", password: "pengurus123", role: "pengurus" },
-  bendahara: { name: "Bendahara", password: "bendahara123", role: "bendahara" },
-  ustadz: { name: "Ustadz Konsultasi", password: "ustadz123", role: "ustadz" },
+  superadmin: {
+    institution: null,
+    name: "Super Admin",
+    password: "superadmin123",
+    role: "super_admin",
+  },
+  "admin.adi": {
+    institution: "adi",
+    name: "Admin ADI",
+    password: "adminadi123",
+    role: "admin",
+  },
+  "admin.alkhawarizmi": {
+    institution: "al-khawarizmi",
+    name: "Admin Al Khawarizmi",
+    password: "adminalkhawarizmi123",
+    role: "admin",
+  },
+  "admin.ponpes": {
+    institution: "ponpes-suruh",
+    name: "Admin Ponpes Suruh",
+    password: "adminponpes123",
+    role: "admin",
+  },
+  pengurus: {
+    institution: null,
+    name: "Pengurus Harian",
+    password: "pengurus123",
+    role: "pengurus",
+  },
+  bendahara: {
+    institution: null,
+    name: "Bendahara",
+    password: "bendahara123",
+    role: "bendahara",
+  },
+  ustadz: {
+    institution: null,
+    name: "Ustadz Konsultasi",
+    password: "ustadz123",
+    role: "ustadz",
+  },
 };
 
 function getSessionSecret() {
@@ -56,7 +102,12 @@ function safeCompare(value: string, expected: string) {
 export function createSessionValue(user: SessionUser) {
   const expiresAt = Date.now() + sessionMaxAge * 1000;
   const payload = Buffer.from(
-    JSON.stringify({ name: user.name, role: user.role, expiresAt }),
+    JSON.stringify({
+      institution: user.institution,
+      name: user.name,
+      role: user.role,
+      expiresAt,
+    }),
   ).toString("base64url");
   const signature = signPayload(payload);
 
@@ -83,11 +134,16 @@ export function readSessionValue(value?: string): SessionUser | null {
       return null;
     }
 
-    if (!Object.keys(roleHomePaths).includes(session.role)) {
+    if (
+      !Object.keys(roleHomePaths).includes(session.role)
+      || !isEducationInstitutionOrNull(session.institution)
+      || (session.role === "admin" && !session.institution)
+    ) {
       return null;
     }
 
     return {
+      institution: session.institution,
       name: session.name,
       role: session.role,
     };
@@ -100,6 +156,35 @@ function isUserRole(role: string): role is UserRole {
   return Object.keys(roleHomePaths).includes(role);
 }
 
+function isEducationInstitutionOrNull(
+  institution: unknown,
+): institution is EducationInstitution | null {
+  return institution === null
+    || (typeof institution === "string" && isEducationInstitution(institution));
+}
+
+export function hashPassword(password: string) {
+  const salt = randomBytes(16).toString("hex");
+  const hash = scryptSync(password, salt, 64).toString("hex");
+  return `scrypt$${salt}$${hash}`;
+}
+
+function verifyPassword(password: string, storedPassword: string) {
+  if (!storedPassword.startsWith("scrypt$")) {
+    return safeCompare(password, storedPassword);
+  }
+
+  const [, salt, expectedHash] = storedPassword.split("$");
+  if (!salt || !expectedHash) {
+    return false;
+  }
+
+  return safeCompare(
+    scryptSync(password, salt, 64).toString("hex"),
+    expectedHash,
+  );
+}
+
 export async function findUser(username: string, password: string) {
   try {
     const { prisma } = await import("./prisma");
@@ -109,14 +194,22 @@ export async function findUser(username: string, password: string) {
         name: true,
         password: true,
         role: true,
+        institution: true,
       },
     });
 
-    if (!user || user.password !== password || !isUserRole(user.role)) {
+    if (
+      !user
+      || !verifyPassword(password, user.password)
+      || !isUserRole(user.role)
+      || !isEducationInstitutionOrNull(user.institution)
+      || (user.role === "admin" && !user.institution)
+    ) {
       return null;
     }
 
     return {
+      institution: user.institution,
       name: user.name,
       role: user.role,
     };
@@ -131,6 +224,7 @@ export async function findUser(username: string, password: string) {
   }
 
   return {
+    institution: fallbackUser.institution,
     name: fallbackUser.name,
     role: fallbackUser.role,
   };

@@ -22,11 +22,13 @@ const emptyForm: ContentForm = {
 export default function ContentManager({
   items,
   module,
+  readOnly = false,
   section,
   sectionLabel,
 }: {
   items: PublicContentItem[];
   module: string;
+  readOnly?: boolean;
   section: string;
   sectionLabel: string;
 }) {
@@ -83,7 +85,7 @@ export default function ContentManager({
     if (deleteId === null) return;
     startTransition(async () => {
       try {
-        await deleteContentItem(deleteId);
+        await deleteContentItem(deleteId, module);
         setDeleteId(null);
         setMessage("Konten berhasil dihapus dari dashboard dan website publik.");
         router.refresh();
@@ -97,10 +99,14 @@ export default function ContentManager({
     <section className="moduleWorkspace" aria-label={`Kelola ${sectionLabel}`}>
       <div className="financePageHead">
         <div>
-          <h2>Kelola {sectionLabel}</h2>
-          <p>Konten berstatus terbit akan langsung muncul pada website utama.</p>
+          <h2>{readOnly ? "Lihat" : "Kelola"} {sectionLabel}</h2>
+          <p>
+            {readOnly
+              ? "Mode baca saja. Perubahan dilakukan oleh admin yang berwenang."
+              : "Konten berstatus terbit akan langsung muncul pada website utama."}
+          </p>
         </div>
-        <button type="button" onClick={openCreate}>+ Tambah Konten</button>
+        {!readOnly ? <button type="button" onClick={openCreate}>+ Tambah Konten</button> : null}
       </div>
 
       {message ? <p className="dashboardActionMessage">{message}</p> : null}
@@ -134,7 +140,7 @@ export default function ContentManager({
                   <td>{item.authorName}</td>
                   <td>{new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" }).format(new Date(item.updatedAt))}</td>
                   <td>
-                    <span className="financeActions">
+                    {!readOnly ? <span className="financeActions">
                       <button className="financeEditButton" type="button" aria-label={`Edit ${item.title}`} onClick={() => openEdit(item)}>
                         <svg viewBox="0 0 24 24" aria-hidden="true">
                           <path d="m12 20 8-8-4-4-8 8-2 6z" />
@@ -149,19 +155,19 @@ export default function ContentManager({
                           <path d="M10 11v6M14 11v6" />
                         </svg>
                       </button>
-                    </span>
+                    </span> : "-"}
                   </td>
                 </tr>
               ))}
               {items.length === 0 ? (
-                <tr><td className="financeEmptyState" colSpan={6}>Belum ada konten. Tambahkan konten pertama untuk ditampilkan di website.</td></tr>
+                <tr><td className="financeEmptyState" colSpan={6}>Belum ada konten pada bagian ini.</td></tr>
               ) : null}
             </tbody>
           </table>
         </div>
       </article>
 
-      {isOpen ? (
+      {isOpen && !readOnly ? (
         <div className="financeModalOverlay" role="presentation" onMouseDown={() => setIsOpen(false)}>
           <section className="financeModal contentEditorModal" role="dialog" aria-modal="true" aria-labelledby="content-modal-title" onMouseDown={(event) => event.stopPropagation()}>
             <div className="financeModalHeader">
@@ -201,7 +207,7 @@ export default function ContentManager({
         </div>
       ) : null}
 
-      {deleteId !== null ? (
+      {deleteId !== null && !readOnly ? (
         <div className="financeModalOverlay" role="presentation" onMouseDown={() => setDeleteId(null)}>
           <section className="financeDeleteDialog" role="alertdialog" aria-modal="true" aria-labelledby="content-delete-title" onMouseDown={(event) => event.stopPropagation()}>
             <h2 id="content-delete-title">Hapus Konten?</h2>

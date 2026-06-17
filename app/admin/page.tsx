@@ -6,6 +6,7 @@ type AdminPageProps = {
     educationMode?: string | string[];
     finance?: string | string[];
     module?: string | string[];
+    pmb?: string | string[];
     section?: string | string[];
   }>;
 };
@@ -16,6 +17,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   const education = params.education;
   const educationMode = params.educationMode;
   const activeModule = params.module;
+  const pmb = params.pmb;
   const section = params.section;
   const financeView = Array.isArray(finance) ? finance[0] : finance;
   const educationView = Array.isArray(education) ? education[0] : education;
@@ -29,6 +31,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
       financeView={financeView}
       educationView={educationView}
       educationMode={activeEducationMode}
+      pmbView={Array.isArray(pmb) ? pmb[0] : pmb}
       moduleView={moduleView}
       sectionView={sectionView}
     />

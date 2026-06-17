@@ -5,6 +5,7 @@ type PengurusPageProps = {
     education?: string | string[];
     educationMode?: string | string[];
     module?: string | string[];
+    pmb?: string | string[];
     section?: string | string[];
   }>;
 };
@@ -26,6 +27,7 @@ export default async function PengurusPage({ searchParams }: PengurusPageProps) 
       educationView={educationView}
       educationMode={activeEducationMode}
       moduleView={moduleView}
+      pmbView={Array.isArray(params.pmb) ? params.pmb[0] : params.pmb}
       sectionView={sectionView}
     />
   );

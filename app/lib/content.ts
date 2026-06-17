@@ -1,7 +1,7 @@
 import { prisma } from "./prisma";
 import type { UserRole } from "./auth";
 
-export type EditableModule = "pmb" | "kajian" | "konsultasi" | "website" | "manajemen" | "tentang-kami";
+export type EditableModule = "education" | "pmb" | "kajian" | "konsultasi" | "website" | "manajemen" | "tentang-kami";
 
 export type PublicContentItem = {
   id: number;
@@ -20,12 +20,13 @@ export type PublicContentItem = {
 };
 
 export const modulePermissions: Record<EditableModule, UserRole[]> = {
+  education: ["admin", "pengurus"],
   pmb: ["admin", "pengurus"],
-  kajian: ["admin", "ustadz"],
-  konsultasi: ["admin", "ustadz"],
-  website: ["admin", "pengurus"],
-  manajemen: ["admin"],
-  "tentang-kami": ["admin", "pengurus"],
+  kajian: ["ustadz"],
+  konsultasi: ["ustadz"],
+  website: ["pengurus"],
+  manajemen: [],
+  "tentang-kami": ["pengurus"],
 };
 
 export function canEditModule(role: UserRole, module: string): module is EditableModule {
@@ -33,9 +34,8 @@ export function canEditModule(role: UserRole, module: string): module is Editabl
     && modulePermissions[module as EditableModule].includes(role);
 }
 
-export function serializeContentItem(item: {
+type StoredContentItem = {
   id: number;
-  module: string;
   section: string;
   title: string;
   summary: string | null;
@@ -47,7 +47,11 @@ export function serializeContentItem(item: {
   authorRole: string;
   publishedAt: Date | null;
   updatedAt: Date;
-}): PublicContentItem {
+};
+
+export function serializeContentItem(
+  item: StoredContentItem & { module: string },
+): PublicContentItem {
   return {
     ...item,
     summary: item.summary ?? "",
@@ -58,13 +62,41 @@ export function serializeContentItem(item: {
   };
 }
 
+export function serializeDomainContentItem(
+  item: StoredContentItem,
+  module: "education" | "kajian" | "pmb" | "website",
+): PublicContentItem {
+  return serializeContentItem({ ...item, module });
+}
+
 export async function getContentItems(module: string, section: string) {
   try {
+    if (module === "website") {
+      const items = await prisma.news.findMany({
+        where: { section },
+        orderBy: [{ updatedAt: "desc" }],
+      });
+      return items.map((item) => serializeDomainContentItem(item, "website"));
+    }
+    if (module === "kajian") {
+      const items = await prisma.studyArticle.findMany({
+        where: { section },
+        orderBy: [{ updatedAt: "desc" }],
+      });
+      return items.map((item) => serializeDomainContentItem(item, "kajian"));
+    }
+    if (module === "education" || module === "pmb") {
+      const items = await prisma.educationInformation.findMany({
+        where: { module, section },
+        orderBy: [{ updatedAt: "desc" }],
+      });
+      return items.map((item) => serializeDomainContentItem(item, module));
+    }
+
     const items = await prisma.contentItem.findMany({
       where: { module, section },
       orderBy: [{ updatedAt: "desc" }],
     });
-
     return items.map(serializeContentItem);
   } catch {
     console.warn(`Content database is unavailable for ${module}/${section}.`);
@@ -82,6 +114,50 @@ export async function getModuleContentItems(module: string) {
     return items.map(serializeContentItem);
   } catch {
     console.warn(`Content database is unavailable for ${module}.`);
+    return [];
+  }
+}
+
+export async function getPublishedContentItems(module: string, section?: string) {
+  try {
+    const where = {
+      status: "published",
+      ...(section ? { section } : {}),
+    };
+    const orderBy = [
+      { publishedAt: "desc" as const },
+      { updatedAt: "desc" as const },
+    ];
+
+    if (module === "website") {
+      const items = await prisma.news.findMany({ where, orderBy });
+      return items.map((item) => serializeDomainContentItem(item, "website"));
+    }
+    if (module === "kajian") {
+      const items = await prisma.studyArticle.findMany({ where, orderBy });
+      return items.map((item) => serializeDomainContentItem(item, "kajian"));
+    }
+    if (module === "education" || module === "pmb") {
+      const items = await prisma.educationInformation.findMany({
+        where: { module, ...where },
+        orderBy,
+      });
+      return items.map((item) => serializeDomainContentItem(item, module));
+    }
+
+    const items = await prisma.contentItem.findMany({
+      where: {
+        module,
+        ...where,
+      },
+      orderBy,
+    });
+
+    return items.map(serializeContentItem);
+  } catch {
+    console.warn(
+      `Published content database is unavailable for ${module}${section ? `/${section}` : ""}.`,
+    );
     return [];
   }
 }

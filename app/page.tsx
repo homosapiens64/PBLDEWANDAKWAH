@@ -173,6 +173,70 @@ function sectionLabel(value: string) {
   return labels[value] ?? value.replaceAll("-", " ");
 }
 
+function ManagedBerandaSection({ items }: { items: PublicContentItem[] }) {
+  if (items.length === 0) return null;
+
+  return (
+    <section className="py-12 bg-slate-50 border-y border-slate-100">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="mb-8">
+          <p
+            className="uppercase tracking-widest font-semibold mb-1"
+            style={{ fontSize: "0.72rem", color: "#2d8f76" }}
+          >
+            Beranda
+          </p>
+          <h2
+            className="font-bold"
+            style={{
+              fontSize: "1.8rem",
+              color: "#1a4a3f",
+              fontFamily: "'Georgia', serif",
+            }}
+          >
+            Informasi Utama
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {items.slice(0, 6).map((item) => (
+            <article
+              className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"
+              key={item.id}
+            >
+              {item.imageUrl ? (
+                <div
+                  className="bg-slate-200"
+                  style={{
+                    height: 150,
+                    backgroundImage: `url("${item.imageUrl.replaceAll('"', "%22")}")`,
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
+                  }}
+                />
+              ) : null}
+              <div className="p-5">
+                <span
+                  className="inline-block rounded-full px-3 py-1 text-xs font-semibold"
+                  style={{ background: "#e7f5ef", color: "#237b5f" }}
+                >
+                  {sectionLabel(item.section)}
+                </span>
+                <h3 className="font-bold mt-3 mb-2" style={{ color: "#183d34" }}>
+                  {item.title}
+                </h3>
+                <p className="text-sm text-slate-500 leading-relaxed">
+                  {item.summary || item.body}
+                </p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function BeritaSection({ items }: { items: PublicContentItem[] }) {
   const managedItems = items.map((item) => ({
     id: `managed-${item.id}`,
@@ -827,10 +891,12 @@ export default function HomePage() {
   const newsItems = managedItems.filter((item) => item.module === "website");
   const kajianItems = managedItems.filter((item) => item.module === "kajian");
   const educationItems = managedItems.filter((item) => item.module === "education");
+  const berandaItems = managedItems.filter((item) => item.module === "beranda");
 
   return (
     <main className="min-h-screen">
       <HeroSection />
+      <ManagedBerandaSection items={berandaItems} />
       <BeritaSection items={newsItems} />
       <KajianSection items={kajianItems} />
       <EducationSection items={educationItems} />

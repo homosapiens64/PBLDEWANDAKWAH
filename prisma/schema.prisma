@@ -99,6 +99,81 @@ model EducationInformation {
   @@map("education_information")
 }
 
+model PmbApplicantAccount {
+  id               Int      @id @default(autoincrement())
+  institution      String   @db.VarChar(30)
+  institutionId    String   @map("institution_id") @db.VarChar(30)
+  institutionName  String   @map("institution_name") @db.VarChar(120)
+  institutionShort String   @map("institution_short") @db.VarChar(40)
+  fullName         String   @map("full_name") @db.VarChar(140)
+  nisn             String   @db.VarChar(40)
+  email            String   @db.VarChar(120)
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@unique([institution, nisn])
+  @@unique([nisn, email])
+  @@index([institution, email])
+  @@map("pmb_applicant_accounts")
+}
+
+model PmbApplication {
+  id                 Int      @id @default(autoincrement())
+  institution        String   @db.VarChar(30)
+  institutionName    String   @map("institution_name") @db.VarChar(120)
+  institutionShort   String   @map("institution_short") @db.VarChar(40)
+  jalurId            String?  @map("jalur_id") @db.VarChar(50)
+  jalurName          String?  @map("jalur_name") @db.VarChar(80)
+  jurusanId          String?  @map("jurusan_id") @db.VarChar(80)
+  jurusanName        String?  @map("jurusan_name") @db.VarChar(120)
+  registrationNumber String   @unique @map("registration_number") @db.VarChar(60)
+  billingCode        String   @map("billing_code") @db.VarChar(60)
+  billingAmount      Int      @default(150000) @map("billing_amount")
+  status             String   @default("menunggu_verifikasi") @db.VarChar(40)
+  adminNote          String?  @map("admin_note") @db.Text
+  fullName           String   @map("full_name") @db.VarChar(140)
+  nisn               String?  @db.VarChar(40)
+  gender             String?  @db.VarChar(30)
+  birthPlace         String?  @map("birth_place") @db.VarChar(80)
+  birthDate          String?  @map("birth_date") @db.VarChar(30)
+  citizenship        String?  @db.VarChar(30)
+  religion           String?  @db.VarChar(40)
+  phone              String?  @db.VarChar(40)
+  email              String?  @db.VarChar(120)
+  address            String?  @db.Text
+  rt                 String?  @db.VarChar(10)
+  rw                 String?  @db.VarChar(10)
+  provinsi           String?  @db.VarChar(120)
+  kota               String?  @db.VarChar(120)
+  kecamatan          String?  @db.VarChar(120)
+  kelurahan          String?  @db.VarChar(120)
+  schoolStatus       String?  @map("school_status") @db.VarChar(40)
+  schoolName         String?  @map("school_name") @db.VarChar(140)
+  schoolKecamatan    String?  @map("school_kecamatan") @db.VarChar(120)
+  graduationYear     String?  @map("graduation_year") @db.VarChar(20)
+  certificateNumber  String?  @map("certificate_number") @db.VarChar(80)
+  fatherName         String?  @map("father_name") @db.VarChar(120)
+  fatherEducation    String?  @map("father_education") @db.VarChar(60)
+  fatherOccupation   String?  @map("father_occupation") @db.VarChar(80)
+  motherName         String?  @map("mother_name") @db.VarChar(120)
+  motherEducation    String?  @map("mother_education") @db.VarChar(60)
+  motherOccupation   String?  @map("mother_occupation") @db.VarChar(80)
+  guardianName       String?  @map("guardian_name") @db.VarChar(120)
+  guardianOccupation String?  @map("guardian_occupation") @db.VarChar(80)
+  parentIncome       String?  @map("parent_income") @db.VarChar(80)
+  docPhotoUrl        String?  @map("doc_photo_url") @db.LongText
+  docIjazahUrl       String?  @map("doc_ijazah_url") @db.LongText
+  docKtpUrl          String?  @map("doc_ktp_url") @db.LongText
+  docKkUrl           String?  @map("doc_kk_url") @db.LongText
+  paymentProofUrl    String?  @map("payment_proof_url") @db.LongText
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  @@index([institution, status])
+  @@index([registrationNumber])
+  @@map("pmb_applications")
+}
+
 model FinanceTransaction {
   id         Int      @id @default(autoincrement())
   type       String   @db.VarChar(20)

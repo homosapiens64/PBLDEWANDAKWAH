@@ -7,7 +7,7 @@ import {
   saveFinanceTransaction,
 } from "../dashboard-actions";
 
-export type FinanceView = "pemasukan" | "pengeluaran" | "laporan" | "riwayat";
+export type FinanceView = "pemasukan" | "pengeluaran" | "laporan";
 
 type TransactionType = "pemasukan" | "pengeluaran";
 
@@ -173,6 +173,7 @@ export default function FinanceWorkspace({
   const transactions = initialTransactions;
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
+  const [typeFilter, setTypeFilter] = useState<"" | TransactionType>("");
   const [modalType, setModalType] = useState<TransactionType | null>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
@@ -200,13 +201,14 @@ export default function FinanceWorkspace({
   const visibleTransactions = useMemo(() => {
     const query = search.trim().toLocaleLowerCase("id-ID");
     return transactions.filter((transaction) => {
-      const matchesView = view === "riwayat" || view === "laporan" || transaction.type === view;
+      const matchesView = view === "laporan" || transaction.type === view;
+      const matchesType = view !== "laporan" || !typeFilter || transaction.type === typeFilter;
       const matchesCategory = !categoryFilter || transaction.category === categoryFilter;
       const matchesSearch = !query || [transaction.category, transaction.detail, transaction.note, transaction.author]
         .some((value) => value.toLocaleLowerCase("id-ID").includes(query));
-      return matchesView && matchesCategory && matchesSearch;
+      return matchesView && matchesType && matchesCategory && matchesSearch;
     });
-  }, [categoryFilter, search, transactions, view]);
+  }, [categoryFilter, search, transactions, typeFilter, view]);
 
   const openCreate = (type: TransactionType) => {
     setMessage("");
@@ -286,7 +288,7 @@ export default function FinanceWorkspace({
 
   const currentType = view === "pengeluaran" ? "pengeluaran" : "pemasukan";
   const isReport = view === "laporan";
-  const isHistory = view === "riwayat" || isReport;
+  const isHistory = isReport;
   const title = isReport
     ? "Laporan Keuangan"
     : currentType === "pemasukan"
@@ -333,6 +335,13 @@ export default function FinanceWorkspace({
 
         <article className={isHistory ? "financeHistoryCard" : "financeTableCard"}>
           <div className="financeFilters">
+            {isReport ? (
+              <select aria-label="Jenis transaksi" value={typeFilter} onChange={(event) => setTypeFilter(event.target.value as "" | TransactionType)}>
+                <option value="">Semua Transaksi</option>
+                <option value="pemasukan">Pemasukan / Uang Masuk</option>
+                <option value="pengeluaran">Pengeluaran / Uang Keluar</option>
+              </select>
+            ) : null}
             <select aria-label="Kategori" value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)}>
               <option value="">Semua Kategori</option>
               {[...new Set(transactions.map((transaction) => transaction.category))].map((category) => (

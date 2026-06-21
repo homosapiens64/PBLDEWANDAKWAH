@@ -2484,6 +2484,58 @@ body:has(.dashboardApp) .footer {
   color: #08a96e;
 }
 
+.dashboardEducationNav {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.dashboardEducationHeading {
+  margin: 0 2.75rem -0.05rem;
+  color: #8a908d;
+  font-size: 0.95rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+}
+
+.dashboardEducationGroup {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.dashboardEducationGroup .dashboardNavItem {
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+}
+
+.dashboardEducationCaret {
+  color: currentColor;
+  font-size: 0.85rem;
+  font-weight: 850;
+}
+
+.dashboardEducationChildren {
+  margin-left: 2.75rem;
+  padding-left: 1.6rem;
+  border-left: 1px solid #dbe5df;
+}
+
+.dashboardEducationChildren a {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.dashboardEducationChildren svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
 .dashboardLogoutForm {
   margin-top: auto;
   border-top: 1px solid #e7e8e5;
@@ -5220,6 +5272,155 @@ body:has(.dashboardApp) .footer {
 .educationEditForm textarea:focus {
   border-color: #6fc8a4;
   box-shadow: 0 0 0 3px rgba(45, 170, 120, 0.11);
+}
+
+.educationProfileGrid {
+  display: grid;
+  width: 100%;
+  max-width: 1180px;
+  grid-template-columns: minmax(0, 1fr) minmax(270px, 330px);
+  gap: 1.7rem;
+  margin: 0 auto;
+  align-items: stretch;
+}
+
+.dashboardApp .educationWorkspace,
+.dashboardApp .educationWorkspace.adi,
+.dashboardApp .educationWorkspace.edit {
+  gap: 1.5rem;
+  padding: 1.75rem clamp(1.4rem, 3.2vw, 3rem) 2.5rem;
+  background: #f8faf9;
+}
+
+.dashboardApp .educationHeader,
+.dashboardApp .educationWorkspace.edit .educationEditForm {
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.dashboardApp .educationHeader h1 {
+  color: #071c1e;
+  font-size: clamp(1.55rem, 2.4vw, 2.05rem);
+  font-weight: 850;
+}
+
+.dashboardApp .educationHeader h1 span {
+  width: auto;
+  height: auto;
+  background: transparent;
+  color: inherit;
+  font-size: 1.1rem;
+}
+
+.dashboardApp .educationHeader p {
+  color: #7d928b;
+  font-size: 1rem;
+}
+
+.dashboardApp .educationSummaryCard {
+  min-height: 430px;
+  padding: 2rem 2.25rem;
+}
+
+.dashboardApp .educationSummaryCard::after {
+  content: none;
+}
+
+.dashboardApp .educationSummaryCard h2 {
+  font-size: 1.5rem;
+}
+
+.dashboardApp .educationSummaryCard h3 {
+  margin: 0.55rem 0 1.45rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.dashboardApp .educationSummaryCard p {
+  max-width: 640px;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.dashboardApp .educationContactCard {
+  padding: 1.85rem 1.9rem;
+}
+
+.dashboardApp .educationContactCard h2 {
+  margin-bottom: 1.05rem;
+  font-size: 1rem;
+}
+
+.dashboardApp .educationContactList {
+  gap: 1.05rem;
+}
+
+.dashboardApp .educationContactItem {
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 0.85rem;
+}
+
+.dashboardApp .educationContactItem p {
+  font-size: 0.82rem;
+}
+
+.dashboardApp .educationContactItem strong {
+  font-size: 0.94rem;
+  font-weight: 650;
+}
+
+.dashboardApp .educationEditForm {
+  min-height: 0;
+  gap: 1.25rem;
+  padding: 2rem;
+}
+
+.dashboardApp .educationEditHeading {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.dashboardApp .educationEditHeading h2 {
+  font-size: 1.25rem;
+}
+
+.dashboardApp .educationEditForm label {
+  gap: 0.55rem;
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+.dashboardApp .educationEditForm input,
+.dashboardApp .educationEditForm textarea {
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  font-size: 1rem;
+  box-shadow: none;
+}
+
+.dashboardApp .educationEditForm textarea {
+  min-height: 125px;
+}
+
+.dashboardApp .educationSaveButton,
+.dashboardApp .educationCancelButton {
+  min-height: 48px;
+  min-width: 132px;
+  gap: 0.65rem;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+.dashboardApp .educationSaveButton svg,
+.dashboardApp .educationCancelButton svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
 }
 
 .educationEditGrid {

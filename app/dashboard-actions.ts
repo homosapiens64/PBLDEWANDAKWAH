@@ -41,6 +41,12 @@ export type CreateAdminState = {
   success: boolean;
 };
 
+export type PmbStatusInput = {
+  id: number;
+  note: string;
+  status: string;
+};
+
 function canEditSection(
   session: NonNullable<Awaited<ReturnType<typeof getSession>>>,
   module: string,
@@ -53,7 +59,8 @@ function canEditSection(
   return session.role !== "admin"
     || (
       (module === "education" || module === "pmb")
-      && session.institution === section
+      && Boolean(session.institution)
+      && (session.institution === section || section.startsWith(`${session.institution}-`))
     );
 }
 
@@ -65,7 +72,12 @@ function revalidatePublicContent() {
   revalidatePath("/Berita/Internasional");
   revalidatePath("/Kajian");
   revalidatePath("/Konsultasi");
+  revalidatePath("/Pendidikan");
+  revalidatePath("/Pendidikan/ADI");
+  revalidatePath("/Pendidikan/AlKhawarizmi");
   revalidatePath("/Pendidikan/Institusi");
+  revalidatePath("/Pendidikan/pendaftaran");
+  revalidatePath("/Pendidikan/PonpesSuruh");
   revalidatePath("/TentangKami/Profile");
   revalidatePath("/TentangKami/AdDanArt");
   revalidatePath("/TentangKami/StrukturKepengurusan");
@@ -81,11 +93,18 @@ function capitalizeSegment(segment: string) {
 }
 
 function getPublicPath(module: string, section: string) {
+  const educationPaths: Record<string, string> = {
+    adi: "/Pendidikan/ADI",
+    "al-khawarizmi": "/Pendidikan/AlKhawarizmi",
+    "ponpes-suruh": "/Pendidikan/PonpesSuruh",
+  };
+
   if (module === "website") {
     return section ? `/Berita/${capitalizeSegment(section)}` : "/Berita";
   }
+  if (module === "beranda") return "/";
   if (module === "kajian") return "/Kajian";
-  if (module === "education") return section ? `/Pendidikan/${capitalizeSegment(section)}` : "/Pendidikan/Institusi";
+  if (module === "education") return educationPaths[section] ?? "/Pendidikan/Institusi";
   if (module === "pmb") return "/Pendidikan/pendaftaran";
   if (module === "tentang-kami") return section ? `/TentangKami/${capitalizeSegment(section)}` : "/TentangKami";
   return "/";
@@ -229,7 +248,7 @@ export async function deleteContentItem(id: number, module: string) {
 
 export async function saveFinanceTransaction(input: FinanceInput) {
   const session = await getSession();
-  if (!session || session.role !== "bendahara") {
+  if (!session || (session.role !== "bendahara" && session.role !== "super_admin")) {
     throw new Error("Anda tidak memiliki akses ke transaksi keuangan.");
   }
   if (!input.category.trim() || !input.detail.trim() || input.amount <= 0) {
@@ -261,9 +280,55 @@ export async function saveFinanceTransaction(input: FinanceInput) {
   revalidatePath(roleHomePaths[session.role]);
 }
 
+export async function updatePmbApplicationStatus(input: PmbStatusInput) {
+  const session = await getSession();
+  if (!session || (session.role !== "super_admin" && session.role !== "admin")) {
+    throw new Error("Anda tidak memiliki akses untuk mengubah status PMB.");
+  }
+
+  const allowedStatuses = [
+    "draft",
+    "menunggu_verifikasi",
+    "verifikasi_adm",
+    "menunggu_bayar",
+    "sudah_bayar",
+    "diterima",
+    "ditolak",
+    "daftar_ulang",
+  ];
+  if (!allowedStatuses.includes(input.status)) {
+    throw new Error("Status PMB tidak valid.");
+  }
+
+  const application = await prisma.pmbApplication.findUnique({
+    where: { id: input.id },
+    select: { institution: true },
+  });
+
+  if (!application) {
+    throw new Error("Data pendaftar tidak ditemukan.");
+  }
+
+  if (session.role === "admin" && session.institution !== application.institution) {
+    throw new Error("Anda tidak memiliki akses ke pendaftar lembaga ini.");
+  }
+
+  await prisma.pmbApplication.update({
+    where: { id: input.id },
+    data: {
+      adminNote: input.note.trim() || null,
+      status: input.status,
+    },
+  });
+
+  revalidatePath("/admin");
+  revalidatePath("/super-admin");
+  revalidatePath(roleHomePaths[session.role]);
+}
+
 export async function deleteFinanceTransaction(id: number) {
   const session = await getSession();
-  if (!session || session.role !== "bendahara") {
+  if (!session || (session.role !== "bendahara" && session.role !== "super_admin")) {
     throw new Error("Anda tidak memiliki akses ke transaksi keuangan.");
   }
 

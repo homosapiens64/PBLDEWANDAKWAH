@@ -985,6 +985,209 @@
   color: #3b4841;
 }
 
+.dashboardApp .educationWorkspace,
+.dashboardApp .educationWorkspace.adi,
+.dashboardApp .educationWorkspace.edit {
+  gap: 1.5rem;
+  padding: 1.75rem clamp(1.4rem, 3.2vw, 3rem) 2.5rem;
+  background: #f8faf9;
+}
+
+.dashboardApp .educationHeader {
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.dashboardApp .educationHeader h1 {
+  color: #071c1e;
+  font-size: clamp(1.55rem, 2.4vw, 2.05rem);
+  font-weight: 850;
+}
+
+.dashboardApp .educationHeader h1 span {
+  width: auto;
+  height: auto;
+  background: transparent;
+  color: inherit;
+  font-size: 1.1rem;
+}
+
+.dashboardApp .educationHeader p {
+  color: #7d928b;
+  font-size: 1rem;
+}
+
+.dashboardApp .educationEditProfile {
+  min-height: 42px;
+  padding: 0 1rem;
+  border-radius: 9px;
+  color: #0f2d29;
+  font-size: 0.9rem;
+}
+
+.dashboardApp .educationProfileGrid {
+  display: grid;
+  width: 100%;
+  max-width: 1180px;
+  grid-template-columns: minmax(0, 1fr) minmax(270px, 330px);
+  gap: 1.7rem;
+  margin: 0 auto;
+  align-items: stretch;
+}
+
+.dashboardApp .educationSummaryCard,
+.dashboardApp .educationContactCard,
+.dashboardApp .educationEditForm {
+  border: 1px solid #dfe7e3;
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(23, 42, 35, 0.1);
+}
+
+.dashboardApp .educationSummaryCard {
+  min-height: 430px;
+  padding: 2rem 2.25rem;
+}
+
+.dashboardApp .educationSummaryCard::after {
+  content: none;
+}
+
+.dashboardApp .educationSummaryCard h2 {
+  color: #071c1e;
+  font-size: 1.5rem;
+}
+
+.dashboardApp .educationSummaryCard h3 {
+  margin: 0.55rem 0 1.45rem;
+  color: #26a166;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.dashboardApp .educationSummaryCard p {
+  max-width: 640px;
+  color: #718883;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.dashboardApp .educationContactCard {
+  padding: 1.85rem 1.9rem;
+}
+
+.dashboardApp .educationContactCard h2 {
+  margin-bottom: 1.05rem;
+  color: #071c1e;
+  font-size: 1rem;
+}
+
+.dashboardApp .educationContactList {
+  gap: 1.05rem;
+}
+
+.dashboardApp .educationContactItem {
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 0.85rem;
+}
+
+.dashboardApp .educationContactItem > span {
+  color: #2aa26e;
+}
+
+.dashboardApp .educationContactItem p {
+  color: #80928d;
+  font-size: 0.82rem;
+}
+
+.dashboardApp .educationContactItem strong {
+  color: #0f2927;
+  font-size: 0.94rem;
+  font-weight: 650;
+}
+
+.dashboardApp .educationWorkspace.edit .educationHeader,
+.dashboardApp .educationWorkspace.edit .educationEditForm {
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.dashboardApp .educationEditForm {
+  min-height: 0;
+  gap: 1.25rem;
+  padding: 2rem;
+}
+
+.dashboardApp .educationEditHeading {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.dashboardApp .educationEditHeading h2 {
+  font-size: 1.25rem;
+}
+
+.dashboardApp .educationEditForm label {
+  gap: 0.55rem;
+  color: #0b2422;
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+.dashboardApp .educationEditForm input,
+.dashboardApp .educationEditForm textarea {
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  color: #0b2422;
+  font-size: 1rem;
+  box-shadow: none;
+}
+
+.dashboardApp .educationEditForm textarea {
+  min-height: 125px;
+}
+
+.dashboardApp .educationEditGrid {
+  gap: 1.25rem;
+}
+
+.dashboardApp .educationFormActions {
+  margin-top: 0.35rem;
+}
+
+.dashboardApp .educationSaveButton,
+.dashboardApp .educationCancelButton {
+  min-height: 48px;
+  min-width: 132px;
+  gap: 0.65rem;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+.dashboardApp .educationSaveButton svg,
+.dashboardApp .educationCancelButton svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+@media (max-width: 980px) {
+  .dashboardApp .educationProfileGrid,
+  .dashboardApp .educationEditGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboardApp .educationSummaryCard {
+    min-height: 0;
+  }
+}
+
 /* Tentang Kami workspace */
 .aboutWorkspace {
   min-height: calc(100svh - 74px);
@@ -2291,6 +2494,613 @@
   }
 }
 
+/* Super admin home overview matching the compact admin reference. */
+.dashboardApp .superOverview {
+  display: grid;
+  gap: 1.35rem;
+  padding: 0.95rem 1.35rem 2.2rem;
+  color: #12332d;
+}
+
+.dashboardApp .superHomeTopbar {
+  min-height: 54px;
+  padding: 0.55rem 1.35rem 0.25rem;
+  border-bottom: 1px solid #e5ece8;
+  background: #f8fbf9;
+  box-shadow: none;
+}
+
+.dashboardApp .superHomeTopbar h1 {
+  color: #52625e;
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+
+.dashboardApp .superHomeTopbar p,
+.dashboardApp .superHomeTopbar .dashboardUserArea {
+  display: none;
+}
+
+.dashboardApp .overviewSectionTitle {
+  display: grid;
+  grid-template-columns: 4px minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: start;
+  margin-top: 0.25rem;
+}
+
+.dashboardApp .overviewSectionTitle > span {
+  width: 4px;
+  height: 24px;
+  margin-top: 3px;
+  border-radius: 999px;
+  background: #17a36d;
+}
+
+.dashboardApp .overviewSectionTitle h2 {
+  margin: 0;
+  color: #17332f;
+  font-size: 0.98rem;
+  font-weight: 850;
+}
+
+.dashboardApp .overviewSectionTitle p {
+  margin: 0.18rem 0 0;
+  color: #7d8d88;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.dashboardApp .overviewStats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.dashboardApp .overviewStat,
+.dashboardApp .overviewMoneyCard,
+.dashboardApp .overviewChartCard,
+.dashboardApp .overviewEducationCard,
+.dashboardApp .overviewTableCard,
+.dashboardApp .overviewStatusCard,
+.dashboardApp .overviewActivityCard {
+  border: 1px solid #dce6e1;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(20, 45, 38, 0.04);
+}
+
+.dashboardApp .overviewStat,
+.dashboardApp .overviewMoneyCard {
+  display: flex;
+  min-height: 72px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+}
+
+.dashboardApp .overviewStat p,
+.dashboardApp .overviewMoneyCard p {
+  margin: 0 0 0.35rem;
+  color: #6f817d;
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+
+.dashboardApp .overviewStat strong,
+.dashboardApp .overviewMoneyCard strong {
+  display: block;
+  color: #172e2a;
+  font-size: 1.45rem;
+  line-height: 1;
+  font-weight: 900;
+}
+
+.dashboardApp .overviewStat > span,
+.dashboardApp .overviewMoneyCard > span,
+.dashboardApp .overviewHeaderIcon {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  flex: 0 0 32px;
+  border-radius: 9px;
+}
+
+.dashboardApp .overviewStat svg,
+.dashboardApp .overviewMoneyCard svg,
+.dashboardApp .overviewHeaderIcon svg,
+.dashboardApp .contentStatusBox svg,
+.dashboardApp .overviewActivityItem svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.dashboardApp .overviewStat.green > span,
+.dashboardApp .overviewMoneyCard.green > span,
+.dashboardApp .overviewHeaderIcon,
+.dashboardApp .educationInitial.green,
+.dashboardApp .contentStatusBox.green > span {
+  background: #e8f7f0;
+  color: #13a06c;
+}
+
+.dashboardApp .overviewStat.blue > span,
+.dashboardApp .educationInitial.blue,
+.dashboardApp .contentStatusBox.blue > span {
+  background: #ecf5ff;
+  color: #3d82c4;
+}
+
+.dashboardApp .overviewStat.gold > span,
+.dashboardApp .educationInitial.gold {
+  background: #fff6df;
+  color: #bc8b12;
+}
+
+.dashboardApp .overviewStat.purple > span {
+  background: #fff0ff;
+  color: #a042ca;
+}
+
+.dashboardApp .overviewMoneyCard.red > span {
+  background: #fff0f1;
+  color: #ea5761;
+}
+
+.dashboardApp .overviewFinance {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.34fr) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.dashboardApp .overviewFinanceCards {
+  display: grid;
+  gap: 1rem;
+}
+
+.dashboardApp .overviewMoneyCard {
+  min-height: 86px;
+}
+
+.dashboardApp .overviewMoneyCard strong {
+  font-size: 1.55rem;
+}
+
+.dashboardApp .overviewCardHeader {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  min-height: 54px;
+  padding: 0.9rem 1rem 0.2rem;
+}
+
+.dashboardApp .overviewCardHeader.compact {
+  grid-template-columns: 32px minmax(0, 1fr);
+  padding-bottom: 0.55rem;
+}
+
+.dashboardApp .overviewCardHeader h3,
+.dashboardApp .overviewTableCard h3,
+.dashboardApp .overviewStatusCard h3,
+.dashboardApp .overviewEducationCard h3 {
+  margin: 0;
+  color: #18332f;
+  font-size: 0.84rem;
+  line-height: 1.25;
+  font-weight: 850;
+}
+
+.dashboardApp .overviewCardHeader p {
+  margin: 0.1rem 0 0;
+  color: #88948f;
+  font-size: 0.66rem;
+  font-weight: 600;
+}
+
+.dashboardApp .overviewCardHeader small {
+  color: #6c7874;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.dashboardApp .overviewLineChart {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  min-height: 188px;
+  padding: 0.35rem 1rem 0.25rem;
+}
+
+.dashboardApp .chartScale {
+  display: grid;
+  grid-template-rows: repeat(5, 1fr);
+  align-items: center;
+  padding-bottom: 24px;
+  color: #87918d;
+  font-size: 0.64rem;
+}
+
+.dashboardApp .chartPlot {
+  display: grid;
+  position: relative;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.8rem;
+  align-items: end;
+  border-bottom: 1px solid #aeb9b5;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 36px,
+      #edf1ef 37px
+    );
+}
+
+.dashboardApp .chartMonth {
+  display: grid;
+  height: 100%;
+  grid-template-rows: minmax(0, 1fr) 24px;
+  gap: 0.25rem;
+  align-items: end;
+}
+
+.dashboardApp .chartBars {
+  display: flex;
+  height: 100%;
+  align-items: end;
+  justify-content: center;
+  gap: 3px;
+}
+
+.dashboardApp .chartBars span {
+  width: 8px;
+  min-height: 0;
+  border-radius: 5px 5px 0 0;
+}
+
+.dashboardApp .chartBars span[style*="height: 0"] {
+  opacity: 0;
+}
+
+.dashboardApp .chartMonth small {
+  color: #7b8580;
+  font-size: 0.66rem;
+  text-align: center;
+}
+
+.dashboardApp .overviewLegend {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  padding: 0.25rem 1rem 0.95rem;
+  color: #74817c;
+  font-size: 0.66rem;
+  font-weight: 650;
+}
+
+.dashboardApp .overviewLegend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.dashboardApp .overviewLegend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.dashboardApp .overviewEducationGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.dashboardApp .overviewEducationCard {
+  min-height: 150px;
+  padding: 1rem;
+}
+
+.dashboardApp .educationCardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 0.85rem;
+}
+
+.dashboardApp .educationInitial {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 10px;
+  font-size: 0.68rem;
+  font-weight: 850;
+}
+
+.dashboardApp .educationTag {
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+
+.dashboardApp .educationTag.green { color: #13a06c; background: #f4fbf8; }
+.dashboardApp .educationTag.gold { color: #bf8b10; background: #fff9e8; }
+.dashboardApp .educationTag.blue { color: #3e82c4; background: #f3f9ff; }
+
+.dashboardApp .overviewEducationCard p {
+  display: -webkit-box;
+  min-height: 2.75rem;
+  margin: 0.35rem 0 0.8rem;
+  overflow: hidden;
+  color: #687873;
+  font-size: 0.7rem;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.dashboardApp .overviewEducationCard ul {
+  display: grid;
+  gap: 0.28rem;
+  margin: 0 0 0.7rem;
+  padding: 0;
+  color: #5e6d69;
+  font-size: 0.66rem;
+  list-style: none;
+}
+
+.dashboardApp .overviewEducationCard li::before {
+  margin-right: 0.35rem;
+  color: #9aa7a2;
+  content: "*";
+}
+
+.dashboardApp .overviewEducationCard a {
+  color: #129969;
+  font-size: 0.68rem;
+  font-weight: 850;
+}
+
+.dashboardApp .overviewTableCard {
+  overflow: hidden;
+}
+
+.dashboardApp .overviewTableCard h3,
+.dashboardApp .overviewStatusCard h3 {
+  padding: 0.95rem 1rem 0.65rem;
+}
+
+.dashboardApp .overviewTableWrap {
+  overflow-x: auto;
+}
+
+.dashboardApp .overviewTableCard table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.72rem;
+}
+
+.dashboardApp .overviewTableCard th,
+.dashboardApp .overviewTableCard td {
+  padding: 0.72rem 1rem;
+  border-top: 1px solid #dce5e1;
+  text-align: left;
+}
+
+.dashboardApp .overviewTableCard th {
+  color: #178560;
+  font-size: 0.66rem;
+  font-weight: 850;
+}
+
+.dashboardApp .overviewTableCard td {
+  color: #63746f;
+}
+
+.dashboardApp .overviewTableCard td strong,
+.dashboardApp .overviewTableCard td span {
+  display: block;
+}
+
+.dashboardApp .overviewTableCard td strong {
+  margin-bottom: 0.15rem;
+  color: #263935;
+  font-size: 0.74rem;
+}
+
+.dashboardApp .overviewTableCard td span {
+  color: #8a9792;
+  font-size: 0.64rem;
+}
+
+.dashboardApp .applicantStatus {
+  display: inline-flex !important;
+  width: fit-content;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 0.24rem 0.62rem;
+  font-size: 0.64rem !important;
+  font-weight: 800;
+}
+
+.dashboardApp .applicantStatus.diterima {
+  background: #eefbf4;
+  color: #12a36d !important;
+}
+
+.dashboardApp .applicantStatus.menunggu {
+  background: #fff8e7;
+  color: #c58b12 !important;
+}
+
+.dashboardApp .applicantStatus.selesai {
+  background: #fff1e9;
+  color: #d97933 !important;
+}
+
+.dashboardApp .overviewBottomGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.5fr) minmax(0, 0.5fr);
+  gap: 1rem;
+}
+
+.dashboardApp .overviewStatusCard,
+.dashboardApp .overviewActivityCard {
+  min-height: 170px;
+}
+
+.dashboardApp .contentStatusGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  padding: 0.25rem 1rem 1rem;
+}
+
+.dashboardApp .contentStatusBox {
+  display: grid;
+  position: relative;
+  min-height: 108px;
+  align-content: space-between;
+  padding: 0.9rem;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #f7fbf9;
+}
+
+.dashboardApp .contentStatusBox > span {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 8px;
+}
+
+.dashboardApp .contentStatusBox small {
+  position: absolute;
+  top: 1rem;
+  right: 0.9rem;
+  color: #148660;
+  font-size: 0.58rem;
+  font-weight: 800;
+}
+
+.dashboardApp .contentStatusBox strong {
+  margin-top: 0.65rem;
+  color: #18332f;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.dashboardApp .contentStatusBox p {
+  margin: 0;
+  color: #61736e;
+  font-size: 0.66rem;
+  font-weight: 700;
+}
+
+.dashboardApp .contentStatusBox i {
+  display: block;
+  width: 48px;
+  height: 3px;
+  margin-top: 0.65rem;
+  border-radius: 999px;
+}
+
+.dashboardApp .contentStatusBox.green i {
+  background: #13a06c;
+}
+
+.dashboardApp .contentStatusBox.blue i {
+  background: #4b8fd0;
+}
+
+.dashboardApp .overviewActivityList {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0.3rem 1rem 1rem;
+}
+
+.dashboardApp .overviewActivityItem {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.dashboardApp .overviewActivityItem .activityIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+}
+
+.dashboardApp .overviewActivityItem strong {
+  display: block;
+  color: #263935;
+  font-size: 0.72rem;
+  line-height: 1.25;
+}
+
+.dashboardApp .overviewActivityItem p,
+.dashboardApp .overviewEmpty {
+  margin: 0.18rem 0 0;
+  color: #7f8c87;
+  font-size: 0.65rem;
+  line-height: 1.35;
+}
+
+.dashboardApp .overviewEmpty {
+  display: grid;
+  min-height: 88px;
+  place-items: center;
+  font-style: italic;
+  text-align: center;
+}
+
+@media (max-width: 1180px) {
+  .dashboardApp .overviewStats,
+  .dashboardApp .overviewEducationGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboardApp .overviewFinance,
+  .dashboardApp .overviewBottomGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .dashboardApp .superOverview {
+    padding: 0.8rem 0.8rem 1.6rem;
+  }
+
+  .dashboardApp .overviewStats,
+  .dashboardApp .overviewEducationGrid,
+  .dashboardApp .contentStatusGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboardApp .overviewCardHeader {
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+
+  .dashboardApp .overviewCardHeader small {
+    grid-column: 2;
+  }
+}
+
 /* Sidebar layout based on the approved navigation reference. */
 .dashboardApp {
   grid-template-columns: 280px minmax(0, 1fr);
@@ -2419,6 +3229,57 @@
 .dashboardApp .dashboardSubnav a.active {
   background: #eef8f3;
   color: #009967;
+}
+
+.dashboardApp .dashboardEducationNav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.dashboardApp .dashboardEducationHeading {
+  margin: 0 1.55rem 0.25rem;
+  color: #8a908d;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.dashboardApp .dashboardEducationGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.dashboardApp .dashboardEducationGroup .dashboardNavItem {
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+}
+
+.dashboardApp .dashboardEducationCaret {
+  color: currentColor;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.dashboardApp .dashboardEducationChildren {
+  margin-left: 1.55rem;
+  padding-left: 1.25rem;
+  border-left: 1px solid #dbe5df;
+}
+
+.dashboardApp .dashboardEducationChildren a {
+  gap: 0.65rem;
+}
+
+.dashboardApp .dashboardEducationChildren svg {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.9;
 }
 
 .dashboardApp .dashboardLogoutForm {
@@ -3840,5 +4701,2060 @@
   .dashboardApp .dialogContent {
     width: 100%;
     padding: 1rem;
+  }
+}
+
+/* Education participant data workspace. */
+.dashboardApp .participantWorkspace {
+  min-height: calc(100svh - 68px);
+  background: var(--portal-bg);
+  color: var(--portal-text);
+}
+
+.dashboardApp .participantTopbar {
+  display: flex;
+  min-height: 68px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--portal-border);
+  background: rgba(255, 255, 255, 0.96);
+  padding: 0.85rem clamp(1rem, 2.6vw, 2.25rem);
+}
+
+.dashboardApp .participantGlobalSearch,
+.dashboardApp .participantSearchBox {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  border: 1px solid var(--portal-border);
+  background: #fff;
+  color: #819089;
+}
+
+.dashboardApp .participantGlobalSearch {
+  width: min(320px, 100%);
+  min-height: 42px;
+  border-color: transparent;
+  border-radius: 13px;
+  background: #eef4f1;
+  padding: 0 0.95rem;
+}
+
+.dashboardApp .participantGlobalSearch svg,
+.dashboardApp .participantSearchBox svg,
+.dashboardApp .participantBell svg,
+.dashboardApp .participantAddButton svg,
+.dashboardApp .participantEmptyState svg,
+.dashboardApp .participantModalHead svg {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.dashboardApp .participantGlobalSearch input,
+.dashboardApp .participantSearchBox input {
+  width: 100%;
+  min-height: 0;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--portal-text);
+  font: inherit;
+  box-shadow: none;
+  outline: none;
+}
+
+.dashboardApp .participantUserTools {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.dashboardApp .participantBell {
+  position: relative;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: #60736a;
+}
+
+.dashboardApp .participantBell span {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  background: #e2322d;
+}
+
+.dashboardApp .participantProfile {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  border: 0;
+  background: transparent;
+  color: var(--portal-text);
+  padding: 0;
+}
+
+.dashboardApp .participantProfile strong {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--portal-green);
+  color: #fff;
+  font-size: 0.82rem;
+}
+
+.dashboardApp .participantProfile span {
+  display: grid;
+  line-height: 1.15;
+}
+
+.dashboardApp .participantProfile b {
+  font-size: 0.9rem;
+}
+
+.dashboardApp .participantProfile small {
+  color: var(--portal-muted);
+  font-size: 0.72rem;
+}
+
+.dashboardApp .participantPageHead,
+.dashboardApp .participantStats,
+.dashboardApp .participantFilterCard,
+.dashboardApp .participantListCard {
+  width: min(100%, 1220px);
+  margin-inline: auto;
+}
+
+.dashboardApp .participantPageHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 2.3rem clamp(1rem, 2.6vw, 2.25rem) 1.25rem;
+}
+
+.dashboardApp .participantPageHead h1 {
+  margin: 0;
+  color: var(--portal-text);
+  font-size: clamp(1.55rem, 2.4vw, 2.15rem);
+  line-height: 1.08;
+}
+
+.dashboardApp .participantPageHead p {
+  margin: 0.35rem 0 0;
+  color: var(--portal-muted);
+  font-size: 0.95rem;
+}
+
+.dashboardApp .participantAddButton {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  border: 0;
+  border-radius: 10px;
+  background: var(--portal-green);
+  color: #fff;
+  padding: 0 1.4rem;
+  font-size: 0.88rem;
+  font-weight: 800;
+  box-shadow: 0 9px 20px rgba(22, 132, 91, 0.22);
+}
+
+.dashboardApp .participantStats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  padding: 0 clamp(1rem, 2.6vw, 2.25rem);
+}
+
+.dashboardApp .participantStatCard,
+.dashboardApp .participantFilterCard,
+.dashboardApp .participantListCard {
+  border: 1px solid var(--portal-border);
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: var(--portal-shadow);
+}
+
+.dashboardApp .participantStatCard {
+  display: grid;
+  min-height: 94px;
+  align-content: center;
+  padding: 1rem 1.25rem;
+}
+
+.dashboardApp .participantStatCard span {
+  color: var(--portal-muted);
+  font-size: 0.82rem;
+}
+
+.dashboardApp .participantStatValue {
+  margin-top: 0.35rem;
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.dashboardApp .participantStatValue.neutral {
+  color: var(--portal-text);
+}
+
+.dashboardApp .participantStatValue.green {
+  color: var(--portal-green);
+}
+
+.dashboardApp .participantStatValue.blue {
+  color: #2c77df;
+}
+
+.dashboardApp .participantStatValue.red {
+  color: #d82424;
+}
+
+.dashboardApp .participantFilterCard {
+  margin-top: 1.9rem;
+  padding: 1rem 1.25rem;
+}
+
+.dashboardApp .participantSearchBox {
+  width: min(500px, 100%);
+  min-height: 46px;
+  border-radius: 11px;
+  padding: 0 1rem;
+}
+
+.dashboardApp .participantListCard {
+  min-height: 268px;
+  margin-top: 1.8rem;
+  overflow: hidden;
+}
+
+.dashboardApp .participantEmptyState {
+  display: grid;
+  min-height: 268px;
+  place-items: center;
+  align-content: center;
+  gap: 0.85rem;
+  color: #6c8177;
+  text-align: center;
+}
+
+.dashboardApp .participantEmptyState svg {
+  width: 44px;
+  height: 44px;
+  color: #cfd8d4;
+  stroke-width: 1.8;
+}
+
+.dashboardApp .participantEmptyState p {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+.dashboardApp .participantTableWrap {
+  overflow-x: auto;
+}
+
+.dashboardApp .participantStatus {
+  display: inline-flex;
+  border-radius: 999px;
+  background: var(--portal-green-soft);
+  color: var(--portal-green-dark);
+  padding: 0.32rem 0.65rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.dashboardApp .participantStatus.lulus {
+  background: #edf5ff;
+  color: #2c77df;
+}
+
+.dashboardApp .participantStatus.cuti-keluar {
+  background: #fff0ef;
+  color: #bd2f2a;
+}
+
+.dashboardApp .participantModalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  background: rgba(12, 37, 27, 0.38);
+  padding: 1.25rem;
+}
+
+.dashboardApp .participantModal {
+  width: min(720px, 100%);
+  border: 1px solid var(--portal-border);
+  border-radius: 13px;
+  background: #fbfdfc;
+  padding: 1.75rem;
+  box-shadow: 0 24px 70px rgba(9, 44, 29, 0.24);
+}
+
+.dashboardApp .participantModalHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.55rem;
+}
+
+.dashboardApp .participantModalHead h2 {
+  margin: 0;
+  color: var(--portal-text);
+  font-size: 1.45rem;
+  line-height: 1.1;
+}
+
+.dashboardApp .participantModalHead button {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: #53645b;
+}
+
+.dashboardApp .participantFormGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem 1rem;
+}
+
+.dashboardApp .participantField {
+  display: grid;
+  gap: 0.55rem;
+  color: var(--portal-text);
+  font-size: 1.02rem;
+  font-weight: 700;
+}
+
+.dashboardApp .participantField.full {
+  margin-bottom: 1.2rem;
+}
+
+.dashboardApp .participantField input,
+.dashboardApp .participantField select {
+  width: 100%;
+  min-height: 54px;
+  border: 1px solid var(--portal-border);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--portal-text);
+  padding: 0 1rem;
+  font: inherit;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(29, 52, 40, 0.04);
+}
+
+.dashboardApp .participantField select {
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #7c8a83 50%),
+    linear-gradient(135deg, #7c8a83 50%, transparent 50%);
+  background-position:
+    calc(100% - 23px) 50%,
+    calc(100% - 16px) 50%;
+  background-size: 7px 7px, 7px 7px;
+  background-repeat: no-repeat;
+}
+
+.dashboardApp .participantField input:focus,
+.dashboardApp .participantField select:focus {
+  border-color: var(--portal-green);
+  box-shadow: 0 0 0 3px rgba(22, 132, 91, 0.1);
+}
+
+.dashboardApp .participantModalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.dashboardApp .participantCancelButton,
+.dashboardApp .participantSaveButton {
+  min-width: 100px;
+  min-height: 52px;
+  border-radius: 11px;
+  padding: 0 1.2rem;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.dashboardApp .participantCancelButton {
+  border: 1px solid var(--portal-border);
+  background: #fff;
+  color: var(--portal-text);
+}
+
+.dashboardApp .participantSaveButton {
+  border: 0;
+  background: var(--portal-green);
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+  .dashboardApp .participantStats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboardApp .participantTopbar,
+  .dashboardApp .participantPageHead {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .dashboardApp .participantGlobalSearch {
+    width: 100%;
+  }
+
+  .dashboardApp .participantUserTools {
+    justify-content: space-between;
+  }
+
+  .dashboardApp .participantAddButton {
+    width: 100%;
+  }
+
+  .dashboardApp .participantStats,
+  .dashboardApp .participantFormGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboardApp .participantModal {
+    padding: 1.1rem;
+  }
+
+  .dashboardApp .participantModalActions {
+    flex-direction: column-reverse;
+  }
+
+  .dashboardApp .participantCancelButton,
+  .dashboardApp .participantSaveButton {
+    width: 100%;
+  }
+}
+
+/* PMB management workspace. */
+.dashboardApp .pmbWorkspace {
+  min-height: 100svh;
+  background: var(--portal-bg);
+  color: var(--portal-text);
+}
+
+.dashboardApp .pmbPageHead,
+.dashboardApp .pmbStats,
+.dashboardApp .pmbSearchWrap,
+.dashboardApp .pmbTabs,
+.dashboardApp .pmbApplicantList {
+  width: min(100%, 1220px);
+  margin-inline: auto;
+}
+
+.dashboardApp .pmbPageHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 2.35rem clamp(1rem, 2.6vw, 2.25rem) 1.25rem;
+}
+
+.dashboardApp .pmbPageHead h1 {
+  margin: 0;
+  color: var(--portal-text);
+  font-size: clamp(1.65rem, 2.5vw, 2.2rem);
+  line-height: 1.1;
+}
+
+.dashboardApp .pmbPageHead p {
+  margin: 0.35rem 0 0;
+  color: var(--portal-muted);
+  font-size: 0.95rem;
+}
+
+.dashboardApp .pmbSettingsButton {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  border: 1px solid var(--portal-border);
+  border-radius: 11px;
+  background: #fff;
+  color: var(--portal-text);
+  padding: 0 1.05rem;
+  font-size: 0.78rem;
+  font-weight: 750;
+  box-shadow: var(--portal-shadow);
+}
+
+.dashboardApp .pmbSettingsButton svg,
+.dashboardApp .pmbMore svg,
+.dashboardApp .pmbDetailHead svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.dashboardApp .participantStatValue.gold {
+  color: #c58508;
+}
+
+.dashboardApp .participantStatValue.teal {
+  color: #0e9a86;
+}
+
+.dashboardApp .pmbSearchWrap {
+  padding: 1.55rem clamp(1rem, 2.6vw, 2.25rem) 0;
+}
+
+.dashboardApp .pmbSearchWrap input {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--portal-border);
+  border-radius: 11px;
+  background: #fff;
+  color: var(--portal-text);
+  padding: 0 1rem;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 14px rgba(28, 65, 47, 0.04);
+}
+
+.dashboardApp .pmbTabs {
+  display: flex;
+  gap: 0.35rem;
+  padding: 1.55rem clamp(1rem, 2.6vw, 2.25rem) 0;
+  overflow-x: auto;
+}
+
+.dashboardApp .pmbTabs button {
+  flex: 0 0 auto;
+  min-height: 40px;
+  border: 0;
+  border-radius: 11px;
+  background: #edf4f1;
+  color: #66786f;
+  padding: 0 1rem;
+  font-size: 0.86rem;
+  font-weight: 750;
+}
+
+.dashboardApp .pmbTabs button.active {
+  background: #fff;
+  color: var(--portal-text);
+  box-shadow: var(--portal-shadow);
+}
+
+.dashboardApp .pmbApplicantList {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1.35rem clamp(1rem, 2.6vw, 2.25rem) 2.5rem;
+}
+
+.dashboardApp .pmbApplicantCard {
+  display: grid;
+  min-height: 96px;
+  grid-template-columns: 52px minmax(0, 1fr) auto 28px;
+  align-items: center;
+  gap: 1rem;
+  border: 1px solid var(--portal-border);
+  border-radius: 13px;
+  background: #fff;
+  padding: 1rem 1.25rem;
+  color: var(--portal-text);
+  text-align: left;
+  box-shadow: var(--portal-shadow);
+  cursor: pointer;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.dashboardApp .pmbApplicantCard:hover {
+  border-color: rgba(37, 151, 101, 0.34);
+  box-shadow: 0 16px 32px rgba(28, 65, 47, 0.11);
+  transform: translateY(-1px);
+}
+
+.dashboardApp .pmbAvatar {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 999px;
+  background: #eaf7f1;
+  color: var(--portal-green);
+  font-size: 0.88rem;
+  font-weight: 850;
+}
+
+.dashboardApp .pmbApplicantMain {
+  display: grid;
+  gap: 0.18rem;
+  min-width: 0;
+}
+
+.dashboardApp .pmbApplicantMain strong {
+  overflow: hidden;
+  color: var(--portal-text);
+  font-size: 0.95rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboardApp .pmbApplicantMain small {
+  overflow: hidden;
+  color: var(--portal-muted);
+  font-size: 0.76rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboardApp .pmbStatusBadge {
+  display: inline-flex;
+  min-width: 150px;
+  justify-content: center;
+  border-radius: 999px;
+  background: #fff7be;
+  color: #a87500;
+  padding: 0.38rem 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.dashboardApp .pmbStatusBadge.diterima,
+.dashboardApp .pmbStatusBadge.sudah-bayar {
+  background: #e5f7ee;
+  color: var(--portal-green);
+}
+
+.dashboardApp .pmbStatusBadge.ditolak {
+  background: #fff0ef;
+  color: #bd2f2a;
+}
+
+.dashboardApp .pmbStatusBadge.draft {
+  background: #edf1ef;
+  color: #607168;
+}
+
+.dashboardApp .pmbStatusBadge.verifikasi-adm {
+  background: #edf2ff;
+  color: #2f5fb8;
+}
+
+.dashboardApp .pmbStatusBadge.menunggu-bayar,
+.dashboardApp .pmbStatusBadge.daftar-ulang {
+  background: #fff4d8;
+  color: #a06600;
+}
+
+.dashboardApp .pmbMore {
+  color: #7c8c84;
+}
+
+.dashboardApp .pmbEmpty {
+  display: grid;
+  min-height: 180px;
+  place-items: center;
+  border: 1px solid var(--portal-border);
+  border-radius: 13px;
+  background: #fff;
+  color: var(--portal-muted);
+  box-shadow: var(--portal-shadow);
+}
+
+.dashboardApp .pmbDetailOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.72);
+  padding: 1.25rem;
+}
+
+.dashboardApp .pmbDetailModal {
+  width: min(760px, 100%);
+  max-height: calc(100svh - 2.5rem);
+  overflow-y: auto;
+  border: 1px solid var(--portal-border);
+  border-radius: 11px;
+  background: #fbfdfc;
+  padding: 1.45rem;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.3);
+  scrollbar-color: rgba(37, 151, 101, 0.35) transparent;
+}
+
+.dashboardApp .pmbDetailHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.dashboardApp .pmbDetailHead h2 {
+  margin: 0;
+  color: var(--portal-text);
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.dashboardApp .pmbDetailHead button {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: #5e6d66;
+}
+
+.dashboardApp .pmbDetailGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.58rem 2rem;
+}
+
+.dashboardApp .pmbDetailGrid p {
+  margin: 0;
+  color: #7a8982;
+  font-size: 0.74rem;
+  line-height: 1.5;
+}
+
+.dashboardApp .pmbDetailGrid strong {
+  color: #26362e;
+  font-weight: 800;
+  word-break: break-word;
+}
+
+.dashboardApp .pmbDocuments {
+  margin-top: 1.5rem;
+}
+
+.dashboardApp .pmbDocumentLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.7rem;
+}
+
+.dashboardApp .pmbDocuments h3,
+.dashboardApp .pmbUpdatePanel h3 {
+  margin: 0 0 0.65rem;
+  color: var(--portal-text);
+  font-size: 0.78rem;
+}
+
+.dashboardApp .pmbDocuments a {
+  display: inline-flex;
+  color: var(--portal-green);
+  font-size: 0.72rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.dashboardApp .pmbDocuments a::before {
+  content: ">";
+  margin-right: 0.25rem;
+}
+
+.dashboardApp .pmbDocuments a:hover {
+  text-decoration: underline;
+}
+
+.dashboardApp .pmbDocumentMissing {
+  display: inline-flex;
+  color: #87958e;
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+
+.dashboardApp .pmbUpdatePanel {
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 1.15rem;
+  border-top: 1px solid var(--portal-border);
+  padding-top: 1.1rem;
+}
+
+.dashboardApp .pmbUpdatePanel label {
+  display: grid;
+  gap: 0.45rem;
+  color: var(--portal-text);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.dashboardApp .pmbUpdatePanel select,
+.dashboardApp .pmbUpdatePanel textarea {
+  width: 100%;
+  border: 1px solid var(--portal-border);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--portal-text);
+  padding: 0.75rem;
+  font: inherit;
+}
+
+.dashboardApp .pmbUpdatePanel select {
+  min-height: 40px;
+}
+
+.dashboardApp .pmbUpdatePanel textarea {
+  min-height: 82px;
+  resize: vertical;
+}
+
+.dashboardApp .pmbPaymentInfo {
+  border: 1px solid var(--portal-border);
+  border-radius: 10px;
+  background: #f7fbf9;
+  padding: 0.75rem;
+  color: var(--portal-muted);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.dashboardApp .pmbPaymentInfo span {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: var(--portal-text);
+  font-weight: 800;
+}
+
+.dashboardApp .pmbPaymentInfo p {
+  margin: 0;
+}
+
+.dashboardApp .pmbPaymentInfo strong {
+  color: var(--portal-text);
+}
+
+.dashboardApp .pmbDetailActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 760px) {
+  .dashboardApp .pmbPageHead {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .dashboardApp .pmbSettingsButton {
+    width: 100%;
+  }
+
+  .dashboardApp .pmbTabs {
+    overflow-x: auto;
+  }
+
+  .dashboardApp .pmbApplicantCard {
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+
+  .dashboardApp .pmbStatusBadge,
+  .dashboardApp .pmbMore {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .dashboardApp .pmbDetailGrid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .dashboardApp .pmbDetailActions {
+    flex-direction: column-reverse;
+  }
+}
+
+/* Interactive sidebar dropdowns and collapse control. */
+.dashboardApp {
+  position: relative;
+  transition: grid-template-columns 240ms ease;
+}
+
+.dashboardApp .dashboardSidebarToggleInput {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dashboardApp .dashboardSidebarHead {
+  display: flex;
+  min-height: 68px;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.85rem;
+  padding-inline: 0.45rem 0.25rem;
+}
+
+.dashboardApp .dashboardSidebarHead .dashboardLogo {
+  min-width: 0;
+  flex: 1 1 auto;
+  margin: 0;
+  padding: 0;
+  transition: width 220ms ease, opacity 180ms ease;
+}
+
+.dashboardApp .dashboardSidebarToggleButton {
+  position: relative;
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  place-items: center;
+  border: 1px solid var(--portal-border);
+  border-radius: 10px;
+  background: #f3faf7;
+  color: var(--portal-green-dark);
+  cursor: pointer;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.dashboardApp .dashboardSidebarToggleButton:hover {
+  border-color: rgba(22, 132, 91, 0.28);
+  background: var(--portal-green-soft);
+  transform: translateY(-1px);
+}
+
+.dashboardApp .dashboardSidebarToggleButton::before,
+.dashboardApp .dashboardSidebarToggleButton::after,
+.dashboardApp .dashboardSidebarToggleButton span {
+  display: block;
+  width: 16px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  content: "";
+  transition: transform 220ms ease, opacity 180ms ease;
+}
+
+.dashboardApp .dashboardSidebarToggleButton::before {
+  transform: translateY(-5px);
+}
+
+.dashboardApp .dashboardSidebarToggleButton::after {
+  transform: translateY(5px);
+}
+
+.dashboardApp .dashboardSidebar {
+  transition: width 240ms ease, padding 240ms ease, box-shadow 240ms ease;
+  scrollbar-width: thin;
+}
+
+.dashboardApp .dashboardNavItem,
+.dashboardApp .dashboardSubnav a,
+.dashboardApp .dashboardSubnav button,
+.dashboardApp .dashboardLogoutButton {
+  transition: background 170ms ease, color 170ms ease, transform 170ms ease, box-shadow 170ms ease;
+}
+
+.dashboardApp .dashboardNavItem:hover,
+.dashboardApp .dashboardSubnav a:hover,
+.dashboardApp .dashboardSubnav button:hover,
+.dashboardApp .dashboardLogoutButton:hover {
+  transform: translateX(2px);
+}
+
+.dashboardApp .dashboardDropdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+}
+
+.dashboardApp .dashboardDropdownSummary {
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.dashboardApp .dashboardDropdownSummary::-webkit-details-marker {
+  display: none;
+}
+
+.dashboardApp .dashboardDropdownCaret {
+  display: grid;
+  width: 18px;
+  height: 18px;
+  place-items: center;
+  color: currentColor;
+  font-size: 0.62rem;
+  font-weight: 900;
+  line-height: 1;
+  opacity: 0.75;
+  transition: transform 220ms ease, background 180ms ease;
+}
+
+.dashboardApp .dashboardDropdown[open] > .dashboardDropdownSummary .dashboardDropdownCaret {
+  transform: rotate(180deg);
+}
+
+.dashboardApp .dashboardDropdown[open] > .dashboardSubnav {
+  animation: dashboardDropdownIn 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.dashboardApp .dashboardDropdown:not([open]) > .dashboardDropdownSummary {
+  color: #5f6d66;
+}
+
+.dashboardApp .dashboardDropdown:not([open]) > .dashboardDropdownSummary:hover {
+  background: #f3faf7;
+  color: var(--portal-green-dark);
+}
+
+.dashboardApp .dashboardEducationNav {
+  gap: 0.25rem;
+}
+
+.dashboardApp .dashboardEducationChildren {
+  margin: 0.12rem 0 0.3rem 1.55rem;
+}
+
+@keyframes dashboardDropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-7px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) {
+  grid-template-columns: 82px minmax(0, 1fr);
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardSidebar {
+  padding-inline: 0.65rem;
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardSidebarHead {
+  justify-content: center;
+  padding-inline: 0;
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardLogo {
+  width: 0;
+  min-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardSidebarToggleButton::before {
+  transform: translateY(0) rotate(45deg);
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardSidebarToggleButton::after {
+  transform: translateY(0) rotate(-45deg);
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardSidebarToggleButton span {
+  opacity: 0;
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardNav {
+  gap: 0.52rem;
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardNavItem {
+  min-height: 46px;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  gap: 0;
+  padding-inline: 0;
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardNavItem span:not(.dashboardDropdownCaret),
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardSubnav,
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardLogoutButton span {
+  display: none;
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardDropdownCaret {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 16px;
+  height: 16px;
+  background: rgba(22, 132, 91, 0.1);
+  font-size: 0.58rem;
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardLogoutForm {
+  width: 100%;
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardLogoutButton {
+  display: grid;
+  min-height: 44px;
+  place-items: center;
+  padding: 0;
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardLogoutButton svg {
+  width: 19px;
+  height: 19px;
+}
+
+.dashboardApp .dashboardSidebar {
+  width: 252px;
+  gap: 0;
+  overflow-x: hidden;
+}
+
+.dashboardApp .dashboardSidebarHead {
+  min-height: 58px;
+  margin-bottom: 0.55rem;
+  padding-inline: 0.15rem;
+}
+
+.dashboardApp .dashboardSidebarHead .dashboardLogo {
+  display: flex;
+  min-height: 52px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.dashboardApp .dashboardSidebarHead .dashboardLogo img {
+  width: 168px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.dashboardApp .dashboardNav {
+  gap: 0.34rem;
+}
+
+.dashboardApp .dashboardNavGroup,
+.dashboardApp .dashboardEducationGroup {
+  gap: 0.08rem;
+}
+
+.dashboardApp .dashboardNavItem {
+  min-height: 42px;
+  padding: 0.55rem 0.78rem;
+  border-radius: 8px;
+  font-size: 0.76rem;
+  line-height: 1.25;
+}
+
+.dashboardApp .dashboardNavItem svg,
+.dashboardApp .dashboardLogoutButton svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.9;
+}
+
+.dashboardApp .dashboardSubnav {
+  gap: 0.08rem;
+  margin: 0.05rem 0 0.34rem;
+  padding: 0.1rem 0 0.16rem 2.25rem;
+}
+
+.dashboardApp .dashboardSubnav a,
+.dashboardApp .dashboardSubnav button {
+  min-height: 30px;
+  padding: 0.28rem 0.42rem;
+  font-size: 0.68rem;
+}
+
+.dashboardApp .dashboardEducationChildren {
+  margin: 0.05rem 0 0.34rem 1.15rem;
+  padding-left: 0.88rem;
+}
+
+.dashboardApp .dashboardLogoutForm {
+  width: 100%;
+  margin-top: auto;
+  padding: 1rem 0 0;
+  border-bottom: 0;
+}
+
+.dashboardApp .dashboardLogoutButton {
+  display: grid;
+  width: 100%;
+  min-height: 42px;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 8px;
+  color: #bd4a45;
+  padding: 0.55rem 0.78rem;
+  font-size: 0.74rem;
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardSidebar {
+  width: 82px;
+}
+
+@media (max-width: 900px) {
+  .dashboardApp .dashboardSidebar {
+    width: 100%;
+  }
+
+  .dashboardApp .dashboardSidebarHead {
+    justify-content: center;
+  }
+
+  .dashboardApp .dashboardSidebarHead .dashboardLogo {
+    flex: 0 1 auto;
+    justify-content: center;
+  }
+
+  .dashboardApp .dashboardDropdownSummary {
+    grid-template-columns: 18px minmax(0, 1fr) auto;
+  }
+
+  .dashboardApp .dashboardSidebarToggleInput,
+  .dashboardApp .dashboardSidebarToggleButton {
+    display: none;
+  }
+
+  .dashboardApp:has(.dashboardSidebarToggleInput:checked) {
+    display: block;
+  }
+
+  .dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardLogo {
+    width: auto;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardNavItem span:not(.dashboardDropdownCaret),
+  .dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardSubnav,
+  .dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardLogoutButton span {
+    display: inline;
+  }
+}
+
+/* Clean compact sidebar model. */
+.dashboardApp {
+  grid-template-columns: 252px minmax(0, 1fr);
+}
+
+.dashboardApp .dashboardSidebar {
+  width: 252px;
+  border-right: 0;
+  border-right: 1px solid var(--portal-border);
+  background: #fff;
+  color: var(--portal-text);
+  padding: 1rem 0.75rem;
+  box-shadow: 8px 0 24px rgba(5, 33, 21, 0.08);
+}
+
+.dashboardApp .dashboardSidebarHead {
+  position: relative;
+  min-height: 50px;
+  margin: 0 0 1rem;
+  padding: 0;
+}
+
+.dashboardApp .dashboardBrand {
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  gap: 0.7rem;
+  color: var(--portal-text);
+  text-decoration: none;
+}
+
+.dashboardApp .dashboardBrandMark {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--portal-green);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.dashboardApp .dashboardBrandText {
+  display: grid;
+  min-width: 0;
+  line-height: 1.05;
+}
+
+.dashboardApp .dashboardBrandText strong {
+  color: var(--portal-text);
+  font-size: 0.8rem;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.dashboardApp .dashboardBrandText small {
+  color: var(--portal-muted);
+  font-size: 0.68rem;
+  white-space: nowrap;
+}
+
+.dashboardApp .dashboardSidebarToggleButton {
+  position: absolute;
+  top: 50%;
+  right: -1.35rem;
+  z-index: 4;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--portal-border);
+  border-radius: 999px;
+  background: #fff;
+  color: #607168;
+  box-shadow: 0 8px 18px rgba(8, 38, 24, 0.14);
+  transform: translateY(-50%);
+}
+
+.dashboardApp .dashboardSidebarToggleButton:hover {
+  background: #fff;
+  color: var(--portal-green-dark);
+  transform: translateY(-50%) scale(1.04);
+}
+
+.dashboardApp .dashboardSidebarToggleButton::before {
+  width: 7px;
+  height: 7px;
+  border: solid currentColor;
+  border-width: 0 0 2px 2px;
+  background: transparent;
+  transform: translateX(1px) rotate(45deg);
+}
+
+.dashboardApp .dashboardSidebarToggleButton::after,
+.dashboardApp .dashboardSidebarToggleButton span {
+  display: none;
+}
+
+.dashboardApp .dashboardNav {
+  gap: 0.32rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--portal-border);
+}
+
+.dashboardApp .dashboardNavItem {
+  min-height: 42px;
+  grid-template-columns: 18px minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  border-radius: 8px;
+  color: #53645b;
+  padding: 0.55rem 0.68rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.dashboardApp .dashboardNavItem:hover,
+.dashboardApp .dashboardDropdown:not([open]) > .dashboardDropdownSummary:hover {
+  background: #f3faf7;
+  color: var(--portal-green-dark);
+}
+
+.dashboardApp .dashboardNavItem.active {
+  background: var(--portal-green-soft);
+  color: var(--portal-green-dark);
+}
+
+.dashboardApp .dashboardNavItem::before {
+  display: none;
+}
+
+.dashboardApp .dashboardSubnav {
+  margin: 0.05rem 0 0.4rem;
+  padding: 0.1rem 0 0.1rem 2.35rem;
+}
+
+.dashboardApp .dashboardSubnav a,
+.dashboardApp .dashboardSubnav button {
+  min-height: 30px;
+  color: #6c7a72;
+  font-size: 0.69rem;
+}
+
+.dashboardApp .dashboardSubnav a:hover,
+.dashboardApp .dashboardSubnav button:hover,
+.dashboardApp .dashboardSubnav a.active {
+  background: #f1f8f4;
+  color: var(--portal-green);
+}
+
+.dashboardApp .dashboardEducationChildren {
+  border-left-color: #dbe5df;
+}
+
+.dashboardApp .dashboardDropdown:not([open]) > .dashboardDropdownSummary {
+  color: #53645b;
+}
+
+.dashboardApp .dashboardDropdownCaret {
+  color: currentColor;
+  opacity: 0.85;
+}
+
+.dashboardApp .dashboardLogoutForm {
+  border-top: 1px solid var(--portal-border);
+}
+
+.dashboardApp .dashboardLogoutButton {
+  color: #bd4a45;
+}
+
+.dashboardApp .dashboardLogoutButton:hover {
+  background: #fff2f1;
+  color: #b6423d;
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) {
+  grid-template-columns: 72px minmax(0, 1fr);
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardSidebar {
+  width: 72px;
+  background: #fff;
+  padding-inline: 0.75rem;
+  box-shadow: 8px 0 24px rgba(23, 38, 31, 0.06);
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardSidebarHead {
+  justify-content: center;
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardBrand {
+  justify-content: center;
+  width: auto;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardBrandText {
+  display: none;
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardSidebarToggleButton {
+  right: -0.95rem;
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardSidebarToggleButton::before {
+  transform: translateX(-1px) rotate(225deg);
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardNav {
+  border-top: 0;
+  align-items: center;
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardNavItem {
+  width: 44px;
+  min-height: 44px;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  padding: 0;
+  color: #60736a;
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardNavItem.active {
+  background: var(--portal-green-soft);
+  color: var(--portal-green-dark);
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardNavItem span:not(.dashboardDropdownCaret),
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardSubnav,
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardLogoutButton span,
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardDropdownCaret {
+  display: none;
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardLogoutForm {
+  border-top: 0;
+}
+
+.dashboardApp:has(.dashboardSidebarToggleInput:checked) .dashboardLogoutButton {
+  width: 44px;
+  color: #bd4a45;
+}
+
+@media (max-width: 900px) {
+  .dashboardApp .dashboardSidebar {
+    width: 100%;
+    background: #fff;
+  }
+
+  .dashboardApp .dashboardBrandText {
+    display: grid;
+  }
+}
+
+/* Public PMB applicant portal. */
+body:has(.pmbAuthPage) .topStrip,
+body:has(.pmbAuthPage) .header,
+body:has(.pmbAuthPage) .siteFooter {
+  display: none;
+}
+
+.pmbAuthPage {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  background: #ddf8ea;
+  color: #043b33;
+  padding: clamp(1.25rem, 4vw, 3.5rem);
+}
+
+.pmbPortalPage {
+  place-items: start center;
+}
+
+.pmbLoginShell,
+.pmbPortalShell,
+.pmbRegisterShell {
+  width: min(100%, 760px);
+  display: grid;
+  justify-items: center;
+}
+
+.pmbLoginShell {
+  width: min(100%, 380px);
+}
+
+.pmbRegisterShell {
+  width: min(100%, 430px);
+}
+
+.pmbAuthBrand {
+  display: grid;
+  justify-items: center;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.pmbAuthBrand.compact {
+  margin-bottom: 1.9rem;
+}
+
+.pmbAuthBrand > span {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  margin-bottom: 1rem;
+  border-radius: 15px;
+  background: linear-gradient(145deg, #0a9b74, #03624f);
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 900;
+  box-shadow: 0 14px 28px rgba(2, 96, 75, 0.22);
+}
+
+.pmbAuthBrand h1 {
+  margin: 0;
+  color: #043b33;
+  font-size: clamp(1.45rem, 3vw, 1.85rem);
+  line-height: 1.15;
+}
+
+.pmbAuthBrand p {
+  margin: 0.45rem 0 0;
+  color: #05765f;
+  font-size: 0.86rem;
+}
+
+.pmbAuthCard,
+.pmbRegisterCard,
+.pmbLoginCallout {
+  width: 100%;
+  border: 1px solid #cde3d9;
+  border-radius: 11px;
+  background: #fff;
+  box-shadow: 0 18px 38px rgba(21, 76, 57, 0.14);
+}
+
+.pmbAuthCard {
+  padding: 1.35rem 1.45rem 1.55rem;
+}
+
+.pmbAuthCardHead {
+  margin-bottom: 1rem;
+}
+
+.pmbAuthCardHead h2 {
+  margin: 0;
+  color: #0b211d;
+  font-size: 0.92rem;
+}
+
+.pmbRegisterCard .pmbAuthCardHead h2 {
+  font-size: 1.08rem;
+}
+
+.pmbAuthCardHead p {
+  margin: 0.2rem 0 0;
+  color: #6a7c78;
+  font-size: 0.72rem;
+}
+
+.pmbAuthField {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.9rem;
+  color: #0b211d;
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+.pmbAuthField input {
+  width: 100%;
+  min-height: 34px;
+  border: 1px solid #cfded7;
+  border-radius: 8px;
+  background: #fff;
+  color: #123d36;
+  padding: 0 0.7rem;
+  font: inherit;
+  font-weight: 500;
+  outline: none;
+}
+
+.pmbAuthField input:focus {
+  border-color: #15936d;
+  box-shadow: 0 0 0 3px rgba(21, 147, 109, 0.1);
+}
+
+.pmbAuthField small {
+  color: #73847f;
+  font-size: 0.68rem;
+  font-weight: 500;
+}
+
+.pmbAuthPrimary {
+  display: flex;
+  width: 100%;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+  margin-top: 1rem;
+  border: 0;
+  border-radius: 8px;
+  background: #269763;
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 850;
+  box-shadow: 0 8px 18px rgba(38, 151, 99, 0.2);
+}
+
+.pmbAuthPrimary:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.pmbAuthDivider {
+  height: 1px;
+  margin: 1rem 0 0.85rem;
+  background: #e3ece8;
+}
+
+.pmbAuthSubtleLink {
+  display: block;
+  color: #687d76;
+  font-size: 0.72rem;
+  text-align: center;
+  text-decoration: none;
+}
+
+.pmbAuthSubtleLink:hover {
+  color: #0b8f68;
+}
+
+.pmbAuthMessage {
+  border-radius: 8px;
+  background: #fff2f0;
+  color: #b23c30;
+  margin: 0.9rem 0 0;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.pmbAuthFooter {
+  margin: 1.45rem 0 0;
+  color: #68817a;
+  font-size: 0.7rem;
+  text-align: center;
+}
+
+.pmbSchoolGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.pmbSchoolCard {
+  display: grid;
+  min-height: 185px;
+  align-content: center;
+  border-radius: 13px;
+  background: #fff;
+  padding: 1.15rem;
+  color: #0b211d;
+  text-decoration: none;
+  box-shadow: 0 13px 28px rgba(21, 76, 57, 0.14);
+}
+
+.pmbSchoolCard:hover {
+  transform: translateY(-2px);
+}
+
+.pmbSchoolIcon {
+  display: grid;
+  width: 45px;
+  height: 45px;
+  place-items: center;
+  margin-bottom: 0.85rem;
+  border-radius: 10px;
+  color: #fff;
+}
+
+.pmbSchoolIcon.green {
+  background: #078468;
+}
+
+.pmbSchoolIcon.teal {
+  background: #117d73;
+}
+
+.pmbSchoolIcon.blue {
+  background: #2f5bd8;
+}
+
+.pmbSchoolIcon svg,
+.pmbRegisterInstitution svg,
+.pmbLookup svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.pmbSchoolCard strong {
+  color: #0b211d;
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.pmbSchoolCard small {
+  margin-top: 0.25rem;
+  color: #70827c;
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+.pmbSchoolCard em {
+  margin-top: 0.75rem;
+  color: #008764;
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.pmbLoginCallout {
+  margin-top: 1.35rem;
+  padding: 1.05rem 1.15rem;
+}
+
+.pmbLoginCallout a {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 8px;
+  background: #0b9b70;
+  color: #fff;
+  padding: 0 1rem;
+  font-size: 0.86rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.pmbLoginCallout b {
+  margin-left: auto;
+}
+
+.pmbLoginCallout p {
+  margin: 0.8rem 0 0;
+  color: #6f817b;
+  font-size: 0.72rem;
+  text-align: center;
+}
+
+.pmbRegisterHero {
+  width: 100%;
+  min-height: 132px;
+  border-radius: 13px;
+  color: #fff;
+  padding: 1.45rem 1.3rem;
+  box-shadow: 0 18px 36px rgba(8, 82, 64, 0.16);
+}
+
+.pmbRegisterHero.green {
+  background: #08784f;
+}
+
+.pmbRegisterHero.teal {
+  background: linear-gradient(135deg, #0b947e, #115b55);
+}
+
+.pmbRegisterHero.blue {
+  background: linear-gradient(135deg, #315fe7, #263fb2);
+}
+
+.pmbRegisterInstitution {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.pmbRegisterInstitution > span {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.17);
+}
+
+.pmbRegisterInstitution strong,
+.pmbRegisterInstitution small {
+  display: block;
+}
+
+.pmbRegisterInstitution strong {
+  font-size: 0.86rem;
+}
+
+.pmbRegisterInstitution small {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.72rem;
+}
+
+.pmbRegisterHero h1 {
+  margin: 1.05rem 0 0;
+  font-size: 1.15rem;
+}
+
+.pmbRegisterHero p {
+  margin: 0.18rem 0 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.82rem;
+}
+
+.pmbRegisterCard {
+  margin-top: 1.4rem;
+  padding: 1.5rem 1.35rem 1.65rem;
+}
+
+.pmbLookup {
+  display: grid;
+  gap: 0.55rem;
+  justify-items: center;
+}
+
+.pmbLookup p {
+  margin: 0;
+  color: #6f817b;
+  font-size: 0.76rem;
+}
+
+.pmbLookup > div {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 46px;
+  gap: 0.45rem;
+}
+
+.pmbLookup input,
+.pmbLookup button {
+  min-height: 34px;
+  border: 1px solid #cfded7;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.pmbLookup input {
+  padding: 0 0.7rem;
+}
+
+.pmbLookup button {
+  display: grid;
+  place-items: center;
+  color: #0b211d;
+}
+
+.pmbStatusShell {
+  width: min(100%, 460px);
+  display: grid;
+  justify-items: center;
+}
+
+.pmbStatusCard {
+  width: 100%;
+  border: 1px solid #cde3d9;
+  border-radius: 12px;
+  background: #fff;
+  padding: 1.35rem;
+  box-shadow: 0 18px 38px rgba(21, 76, 57, 0.14);
+}
+
+.pmbStatusTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid #e3ece8;
+  padding-bottom: 1rem;
+}
+
+.pmbStatusTop p {
+  margin: 0;
+  color: #6a7c78;
+  font-size: 0.72rem;
+}
+
+.pmbStatusTop h2 {
+  margin: 0.25rem 0 0;
+  color: #043b33;
+  font-size: 1.05rem;
+}
+
+.pmbStatusPill {
+  border-radius: 999px;
+  background: #fff5be;
+  color: #a36f00;
+  padding: 0.38rem 0.7rem;
+  font-size: 0.7rem;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.pmbStatusPill.diterima {
+  background: #e4f5ed;
+  color: #16845b;
+}
+
+.pmbStatusPill.ditolak {
+  background: #fff0ef;
+  color: #b23c30;
+}
+
+.pmbStatusRows {
+  display: grid;
+  gap: 0.65rem;
+  padding: 1rem 0;
+}
+
+.pmbStatusRows p {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0;
+  color: #6a7c78;
+  font-size: 0.76rem;
+}
+
+.pmbStatusRows strong {
+  color: #123d36;
+  text-align: right;
+}
+
+.pmbStatusNote {
+  border-radius: 9px;
+  background: #eff8f4;
+  padding: 0.8rem;
+}
+
+.pmbStatusNote strong {
+  color: #043b33;
+  font-size: 0.76rem;
+}
+
+.pmbStatusNote p {
+  margin: 0.35rem 0 0;
+  color: #557069;
+  font-size: 0.74rem;
+}
+
+.pmbStatusActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.pmbStatusActions a {
+  display: grid;
+  min-height: 38px;
+  place-items: center;
+  border: 1px solid #cfded7;
+  border-radius: 8px;
+  color: #0b7d62;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+@media (max-width: 720px) {
+  .pmbSchoolGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .pmbSchoolCard {
+    min-height: 150px;
   }
 }

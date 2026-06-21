@@ -350,6 +350,7 @@ export default function ADI() {
                   cursor: "pointer",
                   transition: "border-color 0.2s",
                 }}
+                onClick={() => { window.location.href = "/Pendidikan/pmb/login?institution=ponpes-suruh"; }}
                 onMouseEnter={(e) => (e.currentTarget.style.borderColor = TEAL)}
                 onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#ccc")}
               >

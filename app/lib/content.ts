@@ -1,7 +1,7 @@
 import { prisma } from "./prisma";
 import type { UserRole } from "./auth";
 
-export type EditableModule = "education" | "pmb" | "kajian" | "konsultasi" | "website" | "manajemen" | "tentang-kami";
+export type EditableModule = "beranda" | "education" | "pmb" | "kajian" | "konsultasi" | "website" | "manajemen" | "tentang-kami";
 
 export type PublicContentItem = {
   id: number;
@@ -20,13 +20,14 @@ export type PublicContentItem = {
 };
 
 export const modulePermissions: Record<EditableModule, UserRole[]> = {
-  education: ["admin", "pengurus"],
-  pmb: ["admin", "pengurus"],
-  kajian: ["ustadz"],
-  konsultasi: ["ustadz"],
-  website: ["pengurus"],
+  beranda: ["super_admin"],
+  education: ["super_admin", "admin", "pengurus"],
+  pmb: ["super_admin", "admin", "pengurus"],
+  kajian: ["super_admin", "ustadz"],
+  konsultasi: ["super_admin", "ustadz"],
+  website: ["super_admin", "pengurus"],
   manajemen: [],
-  "tentang-kami": ["pengurus"],
+  "tentang-kami": ["super_admin", "pengurus"],
 };
 
 export function canEditModule(role: UserRole, module: string): module is EditableModule {

@@ -350,6 +350,7 @@ export default function AlKhawarizmi() {
                   cursor: "pointer",
                   transition: "border-color 0.2s",
                 }}
+                onClick={() => { window.location.href = "/Pendidikan/pmb/login?institution=al-khawarizmi"; }}
                 onMouseEnter={(e) => (e.currentTarget.style.borderColor = TEAL)}
                 onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#ccc")}
               >

@@ -1,5 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, type ChangeEvent } from "react";
+import { useRouter } from "next/navigation";
 import { CheckCircle2, ChevronRight, ChevronLeft, BookOpen, Loader2, Copy, Mail, AlertCircle, Upload, X, Check } from "lucide-react";
 
 // ============================================================
@@ -47,16 +48,17 @@ const JALUR = [
 const emptyForm = {
   institution_id: "", institution_name: "", institution_short: "",
   jalur_id: "", jalur_name: "", jurusan_id: "", jurusan_name: "",
-  full_name: "", gender: "", birth_place: "", birth_date: "",
+  full_name: "", nisn: "", gender: "", birth_place: "", birth_date: "",
   citizenship: "WNI", religion: "", phone: "", email: "",
   address: "", rt: "", rw: "",
   provinsi_id: "", provinsi: "", kota_id: "", kota: "",
   kecamatan_id: "", kecamatan: "", kelurahan_id: "", kelurahan: "",
-  school_status: "", school_name: "", school_kecamatan: "", graduation_year: "",
+  school_status: "", school_name: "", school_kecamatan: "", graduation_year: "", certificate_number: "",
   father_name: "", father_education: "", father_occupation: "",
   mother_name: "", mother_education: "", mother_occupation: "",
   guardian_name: "", guardian_occupation: "", parent_income: "",
   doc_photo_url: "", doc_ijazah_url: "", doc_ktp_url: "", doc_kk_url: "",
+  payment_proof_url: "",
 };
 
 // ============================================================
@@ -203,11 +205,13 @@ function WSelect({ label, value, onChange, options, disabled, loading }: any) {
 // MAIN PAGE
 // ============================================================
 export default function PendaftaranPage() {
+  const router = useRouter();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState(emptyForm);
   const [submitted, setSubmitted] = useState<any>(null);
   const [submitting, setSubmitting] = useState(false);
   const [sendingEmail, setSendingEmail] = useState(false);
+  const [paymentMessage, setPaymentMessage] = useState("");
 
   const [provinsiList, setProvinsiList] = useState<any[]>([]);
   const [kotaList, setKotaList] = useState<any[]>([]);
@@ -220,6 +224,30 @@ export default function PendaftaranPage() {
   const jurusanOptions = form.institution_short ? (JURUSAN_PER_LEMBAGA[form.institution_short] || []) : [];
 
   useEffect(() => { getProvinsi().then(setProvinsiList).catch(() => {}); }, []);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const institutionId = searchParams.get("institution") || searchParams.get("institusi") || "";
+    const institution = INSTITUTIONS.find((item) => item.id === institutionId);
+    const nisn = searchParams.get("nisn") || "";
+    const name = searchParams.get("name") || "";
+    const email = searchParams.get("email") || "";
+
+    if (!institution || !nisn || !name || !email) {
+      router.replace("/Pendidikan/pmb/login");
+      return;
+    }
+
+    setForm((current) => ({
+      ...current,
+      email: email || current.email,
+      full_name: name || current.full_name,
+      institution_id: institution?.id || current.institution_id,
+      institution_name: institution?.name || current.institution_name,
+      institution_short: institution?.short_name || current.institution_short,
+      nisn: nisn || current.nisn,
+    }));
+  }, [router]);
 
   const onProvinsi = async (id: string) => {
     const name = provinsiList.find(p => p.id === id)?.name || "";
@@ -265,9 +293,12 @@ export default function PendaftaranPage() {
         body: JSON.stringify({ ...form, registration_number: reg_no, billing_code, billing_amount: 150000, status: "menunggu_verifikasi" }),
       });
       const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data?.message || "Gagal mengirim pendaftaran.");
+      }
       setSubmitted({ ...form, registration_number: reg_no, billing_code, billing_amount: 150000, ...data });
-    } catch {
-      alert("Gagal mengirim pendaftaran. Coba lagi.");
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "Gagal mengirim pendaftaran. Coba lagi.");
     }
     setSubmitting(false);
   };
@@ -288,6 +319,41 @@ export default function PendaftaranPage() {
       alert("Email berhasil dikirim!");
     } catch { alert("Gagal mengirim email"); }
     setSendingEmail(false);
+  };
+
+  const savePaymentProof = async (fileUrl: string) => {
+    if (!submitted?.id) {
+      alert("Data pendaftaran belum tersedia.");
+      return;
+    }
+
+    setPaymentMessage("Menyimpan bukti pembayaran...");
+    try {
+      const response = await fetch("/api/pendaftaran/payment-proof", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: submitted.email,
+          id: submitted.id,
+          nisn: submitted.nisn,
+          payment_proof_url: fileUrl,
+        }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.message || "Gagal menyimpan bukti pembayaran.");
+      }
+
+      setSubmitted((current: any) => ({
+        ...current,
+        payment_proof_url: data.payment_proof_url,
+      }));
+      setPaymentMessage("Bukti pembayaran tersimpan. Admin dapat melihatnya di dashboard PMB.");
+    } catch (error) {
+      setPaymentMessage("");
+      alert(error instanceof Error ? error.message : "Gagal menyimpan bukti pembayaran.");
+    }
   };
 
   // ===== SUCCESS =====
@@ -321,6 +387,15 @@ export default function PendaftaranPage() {
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 mb-6 flex gap-2">
           <AlertCircle className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
           <p className="text-xs text-blue-700">Simpan nomor registrasi & kode tagihan. Lakukan pembayaran lalu hubungi admin PMB. Verifikasi 1–3 hari kerja.</p>
+        </div>
+        <div className="mb-6">
+          <UploadBox
+            label="Bukti Pembayaran"
+            description="Upload bukti transfer setelah melakukan pembayaran"
+            value={submitted.payment_proof_url}
+            onChange={savePaymentProof}
+          />
+          {paymentMessage && <p className="text-xs text-green-700 mt-2">{paymentMessage}</p>}
         </div>
         <div className="space-y-2">
           {submitted.email && (
@@ -398,6 +473,7 @@ export default function PendaftaranPage() {
             {step === 1 && (
               <div className="space-y-4">
                 <FInput label="Nama Lengkap" required value={form.full_name} onChange={(e: any) => sf("full_name", e.target.value)} placeholder="Sesuai KTP / Ijazah / Akta Lahir" />
+                <FInput label="NISN / NIK" value={form.nisn} onChange={(e: ChangeEvent<HTMLInputElement>) => sf("nisn", e.target.value)} placeholder="Nomor induk siswa atau identitas" />
                 <div className="grid grid-cols-2 gap-4">
                   <FSelect label="Jenis Kelamin" required value={form.gender} onChange={(v: string) => sf("gender", v)}
                     options={[{ value: "Laki-laki", label: "Laki-laki" }, { value: "Perempuan", label: "Perempuan" }]} placeholder="— Pilih —" />
@@ -448,6 +524,7 @@ export default function PendaftaranPage() {
                         <FInput label="Tahun Lulus" value={form.graduation_year} onChange={(e: any) => sf("graduation_year", e.target.value)} placeholder="2024" />
                       </div>
                       <FInput label="Nama Sekolah" value={form.school_name} onChange={(e: any) => sf("school_name", e.target.value)} placeholder="SMA/MTs/SD..." />
+                      <FInput label="Nomor Ijazah" value={form.certificate_number} onChange={(e: any) => sf("certificate_number", e.target.value)} placeholder="Nomor ijazah/SKHU" />
                       <FInput label="Kecamatan Sekolah" value={form.school_kecamatan} onChange={(e: any) => sf("school_kecamatan", e.target.value)} />
                     </div>
                   )},
@@ -514,9 +591,9 @@ export default function PendaftaranPage() {
                 </div>
                 {[
                   { title: "Program", rows: [["Lembaga", form.institution_name], ["Jalur Masuk", form.jalur_name], ["Program/Kelas", form.jurusan_name]] },
-                  { title: "Data Pribadi", rows: [["Nama Lengkap", form.full_name], ["Jenis Kelamin", form.gender], ["Agama", form.religion], ["Tempat/Tgl Lahir", `${form.birth_place || "-"}, ${form.birth_date || "-"}`], ["No. Telepon", form.phone], ["Email", form.email]] },
+                  { title: "Data Pribadi", rows: [["Nama Lengkap", form.full_name], ["NISN / NIK", form.nisn], ["Jenis Kelamin", form.gender], ["Agama", form.religion], ["Tempat/Tgl Lahir", `${form.birth_place || "-"}, ${form.birth_date || "-"}`], ["No. Telepon", form.phone], ["Email", form.email]] },
                   { title: "Alamat", rows: [["Alamat", form.address], ["RT/RW", `${form.rt || "-"}/${form.rw || "-"}`], ["Kelurahan", form.kelurahan], ["Kecamatan", form.kecamatan], ["Kota/Kab", form.kota], ["Provinsi", form.provinsi]] },
-                  { title: "Orang Tua", rows: [["Nama Ayah", form.father_name], ["Nama Ibu", form.mother_name], ["Wali", form.guardian_name], ["Penghasilan", form.parent_income]] },
+                  { title: "Sekolah & Orang Tua", rows: [["Asal Sekolah", form.school_name], ["Nomor Ijazah", form.certificate_number], ["Nama Ayah", form.father_name], ["Nama Ibu", form.mother_name], ["Wali", form.guardian_name], ["Penghasilan", form.parent_income]] },
                   { title: "Dokumen", rows: [["Foto", form.doc_photo_url ? "✓ Terupload" : "✗ Belum"], ["Ijazah/SKHU", form.doc_ijazah_url ? "✓ Terupload" : "✗ Belum"], ["KTP/Akta", form.doc_ktp_url ? "✓ Terupload" : "✗ Belum"], ["Kartu Keluarga", form.doc_kk_url ? "✓ Terupload" : "✗ Belum"]] },
                 ].map(sec => (
                   <div key={sec.title} className="space-y-1">

@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { logoutAction } from "../login/actions";
@@ -17,10 +16,11 @@ import KajianManager from "./KajianManager";
 import AboutManager from "./AboutManager";
 import NewsManager from "./NewsManager";
 import AdminManagement, { type EducationAdminRow } from "./AdminManagement";
+import EducationPmbWorkspace, { type PmbApplicant } from "./EducationPmbWorkspace";
+import EducationParticipantWorkspace from "./EducationParticipantWorkspace";
 import {
   getContentItems,
   getModuleContentItems,
-  type PublicContentItem,
 } from "../lib/content";
 import { prisma } from "../lib/prisma";
 
@@ -64,6 +64,39 @@ type DashboardStat = {
 
 const allRoles: UserRole[] = ["super_admin", "admin", "pengurus", "bendahara", "ustadz"];
 
+const latestApplicants = [
+  {
+    email: "ahmad.fadilah@gmail.com",
+    institution: "ADI",
+    name: "Ahmad Fadilah",
+    status: "Diterima",
+  },
+  {
+    email: "siti.aisyah@gmail.com",
+    institution: "Ponpes Suruh",
+    name: "Siti Aisyah",
+    status: "Menunggu",
+  },
+  {
+    email: "m.rizki@gmail.com",
+    institution: "Al Khawarizmi",
+    name: "Muhammad Rizki",
+    status: "Selesai",
+  },
+  {
+    email: "fatimah.z@gmail.com",
+    institution: "ADI",
+    name: "Fatimah Zahra",
+    status: "Menunggu",
+  },
+  {
+    email: "umar.hasan@gmail.com",
+    institution: "Ponpes Suruh",
+    name: "Umar Hasan",
+    status: "Diterima",
+  },
+];
+
 type DashboardNavItem = {
   active?: boolean;
   children: string[];
@@ -101,20 +134,14 @@ const navItems: DashboardNavItem[] = [
   },
   {
     icon: "file",
-    label: "Pendidikan",
-    children: ["ADI", "Ponpes Suruh", "Al Khawarizmi"],
-    roles: ["super_admin", "admin", "pengurus"] satisfies UserRole[],
-  },
-  {
-    icon: "file",
-    label: "PMB",
-    children: ["ADI", "Ponpes Suruh", "Al Khawarizmi"],
+    label: "PendidikanHub",
+    children: [],
     roles: ["super_admin", "admin", "pengurus"] satisfies UserRole[],
   },
   {
     icon: "wallet",
     label: "Keuangan",
-    children: ["Pemasukan", "Pengeluaran", "Laporan Keuangan", "Riwayat Transaksi"],
+    children: ["Pemasukan", "Pengeluaran", "Laporan Keuangan"],
     roles: ["super_admin", "bendahara"] satisfies UserRole[],
   },
   {
@@ -127,9 +154,11 @@ const navItems: DashboardNavItem[] = [
 
 type EducationView = "adi" | "ponpes-suruh" | "al-khawarizmi";
 type EducationMode = "view" | "edit";
-type DashboardModule = "kajian" | "konsultasi" | "website" | "manajemen" | "tentang-kami";
+type EducationParticipantSection = "mahasiswa" | "santri" | "siswa";
+type DashboardModule = "beranda" | "kajian" | "konsultasi" | "website" | "manajemen" | "tentang-kami";
 
 const moduleLabels: Record<DashboardModule, string> = {
+  beranda: "Beranda",
   kajian: "Kajian",
   konsultasi: "Konsultasi",
   website: "Berita",
@@ -138,7 +167,7 @@ const moduleLabels: Record<DashboardModule, string> = {
 };
 
 const moduleAccess: Record<UserRole, DashboardModule[]> = {
-  super_admin: ["kajian", "konsultasi", "website", "manajemen", "tentang-kami"],
+  super_admin: ["beranda", "kajian", "konsultasi", "website", "manajemen", "tentang-kami"],
   admin: [],
   pengurus: ["website", "tentang-kami"],
   bendahara: [],
@@ -146,6 +175,7 @@ const moduleAccess: Record<UserRole, DashboardModule[]> = {
 };
 
 const moduleLinks: Record<string, DashboardModule> = {
+  Beranda: "beranda",
   Berita: "website",
   Kajian: "kajian",
   Konsultasi: "konsultasi",
@@ -157,7 +187,6 @@ const financeLinks: Record<string, FinanceView> = {
   Pemasukan: "pemasukan",
   Pengeluaran: "pengeluaran",
   "Laporan Keuangan": "laporan",
-  "Riwayat Transaksi": "riwayat",
 };
 
 const educationLinks: Record<string, EducationView> = {
@@ -165,6 +194,76 @@ const educationLinks: Record<string, EducationView> = {
   "Ponpes Suruh": "ponpes-suruh",
   "Al Khawarizmi": "al-khawarizmi",
 };
+
+const educationShortNames: Record<EducationView, string> = {
+  adi: "ADI",
+  "ponpes-suruh": "Ponpes Suruh",
+  "al-khawarizmi": "Al Khawarizmi",
+};
+
+function toPmbDisplayStatus(status: string): PmbApplicant["status"] {
+  if (status === "draft") return "Draft";
+  if (status === "verifikasi_adm") return "Verifikasi Adm.";
+  if (status === "menunggu_bayar") return "Menunggu Bayar";
+  if (status === "sudah_bayar") return "Sudah Bayar";
+  if (status === "diterima") return "Diterima";
+  if (status === "ditolak") return "Ditolak";
+  if (status === "daftar_ulang") return "Daftar Ulang";
+  return "Menunggu Verifikasi";
+}
+
+function formatPmbAddress(application: {
+  address: string | null;
+  kecamatan: string | null;
+  kelurahan: string | null;
+  kota: string | null;
+  provinsi: string | null;
+  rt: string | null;
+  rw: string | null;
+}) {
+  return [
+    application.address,
+    application.rt || application.rw ? `RT/RW ${application.rt || "-"}/${application.rw || "-"}` : "",
+    application.kelurahan,
+    application.kecamatan,
+    application.kota,
+    application.provinsi,
+  ].filter(Boolean).join(", ");
+}
+
+const educationNavGroups: Array<{
+  icon: IconName;
+  participantLabel: string;
+  participantSection: EducationParticipantSection;
+  profileLabel: string;
+  title: string;
+  view: EducationView;
+}> = [
+  {
+    icon: "graduation",
+    participantLabel: "Mahasiswa",
+    participantSection: "mahasiswa",
+    profileLabel: "Profil ADI",
+    title: "ADI",
+    view: "adi",
+  },
+  {
+    icon: "building",
+    participantLabel: "Santri",
+    participantSection: "santri",
+    profileLabel: "Profil",
+    title: "Ponpes Suruh",
+    view: "ponpes-suruh",
+  },
+  {
+    icon: "building",
+    participantLabel: "Siswa",
+    participantSection: "siswa",
+    profileLabel: "Profil",
+    title: "Al Khawarizmi",
+    view: "al-khawarizmi",
+  },
+];
 
 const educationProfiles: Record<
   EducationView,
@@ -235,9 +334,9 @@ type EducationDisplayProfile = {
 const educationContent: Record<EducationView, EducationDisplayProfile> = {
   adi: {
     ...educationProfiles.adi,
-    icon: "users",
-    title: "ADI — Akademi Da'wah Islam",
-    editTitle: "Edit Profil ADI — Akademi Da'wah Islam",
+    icon: "graduation",
+    title: "ADI - Akademi Da'wah Islam",
+    editTitle: "Edit Profil ADI - Akademi Da'wah Islam",
     institutionName: "Akademi Da'wah Islam (ADI) Semarang",
     subtitle: "Profil & informasi lembaga",
     tagline: "Mencetak Kader Da'i Profesional",
@@ -314,7 +413,7 @@ const educationContent: Record<EducationView, EducationDisplayProfile> = {
   },
 };
 
-type IconName = "bell" | "calendar" | "chat" | "clock" | "down" | "file" | "home" | "list" | "mail" | "phone" | "pin" | "up" | "user" | "users" | "wallet";
+type IconName = "bell" | "building" | "calendar" | "chat" | "clipboard" | "clock" | "down" | "file" | "graduation" | "home" | "info" | "list" | "logout" | "mail" | "phone" | "pin" | "save" | "up" | "user" | "users" | "wallet" | "x";
 
 function DashboardIcon({ name }: { name: IconName | string }) {
   const paths: Record<IconName, ReactNode> = {
@@ -322,6 +421,13 @@ function DashboardIcon({ name }: { name: IconName | string }) {
       <>
         <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
         <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+      </>
+    ),
+    building: (
+      <>
+        <path d="M4 21V7l8-4 8 4v14" />
+        <path d="M9 21v-6h6v6" />
+        <path d="M8 9h.01M12 9h.01M16 9h.01M8 13h.01M16 13h.01" />
       </>
     ),
     calendar: (
@@ -334,6 +440,12 @@ function DashboardIcon({ name }: { name: IconName | string }) {
       <>
         <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
         <path d="M8 9h8M8 13h5" />
+      </>
+    ),
+    clipboard: (
+      <>
+        <rect x="5" y="4" width="14" height="17" rx="2" />
+        <path d="M9 4V2h6v2M9 9h6M9 13h6M9 17h4" />
       </>
     ),
     clock: (
@@ -349,6 +461,12 @@ function DashboardIcon({ name }: { name: IconName | string }) {
         <path d="M14 3v5h5" />
       </>
     ),
+    graduation: (
+      <>
+        <path d="M22 10 12 5 2 10l10 5 10-5Z" />
+        <path d="M6 12v5c3 2 9 2 12 0v-5" />
+      </>
+    ),
     home: (
       <>
         <path d="M3 10.5 12 3l9 7.5" />
@@ -356,10 +474,23 @@ function DashboardIcon({ name }: { name: IconName | string }) {
         <path d="M9 20v-6h6v6" />
       </>
     ),
+    info: (
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 10v6M12 7h.01" />
+      </>
+    ),
     list: (
       <>
         <path d="M8 6h13M8 12h13M8 18h13" />
         <path d="M3 6h.01M3 12h.01M3 18h.01" />
+      </>
+    ),
+    logout: (
+      <>
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+        <path d="M16 17l5-5-5-5" />
+        <path d="M21 12H9" />
       </>
     ),
     mail: (
@@ -375,6 +506,12 @@ function DashboardIcon({ name }: { name: IconName | string }) {
       <>
         <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z" />
         <circle cx="12" cy="10" r="3" />
+      </>
+    ),
+    save: (
+      <>
+        <path d="M5 3h12l2 2v16H5z" />
+        <path d="M8 3v6h8V3M8 21v-8h8v8" />
       </>
     ),
     up: <path d="M12 20V4M7 9l5-5 5 5" />,
@@ -397,6 +534,7 @@ function DashboardIcon({ name }: { name: IconName | string }) {
         <path d="M16 13h6v4h-6z" />
       </>
     ),
+    x: <path d="M18 6 6 18M6 6l12 12" />,
   };
 
   return (
@@ -558,6 +696,307 @@ function buildActivities(
     .slice(0, 4);
 }
 
+function buildFinanceSummary(transactions: DashboardTransaction[]) {
+  const now = new Date();
+  const monthlyTransactions = transactions.filter((item) => isSameMonth(item.date, now));
+  const monthlyIncome = monthlyTransactions
+    .filter((item) => item.type === "pemasukan")
+    .reduce((total, item) => total + item.amount, 0);
+  const monthlyExpense = monthlyTransactions
+    .filter((item) => item.type === "pengeluaran")
+    .reduce((total, item) => total + item.amount, 0);
+  const totalIncome = transactions
+    .filter((item) => item.type === "pemasukan")
+    .reduce((total, item) => total + item.amount, 0);
+  const totalExpense = transactions
+    .filter((item) => item.type === "pengeluaran")
+    .reduce((total, item) => total + item.amount, 0);
+
+  return {
+    balance: totalIncome - totalExpense,
+    monthlyExpense,
+    monthlyIncome,
+  };
+}
+
+function SuperAdminOverview({
+  activities,
+  chart,
+  content,
+  transactions,
+}: {
+  activities: ReturnType<typeof buildActivities>;
+  chart: ReturnType<typeof buildChartData>;
+  content: DashboardContent[];
+  transactions: DashboardTransaction[];
+}) {
+  const finance = buildFinanceSummary(transactions);
+  const published = content.filter((item) => item.status === "published").length;
+  const drafts = content.length - published;
+  const educationCards = [
+    {
+      accent: "green",
+      code: "ADI",
+      description: "Lembaga pendidikan tinggi vokasi yang berfokus pada pembinaan kader da'i profesional.",
+      href: `${roleHomePaths.super_admin}?education=adi`,
+      meta: ["Jl. Wrigin, Semarang Tengah", "Vokasi / D3"],
+      tag: "perguruan tinggi",
+      title: "Akademi Da'wah Islam Indonesia",
+    },
+    {
+      accent: "gold",
+      code: "Pon",
+      description: "Pondok Pesantren tradisional yang menggabungkan pendidikan salaf dengan kurikulum modern.",
+      href: `${roleHomePaths.super_admin}?education=ponpes-suruh`,
+      meta: ["Kec. Suruh, Kab. Semarang", "Boarding / Mukim"],
+      tag: "pesantren",
+      title: "Pondok Pesantren Suruh",
+    },
+    {
+      accent: "blue",
+      code: "AI",
+      description: "Lembaga pendidikan Islam terpadu yang mengintegrasikan ilmu agama dengan ilmu sains dan teknologi.",
+      href: `${roleHomePaths.super_admin}?education=al-khawarizmi`,
+      meta: ["Kota Semarang", "Full Day School"],
+      tag: "sekolah",
+      title: "Al Khawarizmi",
+    },
+  ];
+  const generalStats = [
+    { accent: "green", icon: "building", label: "Total Lembaga", value: educationCards.length },
+    { accent: "blue", icon: "users", label: "Total Pendaftar", value: latestApplicants.length },
+    {
+      accent: "gold",
+      icon: "clock",
+      label: "Menunggu Seleksi",
+      value: latestApplicants.filter((item) => item.status !== "Diterima").length,
+    },
+    {
+      accent: "purple",
+      icon: "file",
+      label: "Total Program",
+      value: 8,
+    },
+  ];
+  const financeCards = [
+    { accent: "green", icon: "down", label: "Pemasukan Bulan Ini", value: finance.monthlyIncome },
+    { accent: "red", icon: "up", label: "Pengeluaran Bulan Ini", value: finance.monthlyExpense },
+    { accent: "green", icon: "wallet", label: "Saldo Kas Keseluruhan", value: finance.balance },
+  ];
+
+  return (
+    <section className="superOverview" aria-label="Dashboard utama super admin">
+      <div className="overviewSectionTitle">
+        <span />
+        <div>
+          <h2>Ringkasan Umum</h2>
+          <p>Data keseluruhan sistem</p>
+        </div>
+      </div>
+
+      <section className="overviewStats" aria-label="Ringkasan umum">
+        {generalStats.map((stat) => (
+          <article className={`overviewStat ${stat.accent}`} key={stat.label}>
+            <div>
+              <p>{stat.label}</p>
+              <strong>{stat.value}</strong>
+            </div>
+            <span>
+              <DashboardIcon name={stat.icon} />
+            </span>
+          </article>
+        ))}
+      </section>
+
+      <div className="overviewSectionTitle">
+        <span />
+        <div>
+          <h2>Keuangan</h2>
+          <p>Pemasukan, pengeluaran & saldo kas</p>
+        </div>
+      </div>
+
+      <section className="overviewFinance" aria-label="Ringkasan keuangan">
+        <div className="overviewFinanceCards">
+          {financeCards.map((card) => (
+            <article className={`overviewMoneyCard ${card.accent}`} key={card.label}>
+              <div>
+                <p>{card.label}</p>
+                <strong>{formatDashboardRupiah(card.value)}</strong>
+              </div>
+              <span>
+                <DashboardIcon name={card.icon} />
+              </span>
+            </article>
+          ))}
+        </div>
+
+        <article className="overviewChartCard">
+          <div className="overviewCardHeader">
+            <span className="overviewHeaderIcon">
+              <DashboardIcon name="list" />
+            </span>
+            <div>
+              <h3>Grafik Keuangan</h3>
+              <p>Pemasukan vs Pengeluaran</p>
+            </div>
+            <small>6 Bulan Terakhir</small>
+          </div>
+          <div className="overviewLineChart" aria-label="Grafik keuangan 6 bulan terakhir">
+            <div className="chartScale" aria-hidden="true">
+              <span>4</span>
+              <span>3</span>
+              <span>2</span>
+              <span>1</span>
+              <span>0</span>
+            </div>
+            <div className="chartPlot">
+              {chart.map((item) => (
+                <div className="chartMonth" key={item.key}>
+                  <div className="chartBars">
+                    <span
+                      className="incomeBar"
+                      style={{ height: `${item.incomeHeight}%` }}
+                      title={`Pemasukan ${item.month}: ${formatDashboardRupiah(item.income)}`}
+                    />
+                    <span
+                      className="expenseBar"
+                      style={{ height: `${item.expenseHeight}%` }}
+                      title={`Pengeluaran ${item.month}: ${formatDashboardRupiah(item.expense)}`}
+                    />
+                  </div>
+                  <small>{item.month}</small>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="overviewLegend">
+            <span><i className="incomeDot" /> Pemasukan</span>
+            <span><i className="expenseDot" /> Pengeluaran</span>
+          </div>
+        </article>
+      </section>
+
+      <div className="overviewSectionTitle">
+        <span />
+        <div>
+          <h2>Pendidikan & PMB</h2>
+          <p>Data lembaga dan pendaftaran masuk</p>
+        </div>
+      </div>
+
+      <section className="overviewEducationGrid" aria-label="Pendidikan dan PMB">
+        {educationCards.map((card) => (
+          <article className="overviewEducationCard" key={card.title}>
+            <div className="educationCardTop">
+              <span className={`educationInitial ${card.accent}`}>{card.code}</span>
+              <span className={`educationTag ${card.accent}`}>{card.tag}</span>
+            </div>
+            <h3>{card.title}</h3>
+            <p>{card.description}</p>
+            <ul>
+              {card.meta.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+            <Link href={card.href}>Kelola -&gt;</Link>
+          </article>
+        ))}
+      </section>
+
+      <article className="overviewTableCard">
+        <h3>Pendaftaran Terbaru</h3>
+        <div className="overviewTableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nama</th>
+                <th>Lembaga</th>
+                <th>Tanggal</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {latestApplicants.map((applicant) => (
+                <tr key={applicant.email}>
+                  <td>
+                    <strong>{applicant.name}</strong>
+                    <span>{applicant.email}</span>
+                  </td>
+                  <td>{applicant.institution}</td>
+                  <td>04 Jun 2026</td>
+                  <td>
+                    <span className={`applicantStatus ${applicant.status.toLowerCase()}`}>
+                      {applicant.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <div className="overviewSectionTitle">
+        <span />
+        <div>
+          <h2>Konten & Aktivitas</h2>
+          <p>Status konten dan log aktivitas terbaru</p>
+        </div>
+      </div>
+
+      <section className="overviewBottomGrid">
+        <article className="overviewStatusCard">
+          <h3>Status Konten</h3>
+          <div className="contentStatusGrid">
+            <div className="contentStatusBox green">
+              <span><DashboardIcon name="file" /></span>
+              <small>{content.length} total</small>
+              <strong>{published}</strong>
+              <p>Konten Diterbitkan</p>
+              <i />
+            </div>
+            <div className="contentStatusBox blue">
+              <span><DashboardIcon name="file" /></span>
+              <small>{drafts ? "Perlu ditinjau" : "Semua selesai"}</small>
+              <strong>{drafts}</strong>
+              <p>Konten Masih Draft</p>
+              <i />
+            </div>
+          </div>
+        </article>
+
+        <article className="overviewActivityCard">
+          <div className="overviewCardHeader compact">
+            <span className="overviewHeaderIcon">
+              <DashboardIcon name="clock" />
+            </span>
+            <div>
+              <h3>Aktivitas Terbaru</h3>
+              <p>Berdasarkan data tersimpan</p>
+            </div>
+          </div>
+          <div className="overviewActivityList">
+            {activities.length > 0 ? activities.map((activity) => (
+              <div className="overviewActivityItem" key={activity.key}>
+                <span className={`activityIcon ${activity.accent}`}>
+                  <DashboardIcon name={activity.icon} />
+                </span>
+                <div>
+                  <strong>{activity.title}</strong>
+                  <p>{activity.meta}</p>
+                </div>
+              </div>
+            )) : (
+              <p className="overviewEmpty">Belum ada transaksi atau perubahan konten.</p>
+            )}
+          </div>
+        </article>
+      </section>
+    </section>
+  );
+}
+
 type RoleDashboardProps = {
   educationMode?: string;
   educationView?: string;
@@ -569,7 +1008,7 @@ type RoleDashboardProps = {
 };
 
 function normalizeFinanceView(view?: string): FinanceView | null {
-  if (view === "pemasukan" || view === "pengeluaran" || view === "laporan" || view === "riwayat") {
+  if (view === "pemasukan" || view === "pengeluaran" || view === "laporan") {
     return view;
   }
 
@@ -588,9 +1027,20 @@ function normalizeEducationMode(mode?: string): EducationMode {
   return mode === "edit" ? "edit" : "view";
 }
 
+function normalizeEducationParticipantSection(
+  section: string | undefined,
+  view: EducationView | null,
+): EducationParticipantSection | null {
+  if (!view) return null;
+  const group = educationNavGroups.find((item) => item.view === view);
+  if (!group || group.participantSection !== section) return null;
+  return group.participantSection;
+}
+
 function normalizeModule(view?: string): DashboardModule | null {
   if (
-    view === "kajian"
+    view === "beranda"
+    || view === "kajian"
     || view === "konsultasi"
     || view === "website"
     || view === "manajemen"
@@ -739,6 +1189,19 @@ function EducationContactCard({ profile }: { profile: EducationDisplayProfile })
   );
 }
 
+function EducationProfileCards({
+  profile,
+}: {
+  profile: EducationDisplayProfile;
+}) {
+  return (
+    <div className="educationProfileGrid">
+      <EducationProfileSummary profile={profile} />
+      <EducationContactCard profile={profile} />
+    </div>
+  );
+}
+
 function EducationProfileSummary({
   profile,
 }: {
@@ -771,16 +1234,14 @@ function EducationEditForm({
             <h2>{profile.editTitle}</h2>
           </div>
         </div>
-        <div className="educationEditGrid">
-          <label>
-            <span>Nama Lembaga</span>
-            <input name="institutionName" defaultValue={profile.institutionName} />
-          </label>
-          <label>
-            <span>Tagline</span>
-            <input name="tagline" defaultValue={profile.tagline} />
-          </label>
-        </div>
+        <label>
+          <span>Nama Lembaga</span>
+          <input name="institutionName" defaultValue={profile.institutionName} />
+        </label>
+        <label>
+          <span>Tagline</span>
+          <input name="tagline" defaultValue={profile.tagline} />
+        </label>
         <label>
           <span>Deskripsi</span>
           <textarea name="description" defaultValue={profile.description} />
@@ -795,10 +1256,12 @@ function EducationEditForm({
         </div>
         <div className="educationFormActions">
           <button type="button" className="educationSaveButton">
-            <span aria-hidden="true">▣</span> Simpan
+            <DashboardIcon name="save" />
+            <span>Simpan</span>
           </button>
           <Link href={`${roleHomePaths[role]}?education=${view}`} className="educationCancelButton">
-            <span aria-hidden="true">×</span> Batal
+            <DashboardIcon name="x" />
+            <span>Batal</span>
           </Link>
         </div>
       </form>
@@ -807,54 +1270,51 @@ function EducationEditForm({
 }
 
 function EducationWorkspace({
-  items,
   mode,
   module,
+  participantLabel,
+  pmbApplicants,
   readOnly,
   role,
   view,
 }: {
-  items: PublicContentItem[];
   mode: EducationMode;
   module: "education" | "pmb";
+  participantLabel?: string;
+  pmbApplicants: PmbApplicant[];
   readOnly: boolean;
   role: UserRole;
   view: EducationView;
 }) {
+  const profile = educationContent[view];
+
+  if (module === "education" && participantLabel) {
+    return (
+      <EducationParticipantWorkspace
+        institutionName={profile.institutionName}
+        participantLabel={participantLabel}
+      />
+    );
+  }
+
   if (mode === "edit" && module === "education" && !readOnly) {
     return <EducationEditForm role={role} view={view} />;
   }
 
-  const profile = educationContent[view];
-
   if (module === "pmb") {
     return (
-      <ContentManager
-        items={items}
-        module="pmb"
-        readOnly={readOnly}
-        section={view}
-        sectionLabel={`PMB ${profile.institutionName}`}
+      <EducationPmbWorkspace
+        initialApplicants={pmbApplicants}
+        institutionShortName={educationShortNames[view]}
       />
     );
   }
 
   return (
-    <>
-      <ContentManager
-        items={items}
-        module="education"
-        readOnly={readOnly}
-        section={view}
-        sectionLabel={`Informasi ${profile.institutionName}`}
-      />
-      <section className={`educationWorkspace ${view}`}>
-        <EducationHeader editable={!readOnly} profile={profile} role={role} view={view} />
-        <EducationProfileSummary profile={profile} />
-        <VisionMissionCard editable={!readOnly} profile={profile} role={role} view={view} />
-        <EducationContactCard profile={profile} />
-      </section>
-    </>
+    <section className={`educationWorkspace ${view}`}>
+      <EducationHeader editable={!readOnly} profile={profile} role={role} view={view} />
+      <EducationProfileCards profile={profile} />
+    </section>
   );
 }
 
@@ -869,7 +1329,8 @@ export default async function RoleDashboard({
 }: RoleDashboardProps) {
   const session = await requireRole(role);
   const label = roleLabels[role];
-  const readOnly = role === "super_admin";
+  const contentReadOnly = false;
+  const financeReadOnly = role !== "bendahara" && role !== "super_admin";
   const canAccessFinance = role === "super_admin" || role === "bendahara";
   const canAccessEducation = role === "super_admin" || role === "admin" || role === "pengurus";
   const activeFinanceView = canAccessFinance ? normalizeFinanceView(financeView) : null;
@@ -888,30 +1349,38 @@ export default async function RoleDashboard({
     : null;
   const activeInstitutionView = activeEducationView || activePmbView;
   const activeEducationModule = activePmbView ? "pmb" : "education";
+  const activeParticipantSection = normalizeEducationParticipantSection(
+    sectionView,
+    activeEducationView,
+  );
+  const activeParticipantLabel = activeEducationView
+    ? educationNavGroups.find((item) => item.view === activeEducationView)?.participantLabel
+    : undefined;
   const requestedModule = normalizeModule(moduleView);
   const activeModule =
     requestedModule && moduleAccess[role].includes(requestedModule)
       ? requestedModule
       : null;
-  const activeEducationMode = readOnly ? "view" : normalizeEducationMode(educationMode);
+  const activeEducationMode = contentReadOnly ? "view" : normalizeEducationMode(educationMode);
   const hasWorkspace = Boolean(
     activeFinanceView || activeInstitutionView || activeModule,
   );
+  const showDashboardTopbar = !(
+    activeEducationView && activeEducationModule === "education" && activeParticipantSection
+  ) && !activePmbView;
   const visibleNavItems = navItems
     .filter((item) => item.roles.includes(role))
     .map((item) => {
       if (
         role !== "admin"
-        || (item.label !== "Pendidikan" && item.label !== "PMB")
+        || item.label !== "PendidikanHub"
       ) {
         return item;
       }
 
       return {
         ...item,
-        children: item.children.filter(
-          (child) => educationLinks[child] === session.institution,
-        ),
+        children: item.children,
       };
     });
   const initials = session.name
@@ -935,14 +1404,12 @@ export default async function RoleDashboard({
     : activeModule
       ? await getContentItems(activeModule, activeSection)
       : [];
-  const educationItems = activeInstitutionView
-    ? await getContentItems(activeEducationModule, activeInstitutionView)
-    : [];
   let databaseAvailable = true;
   let financeTransactions: FinanceTransaction[] = [];
   let dashboardTransactions: DashboardTransaction[] = [];
   let dashboardContent: DashboardContent[] = [];
   let educationAdmins: EducationAdminRow[] = [];
+  let pmbApplicants: PmbApplicant[] = [];
 
   if (activeModule === "manajemen" && role === "super_admin") {
     try {
@@ -980,6 +1447,91 @@ export default async function RoleDashboard({
     } catch (error) {
       databaseAvailable = false;
       console.error("Admin database is unavailable:", error);
+    }
+  }
+
+  if (activePmbView) {
+    try {
+      const applications = await prisma.pmbApplication.findMany({
+        where: { institution: activePmbView },
+        orderBy: { createdAt: "desc" },
+        select: {
+          address: true,
+          adminNote: true,
+          billingAmount: true,
+          billingCode: true,
+          birthDate: true,
+          birthPlace: true,
+          certificateNumber: true,
+          citizenship: true,
+          docIjazahUrl: true,
+          docKkUrl: true,
+          docKtpUrl: true,
+          docPhotoUrl: true,
+          email: true,
+          fatherName: true,
+          gender: true,
+          graduationYear: true,
+          id: true,
+          jalurName: true,
+          jurusanName: true,
+          kecamatan: true,
+          kelurahan: true,
+          kota: true,
+          motherName: true,
+          nisn: true,
+          parentIncome: true,
+          paymentProofUrl: true,
+          phone: true,
+          provinsi: true,
+          registrationNumber: true,
+          religion: true,
+          rt: true,
+          rw: true,
+          schoolKecamatan: true,
+          schoolName: true,
+          schoolStatus: true,
+          status: true,
+          fullName: true,
+        },
+      });
+
+      pmbApplicants = applications.map((application) => ({
+        address: formatPmbAddress(application),
+        agama: application.religion || "-",
+        asalSekolah: application.schoolName || "-",
+        billingAmount: application.billingAmount,
+        billingCode: application.billingCode,
+        birthDate: application.birthDate || "-",
+        citizenship: application.citizenship || "-",
+        docKkUrl: application.docKkUrl || "#",
+        docKtpUrl: application.docKtpUrl || "#",
+        email: application.email || "-",
+        fatherName: application.fatherName || "-",
+        gender: application.gender || "-",
+        graduationYear: application.graduationYear || "-",
+        id: application.id,
+        ijazahUrl: application.docIjazahUrl || "#",
+        income: application.parentIncome || "-",
+        jalurName: application.jalurName || "-",
+        jurusanName: application.jurusanName || "-",
+        motherName: application.motherName || "-",
+        name: application.fullName,
+        nisn: application.nisn || "-",
+        nomorDaftar: application.registrationNumber,
+        nomorIjazah: application.certificateNumber || "-",
+        paymentProofUrl: application.paymentProofUrl || "#",
+        phone: application.phone || "-",
+        photoUrl: application.docPhotoUrl || "#",
+        placeOfBirth: application.birthPlace || "-",
+        schoolKecamatan: application.schoolKecamatan || "-",
+        schoolStatus: application.schoolStatus || "-",
+        status: toPmbDisplayStatus(application.status),
+        statusNote: application.adminNote || "",
+        sudahBayar: Boolean(application.paymentProofUrl) || application.status === "sudah_bayar",
+      }));
+    } catch {
+      databaseAvailable = false;
     }
   }
 
@@ -1097,199 +1649,274 @@ export default async function RoleDashboard({
 
   return (
     <main className="dashboardApp">
+      <input className="dashboardSidebarToggleInput" id="dashboardSidebarToggle" type="checkbox" />
       <aside className="dashboardSidebar">
-        <Link href="/" className="dashboardLogo" aria-label="Dewan Da'wah Kota Semarang">
-          <Image src="/logo.png" alt="Logo Dewan Da'wah Kota Semarang" width={300} height={120} priority />
-        </Link>
+        <div className="dashboardSidebarHead">
+          <Link href="/" className="dashboardLogo dashboardBrand" aria-label="DDI Semarang Admin Panel">
+            <span className="dashboardBrandMark">DDI</span>
+            <span className="dashboardBrandText">
+              <strong>DDI Semarang</strong>
+              <small>Admin Panel</small>
+            </span>
+          </Link>
+          <label className="dashboardSidebarToggleButton" htmlFor="dashboardSidebarToggle" aria-label="Buka atau tutup sidebar">
+            <span />
+          </label>
+        </div>
 
         <nav className="dashboardNav" aria-label="Navigasi dashboard">
-          {visibleNavItems.map((item) => (
-            <div key={item.label} className="dashboardNavGroup">
-              {item.label === "Dashboard" ? (
-                <Link
-                  className={
-                    item.active && !hasWorkspace
-                      ? "dashboardNavItem active"
-                      : "dashboardNavItem"
-                  }
-                  href={roleHomePaths[role]}
-                >
-                  <DashboardIcon name={item.icon} />
-                  <span>{item.label}</span>
-                </Link>
-              ) : item.label === "Beranda" ? (
-                <Link className="dashboardNavItem" href="/">
-                  <DashboardIcon name={item.icon} />
-                  <span>{item.label}</span>
-                </Link>
-              ) : item.label === "Pendidikan" || item.label === "PMB" ? (
-                <Link
-                  className={
-                    item.label === "Pendidikan" && activeEducationView
-                      ? "dashboardNavItem active"
-                      : item.label === "PMB" && activePmbView
-                      ? "dashboardNavItem active"
-                      : "dashboardNavItem"
-                  }
-                  href={`${roleHomePaths[role]}?${item.label === "PMB" ? "pmb" : "education"}=${
-                    role === "admin" && session.institution
-                      ? session.institution
-                      : "adi"
-                  }`}
-                >
-                  <DashboardIcon name={item.icon} />
-                  <span>{item.label}</span>
-                </Link>
-              ) : moduleLinks[item.label] ? (
-                <Link
-                  className={
-                    moduleLinks[item.label] === activeModule
-                      ? "dashboardNavItem active"
-                      : "dashboardNavItem"
-                  }
-                  href={`${roleHomePaths[role]}?module=${moduleLinks[item.label]}&section=${getSectionSlug(item.label, item.children[0])}`}
-                >
-                  <DashboardIcon name={item.icon} />
-                  <span>{item.label}</span>
-                </Link>
-              ) : (
-                <button
-                  className={
-                    item.label === "Keuangan" && activeFinanceView
-                      ? "dashboardNavItem active"
-                      : item.label === "Pendidikan" && activeEducationView
+          {visibleNavItems.map((item) => {
+            const moduleLink = moduleLinks[item.label];
+            const isModuleActive = Boolean(moduleLink && activeModule === moduleLink);
+            const isFinanceActive = item.label === "Keuangan" && Boolean(activeFinanceView);
+            const isDropdownActive = isModuleActive || isFinanceActive;
+
+            if (item.label === "Dashboard") {
+              return (
+                <div key={item.label} className="dashboardNavGroup">
+                  <Link
+                    className={
+                      item.active && !hasWorkspace
                         ? "dashboardNavItem active"
                         : "dashboardNavItem"
-                  }
-                  type="button"
-                >
-                  <DashboardIcon name={item.icon} />
-                  <span>{item.label}</span>
-                </button>
-              )}
-
-              {item.children.length > 0 ? (
-                <div className="dashboardSubnav" aria-label={`${item.label} submenu`}>
-                  {item.children.map((child) => {
-                    const financeLink = financeLinks[child];
-                    const educationLink = educationLinks[child];
-                    const moduleLink = moduleLinks[item.label];
-                    const childSection = getSectionSlug(item.label, child);
-
-                    return financeLink ? (
-                      <Link
-                        className={activeFinanceView === financeLink ? "active" : ""}
-                        href={`${roleHomePaths[role]}?finance=${financeLink}`}
-                        key={child}
-                      >
-                        {child}
-                      </Link>
-                    ) : educationLink ? (
-                      <Link
-                        className={
-                          item.label === "PMB"
-                            ? activePmbView === educationLink ? "active" : ""
-                            : activeEducationView === educationLink ? "active" : ""
-                        }
-                        href={`${roleHomePaths[role]}?${
-                          item.label === "PMB" ? "pmb" : "education"
-                        }=${educationLink}`}
-                        key={child}
-                      >
-                        {child}
-                      </Link>
-                    ) : moduleLink ? (
-                      <Link
-                        className={
-                          activeModule === moduleLink &&
-                          sectionView === childSection
-                            ? "active"
-                            : ""
-                        }
-                        href={`${roleHomePaths[role]}?module=${moduleLink}&section=${childSection}`}
-                        key={child}
-                      >
-                        {child}
-                      </Link>
-                    ) : (
-                      <button key={child} type="button">
-                        {child}
-                      </button>
-                    );
-                  })}
+                    }
+                    href={roleHomePaths[role]}
+                  >
+                    <DashboardIcon name={item.icon} />
+                    <span>{item.label}</span>
+                  </Link>
                 </div>
-              ) : null}
-            </div>
-          ))}
+              );
+            }
+
+            if (item.label === "Beranda" && role !== "super_admin") {
+              return (
+                <div key={item.label} className="dashboardNavGroup">
+                  <Link className="dashboardNavItem" href="/">
+                    <DashboardIcon name={item.icon} />
+                    <span>{item.label}</span>
+                  </Link>
+                </div>
+              );
+            }
+
+            if (item.label === "PendidikanHub") {
+              return (
+                <section className="dashboardEducationNav" aria-label="Pendidikan" key={item.label}>
+                  {educationNavGroups
+                    .filter((group) => role !== "admin" || group.view === session.institution)
+                    .map((group) => {
+                      const isGroupActive = activeEducationView === group.view || activePmbView === group.view;
+                      const isParticipantActive = activeEducationView === group.view
+                        && activeParticipantSection === group.participantSection;
+                      const isProfileActive = activeEducationView === group.view && !activeParticipantSection;
+
+                      return (
+                        <details className="dashboardDropdown dashboardEducationGroup" key={group.view} open={isGroupActive}>
+                          <summary className={isGroupActive ? "dashboardNavItem dashboardDropdownSummary active" : "dashboardNavItem dashboardDropdownSummary"}>
+                            <DashboardIcon name={group.icon} />
+                            <span>{group.title}</span>
+                            <span className="dashboardDropdownCaret">v</span>
+                          </summary>
+                          <div className="dashboardSubnav dashboardEducationChildren">
+                            <Link
+                              className={isProfileActive ? "active" : ""}
+                              href={`${roleHomePaths[role]}?education=${group.view}`}
+                            >
+                              <DashboardIcon name="info" />
+                              <span>{group.profileLabel}</span>
+                            </Link>
+                            <Link
+                              className={isParticipantActive ? "active" : ""}
+                              href={`${roleHomePaths[role]}?education=${group.view}&section=${group.participantSection}`}
+                            >
+                              <DashboardIcon name="users" />
+                              <span>{group.participantLabel}</span>
+                            </Link>
+                            <Link
+                              className={activePmbView === group.view ? "active" : ""}
+                              href={`${roleHomePaths[role]}?pmb=${group.view}`}
+                            >
+                              <DashboardIcon name="clipboard" />
+                              <span>PMB</span>
+                            </Link>
+                          </div>
+                        </details>
+                      );
+                    })}
+                </section>
+              );
+            }
+
+            if (item.children.length > 0) {
+              return (
+                <details className="dashboardNavGroup dashboardDropdown" key={item.label} open={isDropdownActive}>
+                  <summary className={isDropdownActive ? "dashboardNavItem dashboardDropdownSummary active" : "dashboardNavItem dashboardDropdownSummary"}>
+                    <DashboardIcon name={item.icon} />
+                    <span>{item.label}</span>
+                    <span className="dashboardDropdownCaret">v</span>
+                  </summary>
+                  <div className="dashboardSubnav" aria-label={`${item.label} submenu`}>
+                    {item.children.map((child) => {
+                      const financeLink = financeLinks[child];
+                      const educationLink = educationLinks[child];
+                      const childSection = getSectionSlug(item.label, child);
+
+                      return financeLink ? (
+                        <Link
+                          className={activeFinanceView === financeLink ? "active" : ""}
+                          href={`${roleHomePaths[role]}?finance=${financeLink}`}
+                          key={child}
+                        >
+                          {child}
+                        </Link>
+                      ) : educationLink ? (
+                        <Link
+                          className={
+                            item.label === "PMB"
+                              ? activePmbView === educationLink ? "active" : ""
+                              : activeEducationView === educationLink ? "active" : ""
+                          }
+                          href={`${roleHomePaths[role]}?${
+                            item.label === "PMB" ? "pmb" : "education"
+                          }=${educationLink}`}
+                          key={child}
+                        >
+                          {child}
+                        </Link>
+                      ) : moduleLink ? (
+                        <Link
+                          className={
+                            activeModule === moduleLink &&
+                            sectionView === childSection
+                              ? "active"
+                              : ""
+                          }
+                          href={`${roleHomePaths[role]}?module=${moduleLink}&section=${childSection}`}
+                          key={child}
+                        >
+                          {child}
+                        </Link>
+                      ) : (
+                        <button key={child} type="button">
+                          {child}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </details>
+              );
+            }
+
+            return (
+              <div key={item.label} className="dashboardNavGroup">
+                {moduleLink ? (
+                  <Link
+                    className={isModuleActive ? "dashboardNavItem active" : "dashboardNavItem"}
+                    href={`${roleHomePaths[role]}?module=${moduleLink}&section=${getSectionSlug(item.label, item.label)}`}
+                  >
+                    <DashboardIcon name={item.icon} />
+                    <span>{item.label}</span>
+                  </Link>
+                ) : (
+                  <button
+                    className="dashboardNavItem"
+                    type="button"
+                  >
+                    <DashboardIcon name={item.icon} />
+                    <span>{item.label}</span>
+                  </button>
+                )}
+              </div>
+            );
+          })}
         </nav>
 
         <form action={logoutAction} className="dashboardLogoutForm">
           <button type="submit" className="dashboardLogoutButton">
+            <DashboardIcon name="logout" />
+            <span>
             Logout
+            </span>
           </button>
         </form>
       </aside>
 
       <section className="dashboardMain">
-        <header className="dashboardTopbar">
-          <div>
-            <h1>Selamat datang, {session.name}</h1>
-            <p>{currentDate} · Sistem Internal Dewan Da&apos;wah</p>
-          </div>
+        {showDashboardTopbar ? (
+          <header className={role === "super_admin" && !hasWorkspace ? "dashboardTopbar superHomeTopbar" : "dashboardTopbar"}>
+            <div>
+              <h1>
+                {role === "super_admin" && !hasWorkspace
+                  ? "Selamat datang di Admin Panel DDI Semarang"
+                  : `Selamat datang, ${session.name}`}
+              </h1>
+              <p>{currentDate} - Sistem Internal Dewan Da&apos;wah</p>
+            </div>
 
-          <div className="dashboardUserArea">
-            <button className="notificationButton" type="button" aria-label="Notifikasi">
-              <DashboardIcon name="bell" />
-              <span />
-            </button>
-            <button className="userProfileButton" type="button">
-              <strong>{initials}</strong>
-              <span>
-                <b>{session.name}</b>
-                <small>
-                  {roleTitles[role]}
-                  {role === "admin" && session.institution
-                    ? ` - ${institutionLabels[session.institution]}`
-                    : ""}
-                </small>
-              </span>
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </button>
-          </div>
-        </header>
+            <div className="dashboardUserArea">
+              <button className="notificationButton" type="button" aria-label="Notifikasi">
+                <DashboardIcon name="bell" />
+                <span />
+              </button>
+              <button className="userProfileButton" type="button">
+                <strong>{initials}</strong>
+                <span>
+                  <b>{session.name}</b>
+                  <small>
+                    {roleTitles[role]}
+                    {role === "admin" && session.institution
+                      ? ` - ${institutionLabels[session.institution]}`
+                      : ""}
+                  </small>
+                </span>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+            </div>
+          </header>
+        ) : null}
 
         {activeFinanceView ? (
           <FinanceWorkspace
             databaseAvailable={databaseAvailable}
             view={activeFinanceView}
             initialTransactions={financeTransactions}
-            readOnly={readOnly}
+            readOnly={financeReadOnly}
           />
         ) : activeInstitutionView ? (
           <EducationWorkspace
-            items={educationItems}
             view={activeInstitutionView}
             mode={activeEducationMode}
             module={activeEducationModule}
-            readOnly={readOnly}
+            participantLabel={activeParticipantSection ? activeParticipantLabel : undefined}
+            pmbApplicants={pmbApplicants}
+            readOnly={contentReadOnly}
             role={role}
           />
         ) : activeModule ? (
           activeModule === "kajian" ? (
-            <KajianManager items={contentItems} readOnly={readOnly} section={activeSection} />
+            <KajianManager items={contentItems} readOnly={contentReadOnly} section={activeSection} />
+          ) : activeModule === "beranda" ? (
+            <ContentManager
+              items={contentItems}
+              module="beranda"
+              readOnly={contentReadOnly}
+              section={activeSection}
+              sectionLabel="Beranda"
+            />
           ) : activeModule === "website" ? (
-            <NewsManager items={contentItems} readOnly={readOnly} section={activeSection} />
+            <NewsManager items={contentItems} readOnly={contentReadOnly} section={activeSection} />
           ) : activeModule === "tentang-kami" ? (
-            <AboutManager items={contentItems} readOnly={readOnly} section={activeSection} />
+            <AboutManager items={contentItems} readOnly={contentReadOnly} section={activeSection} />
           ) : activeModule === "manajemen" ? (
             <AdminManagement admins={educationAdmins} />
           ) : (
             <ContentManager
               items={contentItems}
               module={activeModule}
-              readOnly={readOnly}
+              readOnly={contentReadOnly}
               section={activeSection}
               sectionLabel={activeSection
                 .split("-")
@@ -1298,7 +1925,22 @@ export default async function RoleDashboard({
             />
           )
         ) : (
-          <>
+          role === "super_admin" ? (
+            <>
+              {!databaseAvailable ? (
+                <div className="dashboardDatabaseNotice">
+                  Data dashboard belum dapat dibaca. Pastikan MySQL sedang berjalan.
+                </div>
+              ) : null}
+              <SuperAdminOverview
+                activities={dashboardActivities}
+                chart={dashboardChart}
+                content={dashboardContent}
+                transactions={dashboardTransactions}
+              />
+            </>
+          ) : (
+            <>
             {!databaseAvailable ? (
               <div className="dashboardDatabaseNotice">
                 Data dashboard belum dapat dibaca. Pastikan MySQL sedang berjalan.
@@ -1372,8 +2014,8 @@ export default async function RoleDashboard({
                     <h2>Aktivitas Terbaru</h2>
                     <p>Berdasarkan data tersimpan</p>
                   </div>
-                  <Link href={role === "super_admin" || role === "bendahara"
-                    ? `${roleHomePaths[role]}?finance=riwayat`
+                  <Link href={canAccessFinance
+                    ? `${roleHomePaths[role]}?finance=laporan`
                     : roleHomePaths[role]}>
                     Lihat semua {"->"}
                   </Link>
@@ -1399,7 +2041,8 @@ export default async function RoleDashboard({
                 </div>
               </article>
             </section>
-          </>
+            </>
+          )
         )}
       </section>
     </main>

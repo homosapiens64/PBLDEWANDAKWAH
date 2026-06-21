@@ -3,6 +3,7 @@ import RoleDashboard from "../components/RoleDashboard";
 type SuperAdminPageProps = {
   searchParams: Promise<{
     education?: string | string[];
+    educationMode?: string | string[];
     finance?: string | string[];
     module?: string | string[];
     pmb?: string | string[];
@@ -24,6 +25,7 @@ export default async function SuperAdminPage({
       role="super_admin"
       financeView={first(params.finance)}
       educationView={first(params.education)}
+      educationMode={first(params.educationMode)}
       pmbView={first(params.pmb)}
       moduleView={first(params.module)}
       sectionView={first(params.section)}

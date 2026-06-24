@@ -1,35 +1,15 @@
 import { getPublishedContentItems } from "../../lib/content";
 
-const activities = [
-  {
-    title: "Pelatihan Dai Muda di Semarang",
-    date: "Agustus 2026",
-    description: "Pembinaan dai muda untuk memperkuat da'wah digital dan pelayanan umat di tingkat kota.",
-  },
-  {
-    title: "Bakti Sosial Ramadan",
-    date: "Maret 2026",
-    description: "Distribusi paket sembako, layanan kesehatan, dan santunan untuk keluarga dhuafa.",
-  },
-  {
-    title: "Kajian Akbar Bersama Ustadz Tamu",
-    date: "Januari 2026",
-    description: "Rangkaian kajian publik yang mempertemukan pengurus, jamaah, dan relawan da'wah.",
-  },
-];
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(value));
+}
 
 export default async function BeritaKegiatanPage() {
-  const managedActivities = await getPublishedContentItems("website", "kegiatan");
-  const displayedActivities = managedActivities.length
-    ? managedActivities.map((item) => ({
-        title: item.title,
-        date: new Intl.DateTimeFormat("id-ID", {
-          month: "long",
-          year: "numeric",
-        }).format(new Date(item.publishedAt)),
-        description: item.summary || item.body,
-      }))
-    : activities;
+  const activities = await getPublishedContentItems("website", "kegiatan");
 
   return (
     <main className="page simpleRoutePage">
@@ -43,13 +23,20 @@ export default async function BeritaKegiatanPage() {
       </section>
 
       <section className="container routeGrid">
-        {displayedActivities.map((item) => (
-          <article key={item.title} className="routeCard">
-            <span className="routeTag">{item.date}</span>
+        {activities.map((item) => (
+          <article key={item.id} className="routeCard">
+            <span className="routeTag">{formatDate(item.publishedAt)}</span>
             <h3>{item.title}</h3>
-            <p>{item.description}</p>
+            <p>{item.summary || item.body}</p>
           </article>
         ))}
+        {activities.length === 0 ? (
+          <article className="routeCard">
+            <span className="routeTag">BELUM ADA DATA</span>
+            <h3>Belum ada berita kegiatan</h3>
+            <p>Berita kegiatan akan tampil otomatis setelah admin menerbitkan konten dari dashboard.</p>
+          </article>
+        ) : null}
       </section>
     </main>
   );

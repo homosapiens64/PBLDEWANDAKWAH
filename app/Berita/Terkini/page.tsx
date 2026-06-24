@@ -1,144 +1,99 @@
+import Link from "next/link";
 import { getPublishedContentItems, type PublicContentItem } from "../../lib/content";
 import InlineContentEditor from "../../components/InlineContentEditor";
 
-type NewsItem = {
+type NewsCardItem = {
+  id: number;
   title: string;
   category: string;
   date: string;
   excerpt: string;
   image: string;
+  author: string;
+  readMinutes: number;
 };
 
-const beritaNasional: NewsItem[] = [
-  {
-    title: "Wanita Langka Di Zaman Riya: Ketika Iman Lebih Indah Dari Sorotan Dunia",
-    category: "NASIONAL",
-    date: "27 AGUSTUS, 2024",
-    excerpt:
-      "Ketika dunia berkata, \"tunjukkan dirimu agar dianggap penting,\" ia menjawab dalam diam: \"Aku sudah cantik dalam pandangan Rabb-ku.\"",
-    image: "/wanita.png",
+const sectionMeta: Record<string, { color: string; href: string; label: string; summary: string }> = {
+  internasional: {
+    color: "#f0b84f",
+    href: "/Berita/Internasional",
+    label: "Internasional",
+    summary: "Berita luar negeri",
   },
-  {
-    title: "Cahaya Ilmu Dari Pesantren: Menyinari Jiwa Dan Peradaban",
-    category: "NASIONAL",
-    date: "27 AGUSTUS, 2024",
-    excerpt:
-      "Pesantren merupakan salah satu warisan intelektual Islam paling berharga dalam sejarah bangsa Indonesia.",
-    image: "/cahaya.png",
+  kegiatan: {
+    color: "#b46df1",
+    href: "/Berita/Kegiatan",
+    label: "Kegiatan DDI",
+    summary: "Program & aktivitas",
   },
-];
+  nasional: {
+    color: "#4f7cf7",
+    href: "/Berita/Nasional",
+    label: "Nasional",
+    summary: "Berita dalam negeri",
+  },
+  terkini: {
+    color: "#2ab7a4",
+    href: "/Berita/Terkini",
+    label: "Terkini",
+    summary: "Informasi terbaru",
+  },
+};
 
-const beritaInternasional: NewsItem[] = [
-  {
-    title: "Petualangan di Alam Terbuka: Jiwa yang Mengenal Kebebasan",
-    category: "INTERNASIONAL",
-    date: "25 AGUSTUS, 2024",
-    excerpt:
-      "Petualangan alam membuka mata terhadap kebesaran ciptaan dan makna kehidupan yang sesungguhnya.",
-    image: "/misi.png",
-  },
-  {
-    title: "Da'wah Global: Strategi Menjangkau Hati Jutaan Orang",
-    category: "INTERNASIONAL",
-    date: "22 AGUSTUS, 2024",
-    excerpt:
-      "Da'wah dengan pendekatan digital membuka peluang keterlibatan komunitas global yang belum pernah terjadi sebelumnya.",
-    image: "/inovasi.png",
-  },
-  {
-    title: "Transformasi Sosial: Gerakan Pemuda Muslim Internasional",
-    category: "INTERNASIONAL",
-    date: "20 AGUSTUS, 2024",
-    excerpt:
-      "Generasi muda memimpin perubahan sosial dengan nilai-nilai Islam di berbagai belahan dunia.",
-    image: "/tentara.png",
-  },
-];
+function sectionLabel(value: string) {
+  return sectionMeta[value]?.label ?? value.replaceAll("-", " ");
+}
 
-const kategori = [
-  { name: "Semua Berita", count: "48", color: "#2ab7a4" },
-  { name: "Nasional", count: "18", color: "#4f7cf7" },
-  { name: "Internasional", count: "12", color: "#f0b84f" },
-  { name: "Kegiatan DDI", count: "18", color: "#b46df1" },
-];
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(value));
+}
 
-const populer = [
-  "Munas DDII 2026 Hasilkan Rekomendasi Strategis",
-  "Pelatihan Dai Angkatan XIV Dibuka di Semarang",
-  "Bakti Sosial Ramadan: Distribusi 500 Paket Sembako",
-  "Platform Da'wah Resmi Diluncurkan DDI Pusat",
-];
+function readingMinutes(body: string) {
+  return Math.max(1, Math.ceil(body.trim().split(/\s+/).filter(Boolean).length / 200));
+}
 
-const videos = [
-  {
-    title: "Isro launches 104 satellites in a single mission to create world record",
-    image: "/roket.png",
-    time: "23 JULY | 14:02",
-  },
-  {
-    title: "Style launches 32 satellites in a single mission",
-    image: "/tentara.png",
-    time: "19 JULY | 11:25",
-  },
-  {
-    title: "New mission reaches lower orbit successfully",
-    image: "/inovasi.png",
-    time: "18 JULY | 09:40",
-  },
-];
-
-const tags = ["Da'wah", "Pendidikan", "Dai", "Semarang", "Sosial", "Program Kerja", "Kajian", "Internasional", "Ramadan", "Pelatihan", "JT"];
-
-function toNewsItem(item: PublicContentItem, category: string): NewsItem {
+function toNewsCard(item: PublicContentItem): NewsCardItem {
   return {
+    id: item.id,
     title: item.title,
-    category,
-    date: new Intl.DateTimeFormat("id-ID", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }).format(new Date(item.publishedAt)).toLocaleUpperCase("id-ID"),
+    category: sectionLabel(item.section).toLocaleUpperCase("id-ID"),
+    date: formatDate(item.publishedAt).toLocaleUpperCase("id-ID"),
     excerpt: item.summary || item.body,
     image: item.imageUrl,
+    author: item.authorName,
+    readMinutes: readingMinutes(item.body),
   };
+}
+
+function EmptyNews({ title }: { title: string }) {
+  return (
+    <div className="routeCard">
+      <span className="routeTag">BELUM ADA DATA</span>
+      <h3>{title}</h3>
+      <p>Berita akan tampil otomatis setelah admin menerbitkan konten dari dashboard.</p>
+    </div>
+  );
 }
 
 export default async function BeritaTerkiniPage() {
   const managedItems = await getPublishedContentItems("website");
-  const managedTerkini = managedItems.filter((item) => item.section === "terkini");
-  const managedNasional = managedItems.filter((item) => item.section === "nasional");
-  const managedInternasional = managedItems.filter((item) => item.section === "internasional");
-  const displayedNasional = managedNasional.length
-    ? managedNasional.map((item) => toNewsItem(item, "NASIONAL"))
-    : beritaNasional;
-  const displayedInternasional = managedInternasional.length
-    ? managedInternasional.map((item) => toNewsItem(item, "INTERNASIONAL"))
-    : beritaInternasional;
-  const featured = managedTerkini[0] ?? managedItems[0];
+  const featured = managedItems[0];
+  const nasionalItems = managedItems.filter((item) => item.section === "nasional").map(toNewsCard);
+  const internasionalItems = managedItems.filter((item) => item.section === "internasional").map(toNewsCard);
+  const populer = managedItems.slice(0, 4);
   const managedTags = [...new Set(
     managedItems.flatMap((item) =>
       item.tags.split(",").map((tag) => tag.trim()).filter(Boolean),
     ),
   )];
-  const displayedTags = managedTags.length ? managedTags : tags;
-  const categoryCounts = {
-    all: managedItems.length || 48,
-    nasional: managedNasional.length || 18,
-    internasional: managedInternasional.length || 12,
-    kegiatan: managedItems.filter((item) => item.section === "kegiatan").length || 18,
-  };
-  const displayedKategori = kategori.map((item) => ({
-    ...item,
-    count: String(
-      item.name === "Semua Berita"
-        ? categoryCounts.all
-        : item.name === "Nasional"
-          ? categoryCounts.nasional
-          : item.name === "Internasional"
-            ? categoryCounts.internasional
-            : categoryCounts.kegiatan,
-    ),
-  }));
+  const categoryCounts = managedItems.reduce<Record<string, number>>((acc, item) => {
+    acc[item.section] = (acc[item.section] ?? 0) + 1;
+    return acc;
+  }, {});
 
   return (
     <main className="page">
@@ -146,112 +101,80 @@ export default async function BeritaTerkiniPage() {
         <p className="heroEyebrow">INFORMASI TERKINI</p>
         <h1 className="heroTitle">BERITA &amp; KEGIATAN</h1>
 
-        <article
-          className="heroCard"
-          style={{
-            backgroundImage:
-              `linear-gradient(90deg, rgba(17,35,45,0.54) 0%, rgba(17,35,45,0.35) 100%), url('${featured?.imageUrl || "/munas.png"}')`,
-          }}
-        >
-          <div className="heroOverlay">
-            <span className="pill">{featured?.section.toLocaleUpperCase("id-ID") || "NASIONAL"}</span>
-            <h2>{featured?.title || "Munas Dewan Da'wah 2026 Hasilkan Rekomendasi Strategis Untuk Da'wah Digital"}</h2>
-            <p>
-              <span>By {featured?.authorName || "Admin"}</span>
-              <span>
-                {featured
-                  ? new Intl.DateTimeFormat("id-ID", { dateStyle: "long" }).format(new Date(featured.publishedAt))
-                  : "27 Agustus 2024"}
-              </span>
-              <span>20 Mins</span>
-            </p>
+        {featured ? (
+          <article
+            className="heroCard"
+            style={{
+              backgroundImage:
+                `linear-gradient(90deg, rgba(17,35,45,0.54) 0%, rgba(17,35,45,0.35) 100%), url('${featured.imageUrl || "/logo.png"}')`,
+            }}
+          >
+            <div className="heroOverlay">
+              <span className="pill">{sectionLabel(featured.section).toLocaleUpperCase("id-ID")}</span>
+              <h2>{featured.title}</h2>
+              <p>
+                <span>By {featured.authorName}</span>
+                <span>{formatDate(featured.publishedAt)}</span>
+                <span>{readingMinutes(featured.body)} Mins</span>
+              </p>
+            </div>
+          </article>
+        ) : (
+          <div className="routeGrid">
+            <EmptyNews title="Belum ada berita terbit" />
           </div>
-        </article>
+        )}
       </section>
 
       <section className="container contentGrid">
         <div className="mainColumn">
           <div className="sectionHead">
             <h3>Berita Nasional</h3>
-            <a href="#">VIEW ALL ↗</a>
+            <Link href="/Berita/Nasional">VIEW ALL -&gt;</Link>
           </div>
 
           <div className="cardsGrid">
-            {displayedNasional.map((item) => (
-              <article key={item.title} className="newsCard">
-                <div className="newsImage" style={{ backgroundImage: `url('${item.image}')` }} />
+            {nasionalItems.length ? nasionalItems.map((item) => (
+              <article key={item.id} className="newsCard">
+                <div
+                  className="newsImage"
+                  style={item.image ? { backgroundImage: `url('${item.image.replaceAll("'", "%27")}')` } : undefined}
+                />
                 <div className="newsBody">
                   <span className="pill">{item.category}</span>
                   <h4>{item.title}</h4>
                   <div className="metaRow">
                     <span>{item.date}</span>
-                    <span>20 MINS</span>
+                    <span>{item.readMinutes} MINS</span>
                   </div>
                   <p>{item.excerpt}</p>
                 </div>
               </article>
-            ))}
+            )) : <EmptyNews title="Belum ada berita nasional" />}
           </div>
-
-          <section className="videoSection">
-            <div className="videoSectionHead">
-              <h3>Videos</h3>
-              <a href="#">View all Videos</a>
-            </div>
-
-            <div className="videoTabs">
-              <button className="videoTabActive">Nasional</button>
-              <button>Internasional</button>
-              <button>Kegiatan</button>
-            </div>
-
-            <div className="videoLayout">
-              <article className="featureVideo">
-                <div className="featureVideoImage" style={{ backgroundImage: `url('${videos[0].image}')` }} />
-                <div className="featureVideoOverlay">
-                  <div className="playButton">▶</div>
-                  <h4>{videos[0].title}</h4>
-                  <span>{videos[0].time}</span>
-                </div>
-              </article>
-
-              <div className="videoRail">
-                {videos.slice(1).map((video) => (
-                  <article key={video.title} className="railItem">
-                    <div className="railImage" style={{ backgroundImage: `url('${video.image}')` }} />
-                    <div className="railOverlay">
-                      <div className="playMini">▶</div>
-                      <p>{video.title}</p>
-                      <span>{video.time}</span>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </section>
         </div>
 
         <aside className="sidebar">
           <section className="sideCard">
             <h4>Kategori Berita</h4>
             <div className="categoryList">
-              {displayedKategori.map((item) => (
-                <div key={item.name} className="categoryItem">
-                  <div className="categoryIcon" style={{ background: item.color }} />
-                  <div>
-                    <strong>{item.name}</strong>
-                    <small>
-                      {item.name === "Semua Berita"
-                        ? "Semua kategori"
-                        : item.name === "Nasional"
-                          ? "Berita dalam negeri"
-                          : item.name === "Internasional"
-                            ? "Berita luar negeri"
-                            : "Program & aktivitas"}
-                    </small>
-                  </div>
-                  <span>{item.count}</span>
+              <Link className="categoryItem" href="/Berita/Terkini">
+                <div className="categoryIcon" style={{ background: "#2ab7a4" }} />
+                <div>
+                  <strong>Semua Berita</strong>
+                  <small>Semua kategori</small>
                 </div>
+                <span>{managedItems.length}</span>
+              </Link>
+              {Object.entries(sectionMeta).map(([section, meta]) => (
+                <Link className="categoryItem" href={meta.href} key={section}>
+                  <div className="categoryIcon" style={{ background: meta.color }} />
+                  <div>
+                    <strong>{meta.label}</strong>
+                    <small>{meta.summary}</small>
+                  </div>
+                  <span>{categoryCounts[section] ?? 0}</span>
+                </Link>
               ))}
             </div>
           </section>
@@ -260,25 +183,32 @@ export default async function BeritaTerkiniPage() {
             <h4>Berita Terpopuler</h4>
             <ol className="popularList">
               {populer.map((item, index) => (
-                <li key={item}>
+                <li key={item.id}>
                   <span>{index + 1}</span>
                   <div>
-                    <strong>{item}</strong>
-                    <small>
-                      {index === 0 ? "1,248 pembaca" : index === 1 ? "876 pembaca" : index === 2 ? "712 pembaca" : "634 pembaca"}
-                    </small>
+                    <strong>{item.title}</strong>
+                    <small>{sectionLabel(item.section)} - {formatDate(item.publishedAt)}</small>
                   </div>
                 </li>
               ))}
+              {populer.length === 0 ? (
+                <li>
+                  <span>0</span>
+                  <div>
+                    <strong>Belum ada berita</strong>
+                    <small>Terbitkan konten dari dashboard</small>
+                  </div>
+                </li>
+              ) : null}
             </ol>
           </section>
 
           <section className="sideCard">
             <h4>Topik Berita</h4>
             <div className="tagCloud">
-              {displayedTags.map((tag) => (
+              {managedTags.length ? managedTags.map((tag) => (
                 <span key={tag}>{tag}</span>
-              ))}
+              )) : <span>Belum ada topik</span>}
             </div>
           </section>
         </aside>
@@ -287,13 +217,14 @@ export default async function BeritaTerkiniPage() {
       <section className="container internationalSection">
         <div className="sectionHead">
           <h3>Berita Internasional</h3>
+          <Link href="/Berita/Internasional">VIEW ALL -&gt;</Link>
         </div>
         <div className="internationalGrid">
-          {displayedInternasional.map((item, idx) => (
-            <article key={item.title} className={idx === 0 ? "intlFeature" : "intlCard"}>
+          {internasionalItems.length ? internasionalItems.map((item, idx) => (
+            <article key={item.id} className={idx === 0 ? "intlFeature" : "intlCard"}>
               <div
                 className={idx === 0 ? "intlFeatureImage" : "intlCardImage"}
-                style={{ backgroundImage: `url('${item.image}')` }}
+                style={item.image ? { backgroundImage: `url('${item.image.replaceAll("'", "%27")}')` } : undefined}
               />
               <div className="intlBody">
                 <span className="pill">{item.category}</span>
@@ -304,28 +235,10 @@ export default async function BeritaTerkiniPage() {
                 {idx === 0 && <p>{item.excerpt}</p>}
               </div>
             </article>
-          ))}
-        </div>
-        <div className="authorGrid">
-          <div className="authorCard">
-            <div className="authorImage" style={{ backgroundImage: "url('/wanita.png')" }} />
-            <h5>Using Instagram Trends to Promote Your</h5>
-            <small>27 AUGUST, 2024</small>
-          </div>
-          <div className="authorCard">
-            <div className="authorImage" style={{ backgroundImage: "url('/cahaya.png')" }} />
-            <h5>Everything Developers Must Know About</h5>
-            <small>25 AUGUST, 2024</small>
-          </div>
-          <div className="authorCard">
-            <div className="authorImage" style={{ backgroundImage: "url('/misi.png')" }} />
-            <h5>How to Build a Strong Personal Brand</h5>
-            <small>20 AUGUST, 2024</small>
-          </div>
+          )) : <EmptyNews title="Belum ada berita internasional" />}
         </div>
       </section>
 
-      {/* Inline Editor untuk Super Admin */}
       <InlineContentEditor items={managedItems} module="website" section="website" />
     </main>
   );

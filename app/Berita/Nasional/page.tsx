@@ -1,28 +1,15 @@
 import { getPublishedContentItems } from "../../lib/content";
 
-const nasionalNews = [
-  {
-    title: "Munas DDII Menetapkan Arah Da'wah Nasional",
-    summary: "Rapat kerja memperkuat sinergi cabang daerah dengan program pembinaan yang lebih terukur.",
-  },
-  {
-    title: "Gerakan Sosial Ramadan Menjangkau Banyak Wilayah",
-    summary: "Kabar nasional tentang distribusi bantuan, layanan kesehatan, dan edukasi masyarakat.",
-  },
-  {
-    title: "Pelatihan Dai dan Guru Ngaji Meningkat Pesat",
-    summary: "Konsolidasi sumber daya da'wah menjadi fokus utama pemberitaan nasional.",
-  },
-];
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(value));
+}
 
 export default async function BeritaNasionalPage() {
-  const managedNews = await getPublishedContentItems("website", "nasional");
-  const displayedNews = managedNews.length
-    ? managedNews.map((item) => ({
-        title: item.title,
-        summary: item.summary || item.body,
-      }))
-    : nasionalNews;
+  const news = await getPublishedContentItems("website", "nasional");
 
   return (
     <main className="page simpleRoutePage">
@@ -36,13 +23,20 @@ export default async function BeritaNasionalPage() {
       </section>
 
       <section className="container routeGrid">
-        {displayedNews.map((item) => (
-          <article key={item.title} className="routeCard">
-            <span className="routeTag">NASIONAL</span>
+        {news.map((item) => (
+          <article key={item.id} className="routeCard">
+            <span className="routeTag">{formatDate(item.publishedAt)}</span>
             <h3>{item.title}</h3>
-            <p>{item.summary}</p>
+            <p>{item.summary || item.body}</p>
           </article>
         ))}
+        {news.length === 0 ? (
+          <article className="routeCard">
+            <span className="routeTag">BELUM ADA DATA</span>
+            <h3>Belum ada berita nasional</h3>
+            <p>Berita nasional akan tampil otomatis setelah admin menerbitkan konten dari dashboard.</p>
+          </article>
+        ) : null}
       </section>
     </main>
   );

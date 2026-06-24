@@ -11,13 +11,40 @@ import type { PublicContentItem } from "../lib/content";
 
 type KajianForm = Omit<ContentInput, "module" | "section" | "id">;
 
-const emptyForm: KajianForm = {
-  title: "",
-  summary: "",
-  body: "",
-  imageUrl: "",
-  status: "published",
+const sectionLabels: Record<string, { title: string; subtitle: string }> = {
+  "artikel-kajian": {
+    title: "Artikel Kajian",
+    subtitle: "Kajian umum, ekonomi Islam, dan materi dakwah",
+  },
+  khutbah: {
+    title: "Materi Khutbah",
+    subtitle: "Naskah khutbah dan bahan ceramah",
+  },
+  kajian: {
+    title: "Kajian",
+    subtitle: "Materi dakwah dan artikel islami",
+  },
+  tauhid: {
+    title: "Kajian Tauhid",
+    subtitle: "Akidah, Tauhid & Keimanan",
+  },
+  tazkiyah: {
+    title: "Materi Tazkiyah",
+    subtitle: "Penyucian jiwa dan pembinaan akhlak",
+  },
 };
+
+function createEmptyForm(): KajianForm {
+  return {
+    title: "",
+    summary: "",
+    body: "",
+    imageUrl: "",
+    authorName: "",
+    publishedAt: new Date().toISOString().slice(0, 10),
+    status: "published",
+  };
+}
 
 function Icon({
   name,
@@ -101,7 +128,8 @@ export default function KajianManager({
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
   const [query, setQuery] = useState("");
   const [message, setMessage] = useState("");
-  const [form, setForm] = useState<KajianForm>(emptyForm);
+  const [form, setForm] = useState<KajianForm>(createEmptyForm);
+  const currentSection = sectionLabels[section] ?? sectionLabels.kajian;
 
   const publishedCount = items.filter((item) => item.status === "published").length;
   const draftCount = items.length - publishedCount;
@@ -117,7 +145,7 @@ export default function KajianManager({
 
   const openCreate = () => {
     setEditingId(null);
-    setForm(emptyForm);
+    setForm(createEmptyForm());
     setMessage("");
     setOpenMenuId(null);
     setEditorOpen(true);
@@ -130,6 +158,8 @@ export default function KajianManager({
       summary: item.summary,
       body: item.body,
       imageUrl: item.imageUrl,
+      authorName: item.authorName,
+      publishedAt: item.publishedAt.slice(0, 10),
       status: item.status === "draft" ? "draft" : "published",
     });
     setMessage("");
@@ -139,7 +169,7 @@ export default function KajianManager({
 
   const closeEditor = () => {
     setEditingId(null);
-    setForm(emptyForm);
+    setForm(createEmptyForm());
     setEditorOpen(false);
   };
 
@@ -276,19 +306,27 @@ export default function KajianManager({
                   </label>
                   <label>
                     <span>Tanggal Publikasi</span>
-                    <input type="date" defaultValue={new Date().toISOString().slice(0, 10)} />
+                    <input
+                      type="date"
+                      value={form.publishedAt ?? ""}
+                      onChange={(event) =>
+                        setForm((current) => ({ ...current, publishedAt: event.target.value }))
+                      }
+                    />
                   </label>
                   <label>
                     <span>Penulis / Ustadz</span>
-                    <input defaultValue="Ust. Ahmad Fauzi, Lc." />
+                    <input
+                      value={form.authorName ?? ""}
+                      onChange={(event) =>
+                        setForm((current) => ({ ...current, authorName: event.target.value }))
+                      }
+                      placeholder="Otomatis memakai nama akun jika dikosongkan"
+                    />
                   </label>
                   <label>
-                    <span>Topik</span>
-                    <select defaultValue="Tauhid">
-                      <option>Tauhid</option>
-                      <option>Akidah</option>
-                      <option>Keimanan</option>
-                    </select>
+                    <span>Kategori</span>
+                    <input value={currentSection.title} readOnly />
                   </label>
                 </section>
 
@@ -311,7 +349,7 @@ export default function KajianManager({
                 <div className="kajianPreview">
                   <p>Preview Card</p>
                   <article>
-                    <span>Tauhid</span>
+                    <span>{currentSection.title}</span>
                     <h4>{form.title.trim() || "Judul materi kajian"}</h4>
                     <p>{form.summary || "Ringkasan materi akan tampil di sini."}</p>
                     <small>✍ Ust. Ahmad Fauzi, Lc.</small>
@@ -326,13 +364,13 @@ export default function KajianManager({
   }
 
   return (
-    <section className="kajianWorkspace" aria-label="Kelola Kajian Tauhid">
+    <section className="kajianWorkspace" aria-label={`Kelola ${currentSection.title}`}>
       <header className="kajianPageHead">
         <div className="kajianHeading">
           <span><Icon name="book" /></span>
           <div>
-            <h2>Kajian Tauhid</h2>
-            <p>Akidah, Tauhid &amp; Keimanan</p>
+            <h2>{currentSection.title}</h2>
+            <p>{currentSection.subtitle}</p>
           </div>
         </div>
         {!readOnly ? <button type="button" onClick={openCreate}>＋ &nbsp; Tambah Materi</button> : null}
@@ -351,7 +389,7 @@ export default function KajianManager({
         <input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Cari materi tauhid..."
+          placeholder={`Cari ${currentSection.title.toLowerCase()}...`}
         />
       </label>
 
@@ -366,7 +404,7 @@ export default function KajianManager({
             </div>
             <div className="kajianCardBody">
               <div className="kajianCardMeta">
-                <span>Tauhid</span>
+                <span>{currentSection.title}</span>
                 <span className={item.status === "published" ? "live" : "saved"}>
                   ◎ {item.status === "published" ? "Terbit" : "Draf"}
                 </span>

@@ -1397,7 +1397,12 @@ export default async function RoleDashboard({
     timeZone: "Asia/Jakarta",
   }).format(new Date());
   const activeSection = activeModule
-    ? sectionView || slugifySection(moduleLabels[activeModule])
+    ? sectionView
+      || (activeModule === "kajian"
+        ? "artikel-kajian"
+        : activeModule === "konsultasi"
+          ? "pertanyaan-masuk"
+          : slugifySection(moduleLabels[activeModule]))
     : "";
   const contentItems = activeModule === "tentang-kami"
     ? await getModuleContentItems(activeModule)

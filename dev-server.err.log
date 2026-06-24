@@ -1,0 +1,7 @@
+⚠ Slow filesystem detected. The benchmark took 322ms. If D:\SMT 4\PBLDEWANDAKWAH\.next/dev is a network drive, consider moving it to a local folder.
+See more: https://nextjs.org/docs/app/guides/local-development
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior (file://D:/SMT 4/PBLDEWANDAKWAH/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)
+⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[browser] Image with src "/logo.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading (file://D:/SMT 4/PBLDEWANDAKWAH/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2431:13)

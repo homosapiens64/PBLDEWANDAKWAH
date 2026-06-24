@@ -6,56 +6,6 @@ import { useEffect, useState } from "react";
 import type { PublicContentItem } from "./lib/content";
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
-const beritaUtama = [
-  {
-    id: 1,
-    image: "/images/berita1.jpg",
-    title: "Kunjungan Asatidzah Dewan Da'wah Magetan ke Kampus IDDC",
-    author: "Drs. Ust. M. Alim, Pengurus DDI Kab. Magetan",
-    source: "Dewandakwahsatjim.com, Magetan...",
-    date: "27 Mei 2025",
-  },
-  {
-    id: 2,
-    image: "/images/berita2.jpg",
-    title: "Kunjungan Asatidzah Dewan Da'wah Magetan ke Kampus IDDC",
-    author: "Drs. Ust. M. Alim, Pengurus DDI Kab. Magetan",
-    source: "Dewandakwahsatjim.com, Magetan...",
-    date: "27 Mei 2025",
-  },
-];
-
-const beritaSamping = [
-  {
-    id: 1,
-    image: "/images/bs1.jpg",
-    title: "Cahaya Ilmu dari Pesantren: Menyinari Jiwa dan Peradaban",
-    location: "Semarang",
-    date: "27 Mei 2025",
-  },
-  {
-    id: 2,
-    image: "/images/bs2.jpg",
-    title: "Puasa Investasi Tak Terlihat, Keuntungan Tak Terbatas",
-    location: "Bekasi",
-    date: "27 Mei 2025",
-  },
-  {
-    id: 3,
-    image: "/images/bs3.jpg",
-    title: "Cahaya Ilmu dari Pesantren: Menyinari Jiwa dan Peradaban",
-    location: "Semarang",
-    date: "27 Mei 2025",
-  },
-  {
-    id: 4,
-    image: "/images/bs4.jpg",
-    title: "Puasa Investasi Tak Terlihat, Keuntungan Tak Terbatas",
-    location: "Semarang",
-    date: "27 Mei 2025",
-  },
-];
-
 const kajianTabs = ["Semua", "Artikel Kajian", "Tauhid", "Tazkiyah", "Khutbah"];
 
 const kajianData = [
@@ -247,20 +197,9 @@ function BeritaSection({ items }: { items: PublicContentItem[] }) {
     location: sectionLabel(item.section),
     date: formatPublicDate(item.publishedAt),
   }));
-  const fallbackMain = beritaUtama.map((item) => ({
-    ...item,
-    id: `fallback-main-${item.id}`,
-    location: "Semarang",
-  }));
-  const fallbackSide = beritaSamping.map((item) => ({
-    ...item,
-    id: `fallback-side-${item.id}`,
-    author: "",
-    source: "",
-  }));
-  const displayedMain = [...managedItems, ...fallbackMain].slice(0, 2);
+  const displayedMain = managedItems.slice(0, 2);
   const mainIds = new Set(displayedMain.map((item) => item.id));
-  const displayedSide = [...managedItems, ...fallbackSide]
+  const displayedSide = managedItems
     .filter((item) => !mainIds.has(item.id))
     .slice(0, 4);
 
@@ -288,7 +227,7 @@ function BeritaSection({ items }: { items: PublicContentItem[] }) {
             </h2>
           </div>
           <Link
-            href="/berita"
+            href="/Berita/Terkini"
             className="flex items-center gap-2 border px-4 py-2 font-semibold text-sm hover:bg-orange-50 transition-colors"
             style={{
               borderColor: "#d4890a",
@@ -304,7 +243,7 @@ function BeritaSection({ items }: { items: PublicContentItem[] }) {
         <div className="flex gap-6">
           {/* Left: 2 main image cards */}
           <div className="flex gap-4 flex-1">
-            {displayedMain.map((item) => (
+            {displayedMain.length ? displayedMain.map((item) => (
               <div
                 key={item.id}
                 className="flex-1 rounded overflow-hidden shadow-sm border border-gray-100 group cursor-pointer"
@@ -335,7 +274,11 @@ function BeritaSection({ items }: { items: PublicContentItem[] }) {
                   </p>
                 </div>
               </div>
-            ))}
+            )) : (
+              <div className="flex-1 rounded border border-dashed border-gray-200 bg-white p-6 text-sm text-gray-500">
+                Belum ada berita terbit. Konten akan tampil otomatis setelah admin menerbitkan berita dari dashboard.
+              </div>
+            )}
           </div>
 
           {/* Right: list items */}

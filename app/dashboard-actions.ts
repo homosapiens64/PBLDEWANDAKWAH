@@ -104,6 +104,7 @@ function getPublicPath(module: string, section: string) {
   }
   if (module === "beranda") return "/";
   if (module === "kajian") return "/Kajian";
+  if (module === "konsultasi") return "/Konsultasi";
   if (module === "education") return educationPaths[section] ?? "/Pendidikan/Institusi";
   if (module === "pmb") return "/Pendidikan/pendaftaran";
   if (module === "tentang-kami") return section ? `/TentangKami/${capitalizeSegment(section)}` : "/TentangKami";
@@ -210,7 +211,6 @@ export async function deleteContentItem(id: number, module: string) {
       publicPath = existing ? `/Berita/${capitalizeSegment(existing.section)}` : "/Berita";
       await prisma.news.delete({ where: { id } });
     } else if (module === "kajian") {
-      const existing = await prisma.studyArticle.findUnique({ where: { id } });
       publicPath = "/Kajian";
       await prisma.studyArticle.delete({ where: { id } });
     } else if (module === "education" || module === "pmb") {

@@ -1,28 +1,15 @@
 import { getPublishedContentItems } from "../../lib/content";
 
-const internationalStories = [
-  {
-    title: "Jaringan Da'wah Digital Menjangkau Komunitas Global",
-    summary: "Kolaborasi antarwilayah membuka ruang baru untuk da'wah lintas negara dan budaya.",
-  },
-  {
-    title: "Pertukaran Ilmu Antar-Lembaga Islam di Asia Tenggara",
-    summary: "Forum internasional mendorong pertukaran pengalaman pendidikan dan sosial.",
-  },
-  {
-    title: "Relawan Muslim Membangun Program Kemanusiaan Global",
-    summary: "Aksi lintas negara memperlihatkan peran da'wah dalam kerja-kerja kemanusiaan modern.",
-  },
-];
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(value));
+}
 
 export default async function BeritaInternasionalPage() {
-  const managedStories = await getPublishedContentItems("website", "internasional");
-  const displayedStories = managedStories.length
-    ? managedStories.map((item) => ({
-        title: item.title,
-        summary: item.summary || item.body,
-      }))
-    : internationalStories;
+  const stories = await getPublishedContentItems("website", "internasional");
 
   return (
     <main className="page simpleRoutePage">
@@ -36,13 +23,20 @@ export default async function BeritaInternasionalPage() {
       </section>
 
       <section className="container routeGrid">
-        {displayedStories.map((item) => (
-          <article key={item.title} className="routeCard">
-            <span className="routeTag">INTERNASIONAL</span>
+        {stories.map((item) => (
+          <article key={item.id} className="routeCard">
+            <span className="routeTag">{formatDate(item.publishedAt)}</span>
             <h3>{item.title}</h3>
-            <p>{item.summary}</p>
+            <p>{item.summary || item.body}</p>
           </article>
         ))}
+        {stories.length === 0 ? (
+          <article className="routeCard">
+            <span className="routeTag">BELUM ADA DATA</span>
+            <h3>Belum ada berita internasional</h3>
+            <p>Berita internasional akan tampil otomatis setelah admin menerbitkan konten dari dashboard.</p>
+          </article>
+        ) : null}
       </section>
     </main>
   );

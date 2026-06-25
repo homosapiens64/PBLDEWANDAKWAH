@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, type FormEvent } from "react";
+import type { CertifiedUstadzItem } from "../lib/certified-ustadz";
 import type { PublicContentItem } from "../lib/content";
 
 const subtopics = [
@@ -24,13 +25,6 @@ const topicCards = [
     icon: "o",
     active: false,
   },
-];
-
-const ustadzList = [
-  "Dr. Ahmad Hadi, Lc",
-  "Dr. Saiful Rahman, M.A",
-  "Dr. Fathur Rahman, Lc",
-  "Ust. Hasan Sabil, M.Ag",
 ];
 
 const faqItems = [
@@ -64,7 +58,13 @@ function sectionLabel(value: string) {
   return labels[value] ?? value.replaceAll("-", " ");
 }
 
-export default function KonsultasiClient({ items }: { items: PublicContentItem[] }) {
+export default function KonsultasiClient({
+  certifiedUstadz,
+  items,
+}: {
+  certifiedUstadz: CertifiedUstadzItem[];
+  items: PublicContentItem[];
+}) {
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -256,16 +256,19 @@ export default function KonsultasiClient({ items }: { items: PublicContentItem[]
           <section className="sidebarCard whiteCard">
             <p className="sidebarTitle muted">Ustadz Bersertifikat</p>
             <div className="ustadzList">
-              {ustadzList.map((name, index) => (
-                <div key={name} className="ustadzItem">
+              {certifiedUstadz.map((ustadz, index) => (
+                <div key={ustadz.id} className="ustadzItem">
                   <div className="ustadzAvatar">{index + 1}</div>
                   <div>
-                    <strong>{name}</strong>
-                    <p>Spesialis fikih dan pembinaan keluarga</p>
+                    <strong>{ustadz.name}</strong>
+                    <p>{ustadz.specialization}</p>
                   </div>
                   <span className="statusDot" />
                 </div>
               ))}
+              {certifiedUstadz.length === 0 ? (
+                <div className="financeEmptyState">Belum ada ustadz bersertifikat.</div>
+              ) : null}
             </div>
           </section>
 

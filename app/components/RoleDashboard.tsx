@@ -16,8 +16,14 @@ import KajianManager from "./KajianManager";
 import AboutManager from "./AboutManager";
 import NewsManager from "./NewsManager";
 import AdminManagement, { type EducationAdminRow } from "./AdminManagement";
+import CertifiedUstadzManager from "./CertifiedUstadzManager";
+import ConsultationQuestionsManager from "./ConsultationQuestionsManager";
 import EducationPmbWorkspace, { type PmbApplicant } from "./EducationPmbWorkspace";
 import EducationParticipantWorkspace from "./EducationParticipantWorkspace";
+import {
+  getCertifiedUstadzItems,
+  type CertifiedUstadzItem,
+} from "../lib/certified-ustadz";
 import {
   getContentItems,
   getModuleContentItems,
@@ -129,7 +135,7 @@ const navItems: DashboardNavItem[] = [
   {
     icon: "list",
     label: "Konsultasi",
-    children: ["Pertanyaan Masuk", "Jawaban"],
+    children: ["Pertanyaan Masuk", "Jawaban", "Ustadz Bersertifikat"],
     roles: ["super_admin", "ustadz"] satisfies UserRole[],
   },
   {
@@ -1371,6 +1377,13 @@ export default async function RoleDashboard({
   const visibleNavItems = navItems
     .filter((item) => item.roles.includes(role))
     .map((item) => {
+      if (item.label === "Konsultasi" && role !== "super_admin") {
+        return {
+          ...item,
+          children: item.children.filter((child) => child !== "Ustadz Bersertifikat"),
+        };
+      }
+
       if (
         role !== "admin"
         || item.label !== "PendidikanHub"
@@ -1404,9 +1417,13 @@ export default async function RoleDashboard({
           ? "pertanyaan-masuk"
           : slugifySection(moduleLabels[activeModule]))
     : "";
+  const activeCertifiedUstadz = activeModule === "konsultasi"
+    && activeSection === "ustadz-bersertifikat";
+  const activeIncomingConsultation = activeModule === "konsultasi"
+    && activeSection === "pertanyaan-masuk";
   const contentItems = activeModule === "tentang-kami"
     ? await getModuleContentItems(activeModule)
-    : activeModule
+    : activeModule && !activeCertifiedUstadz
       ? await getContentItems(activeModule, activeSection)
       : [];
   let databaseAvailable = true;
@@ -1414,6 +1431,7 @@ export default async function RoleDashboard({
   let dashboardTransactions: DashboardTransaction[] = [];
   let dashboardContent: DashboardContent[] = [];
   let educationAdmins: EducationAdminRow[] = [];
+  let certifiedUstadz: CertifiedUstadzItem[] = [];
   let pmbApplicants: PmbApplicant[] = [];
 
   if (activeModule === "manajemen" && role === "super_admin") {
@@ -1453,6 +1471,10 @@ export default async function RoleDashboard({
       databaseAvailable = false;
       console.error("Admin database is unavailable:", error);
     }
+  }
+
+  if (activeCertifiedUstadz && role === "super_admin") {
+    certifiedUstadz = await getCertifiedUstadzItems();
   }
 
   if (activePmbView) {
@@ -1917,6 +1939,16 @@ export default async function RoleDashboard({
             <AboutManager items={contentItems} readOnly={contentReadOnly} section={activeSection} />
           ) : activeModule === "manajemen" ? (
             <AdminManagement admins={educationAdmins} />
+          ) : activeIncomingConsultation ? (
+            <ConsultationQuestionsManager items={contentItems} readOnly={contentReadOnly} />
+          ) : activeCertifiedUstadz ? (
+            role === "super_admin" ? (
+              <CertifiedUstadzManager items={certifiedUstadz} />
+            ) : (
+              <div className="dashboardDatabaseNotice">
+                Hanya Super Admin yang dapat mengelola daftar ustadz bersertifikat.
+              </div>
+            )
           ) : (
             <ContentManager
               items={contentItems}

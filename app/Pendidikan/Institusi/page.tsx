@@ -9,6 +9,7 @@ interface Tag {
 
 interface Institution {
   id: string;
+  href: string;
   name: string;
   subtitle: string;
   description: string;
@@ -20,6 +21,7 @@ interface Institution {
 const institutions: Institution[] = [
   {
     id: "adi",
+    href: "/Pendidikan/ADI",
     name: "ADI",
     subtitle: "Akademi Da'wah Islam Indonesia — Cabang Semarang",
     description:
@@ -35,6 +37,7 @@ const institutions: Institution[] = [
   },
   {
     id: "ponpes",
+    href: "/Pendidikan/PonpesSuruh",
     name: "PONPES SURUH",
     subtitle: "Lembaga Pendidikan Islam — Kota Semarang",
     description:
@@ -50,6 +53,7 @@ const institutions: Institution[] = [
   },
   {
     id: "khawarizmi",
+    href: "/Pendidikan/AlKhawarizmi",
     name: "Al Khawarizmi",
     subtitle: "Lembaga Pendidikan Islam — Terafiliasi DDI Cabang Semarang",
     description:
@@ -132,13 +136,14 @@ export default function Institusi() {
 
               {/* ── Dua tombol ── */}
               <div style={{ display: "flex", gap: 10 }}>
-                <button
-                  style={{ backgroundColor: "#009688", color: "#fff", border: "none", borderRadius: 8, padding: "10px 24px", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+                <Link
+                  href={inst.href}
+                  style={{ backgroundColor: "#009688", color: "#fff", border: "none", borderRadius: 8, padding: "10px 24px", fontSize: 14, fontWeight: 600, cursor: "pointer", textDecoration: "none" }}
                   onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#00796b")}
                   onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#009688")}
                 >
                   Selengkapnya
-                </button>
+                </Link>
 
                 {/* Tombol Daftar — pakai query param ?institusi=id */}
                 <Link

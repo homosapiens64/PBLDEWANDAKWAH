@@ -12,7 +12,7 @@ export default function LoginForm({ hasError }: LoginFormProps) {
     <form action={loginAction} className="loginCard">
       {hasError ? (
         <p className="loginError">
-          Role atau password belum sesuai. Coba gunakan akun demo yang tersedia.
+          Username atau password belum sesuai. Silakan coba lagi.
         </p>
       ) : null}
 
@@ -37,7 +37,6 @@ export default function LoginForm({ hasError }: LoginFormProps) {
       <div className="loginField">
         <div className="passwordLabelRow">
           <label htmlFor="login-password">Password</label>
-          <span className="passwordHint">Demo: superadmin / superadmin123</span>
         </div>
         <div className="passwordInputWrap">
           <svg viewBox="0 0 24 24" aria-hidden="true">

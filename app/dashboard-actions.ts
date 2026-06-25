@@ -9,6 +9,7 @@ import {
   isEducationInstitution,
   roleHomePaths,
 } from "./lib/auth";
+import { sendConsultationEmailNotification } from "./lib/consultation-notifications";
 import { canEditModule } from "./lib/content";
 import { prisma } from "./lib/prisma";
 
@@ -137,9 +138,32 @@ function extractSubmittedQuestion(body: string) {
   }
 
   return lines
-    .filter((line) => !/^(Nama|Email|WhatsApp|Sub-topik):/i.test(line.trim()))
+    .filter((line) => !/^(Nama|Email|WhatsApp|Sub-topik|Lampiran):/i.test(line.trim()))
     .join("\n")
     .trim();
+}
+
+function extractPublishedQuestion(body: string) {
+  const normalized = body.replace(/\r\n/g, "\n").trim();
+  const questionMarker = "Pertanyaan:";
+  const answerMarker = "Jawaban:";
+  const questionIndex = normalized.indexOf(questionMarker);
+  const answerIndex = normalized.indexOf(answerMarker);
+
+  if (questionIndex >= 0 && answerIndex > questionIndex) {
+    return normalized.slice(questionIndex + questionMarker.length, answerIndex).trim();
+  }
+
+  return extractSubmittedQuestion(body);
+}
+
+function extractSubmittedEmail(body: string) {
+  const line = body
+    .replace(/\r\n/g, "\n")
+    .split("\n")
+    .find((item) => /^Email:/i.test(item.trim()));
+
+  return line ? line.slice(line.indexOf(":") + 1).trim() : "";
 }
 
 export async function saveContentItem(input: ContentInput) {
@@ -462,12 +486,16 @@ export async function answerConsultationQuestion(input: ConsultationAnswerInput)
     if (
       !question
       || question.module !== "konsultasi"
-      || question.section !== "pertanyaan-masuk"
+      || !["pertanyaan-masuk", "jawaban"].includes(question.section)
     ) {
       throw new Error("Pertanyaan konsultasi tidak ditemukan.");
     }
 
-    const submittedQuestion = extractSubmittedQuestion(question.body);
+    const isPublishedAnswer = question.section === "jawaban";
+    const submittedQuestion = isPublishedAnswer
+      ? extractPublishedQuestion(question.body)
+      : extractSubmittedQuestion(question.body);
+    const submittedEmail = isPublishedAnswer ? "" : extractSubmittedEmail(question.body);
     await prisma.contentItem.update({
       where: { id: input.id },
       data: {
@@ -487,6 +515,21 @@ export async function answerConsultationQuestion(input: ConsultationAnswerInput)
         title,
       },
     });
+
+    if (submittedEmail) {
+      void sendConsultationEmailNotification({
+        body: [
+          `Assalamu'alaikum, pertanyaan konsultasi Anda sudah dijawab oleh Tim Ustadz Dewan Da'wah Semarang.`,
+          `Judul: ${title}`,
+          "",
+          answer,
+          "",
+          "Silakan buka halaman Konsultasi untuk melihat jawaban yang sudah diterbitkan.",
+        ].join("\n"),
+        subject: `Jawaban Konsultasi: ${title}`,
+        to: [submittedEmail],
+      });
+    }
   } catch (error) {
     if (error instanceof Error && error.message.includes("tidak ditemukan")) {
       throw error;

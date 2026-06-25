@@ -41,6 +41,8 @@ const tips = [
   "Gunakan bahasa yang sopan dan mudah dipahami.",
 ];
 
+const answerPreviewLimit = 180;
+
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("id-ID", {
     day: "2-digit",
@@ -58,6 +60,21 @@ function sectionLabel(value: string) {
   return labels[value] ?? value.replaceAll("-", " ");
 }
 
+function getPublishedAnswer(body: string) {
+  const answerMarker = "Jawaban:";
+  const answerIndex = body.indexOf(answerMarker);
+
+  if (answerIndex < 0) return body.trim();
+
+  return body.slice(answerIndex + answerMarker.length).trim();
+}
+
+function getPreviewText(value: string, isExpanded: boolean) {
+  if (isExpanded || value.length <= answerPreviewLimit) return value;
+
+  return `${value.slice(0, answerPreviewLimit).trimEnd()}...`;
+}
+
 export default function KonsultasiClient({
   certifiedUstadz,
   items,
@@ -67,17 +84,27 @@ export default function KonsultasiClient({
 }) {
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [expandedAnswerIds, setExpandedAnswerIds] = useState<number[]>([]);
 
   const recentItems = useMemo(
     () => items.filter((item) => item.section === "jawaban").slice(0, 5),
     [items],
   );
+  const toggleAnswer = (id: number) => {
+    setExpandedAnswerIds((current) =>
+      current.includes(id)
+        ? current.filter((answerId) => answerId !== id)
+        : [...current, id],
+    );
+  };
+
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setMessage("");
     setIsSubmitting(true);
 
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
 
     try {
       const response = await fetch("/api/konsultasi", {
@@ -90,7 +117,7 @@ export default function KonsultasiClient({
         throw new Error(payload?.message ?? "Pertanyaan gagal dikirim.");
       }
 
-      event.currentTarget.reset();
+      form.reset();
       setMessage("Pertanyaan berhasil dikirim. Tim ustadz akan meninjau dari dashboard.");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Pertanyaan gagal dikirim.");
@@ -181,6 +208,15 @@ export default function KonsultasiClient({
                   placeholder="Jelaskan pertanyaan Anda secara lengkap dan detail. Sertakan konteks bila perlu."
                 />
               </label>
+              <label className="fullWidth">
+                Lampiran
+                <input
+                  accept=".jpg,.jpeg,.png,.webp,.pdf"
+                  name="attachment"
+                  type="file"
+                />
+                <small className="consultFieldHint">Opsional, format JPG, PNG, WEBP, atau PDF. Maksimal 5 MB.</small>
+              </label>
 
               <label className="checkLine fullWidth">
                 <input name="privacy" required type="checkbox" defaultChecked />
@@ -212,19 +248,42 @@ export default function KonsultasiClient({
             </div>
 
             <div className="recentList" id="recent-konsultasi">
-              {recentItems.map((item, index) => (
-                <article key={item.id} className="recentItem">
-                  <div className="recentIndex">{index + 1}</div>
-                  <div className="recentContent">
-                    <h4>{item.title}</h4>
-                    <p>{item.summary || item.body.slice(0, 140)}</p>
-                    <div className="recentMeta">
-                      <span className="pill tiny">{sectionLabel(item.section)}</span>
-                      <span>{formatDate(item.publishedAt)}</span>
+              {recentItems.map((item, index) => {
+                const answer = getPublishedAnswer(item.body);
+                const isExpanded = expandedAnswerIds.includes(item.id);
+                const isLongAnswer = answer.length > answerPreviewLimit;
+
+                return (
+                  <article key={item.id} className="recentItem">
+                    <div className="recentContent">
+                      <div className="recentItemHeader">
+                        <div className="recentIndex">{index + 1}</div>
+                        <div>
+                          <h4>{item.title}</h4>
+                          {item.summary ? <p className="recentSummary">{item.summary}</p> : null}
+                        </div>
+                      </div>
+                      <div className="recentAnswer">
+                        <span className="recentAnswerLabel">Jawaban</span>
+                        <p>{getPreviewText(answer, isExpanded)}</p>
+                        {isLongAnswer ? (
+                          <button
+                            className="recentToggleButton"
+                            type="button"
+                            onClick={() => toggleAnswer(item.id)}
+                          >
+                            {isExpanded ? "Tutup" : "Lihat selengkapnya"}
+                          </button>
+                        ) : null}
+                      </div>
+                      <div className="recentMeta">
+                        <span className="pill tiny">{sectionLabel(item.section)}</span>
+                        <span>{formatDate(item.publishedAt)}</span>
+                      </div>
                     </div>
-                  </div>
-                </article>
-              ))}
+                  </article>
+                );
+              })}
               {recentItems.length === 0 ? (
                 <div className="financeEmptyState">Belum ada jawaban konsultasi yang diterbitkan.</div>
               ) : null}

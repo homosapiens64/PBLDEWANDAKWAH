@@ -1420,9 +1420,11 @@ export default async function RoleDashboard({
   const activeCertifiedUstadz = activeModule === "konsultasi"
     && activeSection === "ustadz-bersertifikat";
   const activeIncomingConsultation = activeModule === "konsultasi"
-    && activeSection === "pertanyaan-masuk";
+    && ["pertanyaan-masuk", "jawaban"].includes(activeSection);
   const contentItems = activeModule === "tentang-kami"
     ? await getModuleContentItems(activeModule)
+    : activeModule === "konsultasi" && !activeCertifiedUstadz
+      ? await getModuleContentItems(activeModule)
     : activeModule && !activeCertifiedUstadz
       ? await getContentItems(activeModule, activeSection)
       : [];
@@ -1940,7 +1942,7 @@ export default async function RoleDashboard({
           ) : activeModule === "manajemen" ? (
             <AdminManagement admins={educationAdmins} />
           ) : activeIncomingConsultation ? (
-            <ConsultationQuestionsManager items={contentItems} readOnly={contentReadOnly} />
+            <ConsultationQuestionsManager items={contentItems} readOnly={contentReadOnly} section={activeSection} />
           ) : activeCertifiedUstadz ? (
             role === "super_admin" ? (
               <CertifiedUstadzManager items={certifiedUstadz} />

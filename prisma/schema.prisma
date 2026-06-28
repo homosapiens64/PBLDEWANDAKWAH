@@ -203,3 +203,26 @@ model CertifiedUstadz {
   @@index([isActive, sortOrder])
   @@map("certified_ustadz")
 }
+
+model DonationCampaign {
+  id              Int      @id @default(autoincrement())
+  title           String   @db.VarChar(180)
+  summary         String?  @db.Text
+  badge           String   @default("OPEN DONASI") @db.VarChar(40)
+  org             String   @default("LAZNAS Dewan Dakwah Jawa Tengah") @db.VarChar(120)
+  imageUrl        String?  @map("image_url") @db.LongText
+  href            String   @db.VarChar(500)
+  remainingTime   String   @map("remaining_time") @db.VarChar(80)
+  collectedAmount Int      @default(0) @map("collected_amount")
+  targetAmount    Int?     @map("target_amount")
+  progress        Int      @default(0)
+  status          String   @default("published") @db.VarChar(20)
+  sortOrder       Int      @default(0) @map("sort_order")
+  authorRole      String   @map("author_role") @db.VarChar(20)
+  authorName      String   @map("author_name") @db.VarChar(100)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@index([status, sortOrder])
+  @@map("donation_campaigns")
+}

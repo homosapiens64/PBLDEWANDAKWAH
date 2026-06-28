@@ -183,8 +183,144 @@
   accent-color: #217a63;
 }
 
+.dashboardApp .donationFormGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.dashboardApp .donationModal {
+  width: min(760px, 100%);
+}
+
+.dashboardApp .donationProgressText {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #31584e;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.dashboardApp .donationProgressTrack {
+  display: block;
+  width: 120px;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e7f0ec;
+}
+
+.dashboardApp .donationProgressTrack > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #217a63;
+}
+
+.dashboardApp .donationTableImage {
+  width: 78px;
+  aspect-ratio: 4 / 3;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid #dce9e3;
+  border-radius: 10px;
+  background-color: #e7f0ec;
+  background-position: center;
+  background-size: cover;
+  color: #6d7d77;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.dashboardApp .donationTableImage.empty {
+  padding: 0.4rem;
+}
+
+.dashboardApp .imageUploadInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.dashboardApp .imageUploadButton {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  width: fit-content;
+  border: 1px solid #1f8a64;
+  border-radius: 12px;
+  background: #eef9f3;
+  padding: 0.75rem 1rem;
+  color: #176447;
+  font-size: 0.82rem;
+  font-weight: 850;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.dashboardApp .imageUploadButton:hover {
+  border-color: #176447;
+  background: #e0f3ea;
+  transform: translateY(-1px);
+}
+
+.dashboardApp .imageUploadButton svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.dashboardApp .imageUploadPreview {
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid #dce9e3;
+  border-radius: 12px;
+  background: #f8fbfa;
+  padding: 0.65rem;
+}
+
+.dashboardApp .imageUploadPreview > span {
+  width: 86px;
+  aspect-ratio: 4 / 3;
+  display: block;
+  border-radius: 9px;
+  background-color: #dfeae5;
+  background-position: center;
+  background-size: cover;
+}
+
+.dashboardApp .imageUploadPreview small,
+.dashboardApp .imageUploadMessage {
+  color: #64746e;
+  font-size: 0.72rem;
+  font-weight: 650;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.dashboardApp .imageUploadMessage {
+  color: #217a63;
+}
+
 @media (max-width: 920px) {
   .dashboardApp .adminManagementGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboardApp .donationFormGrid {
     grid-template-columns: 1fr;
   }
 }

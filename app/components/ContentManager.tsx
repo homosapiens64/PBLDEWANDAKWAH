@@ -7,6 +7,7 @@ import {
   saveContentItem,
   type ContentInput,
 } from "../dashboard-actions";
+import ImageUploadField from "./ImageUploadField";
 import type { PublicContentItem } from "../lib/content";
 
 type ContentForm = Omit<ContentInput, "module" | "section" | "id">;
@@ -187,10 +188,11 @@ export default function ContentManager({
                 <span>Isi Konten</span>
                 <textarea required rows={7} value={form.body} onChange={(event) => setForm((current) => ({ ...current, body: event.target.value }))} />
               </label>
-              <label className="financeFormField">
-                <span>URL Gambar (opsional)</span>
-                <input type="url" placeholder="https://..." value={form.imageUrl} onChange={(event) => setForm((current) => ({ ...current, imageUrl: event.target.value }))} />
-              </label>
+              <ImageUploadField
+                label="Gambar (opsional)"
+                value={form.imageUrl}
+                onUploaded={(imageUrl) => setForm((current) => ({ ...current, imageUrl }))}
+              />
               <label className="financeFormField">
                 <span>Status</span>
                 <select value={form.status} onChange={(event) => setForm((current) => ({ ...current, status: event.target.value as ContentForm["status"] }))}>

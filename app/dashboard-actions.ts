@@ -52,6 +52,22 @@ export type ConsultationAnswerInput = {
   title: string;
 };
 
+export type DonationCampaignInput = {
+  id?: number;
+  badge: string;
+  collectedAmount: number;
+  href: string;
+  imageUrl: string;
+  org: string;
+  progress: number;
+  remainingTime: string;
+  sortOrder: number;
+  status: "draft" | "published";
+  summary: string;
+  targetAmount?: number | null;
+  title: string;
+};
+
 export type CreateAdminState = {
   message: string;
   success: boolean;
@@ -394,6 +410,75 @@ export async function deleteFinanceTransaction(id: number) {
   }
   revalidatePath("/");
   revalidatePath(roleHomePaths[session.role]);
+}
+
+export async function saveDonationCampaign(input: DonationCampaignInput) {
+  const session = await getSession();
+  if (!session || session.role !== "super_admin") {
+    throw new Error("Hanya Super Admin yang dapat mengubah program donasi.");
+  }
+
+  const title = input.title.trim();
+  const href = input.href.trim();
+  const remainingTime = input.remainingTime.trim();
+  const collectedAmount = Math.max(0, Math.round(input.collectedAmount || 0));
+  const targetAmount = input.targetAmount
+    ? Math.max(0, Math.round(input.targetAmount))
+    : null;
+  const calculatedProgress = targetAmount && targetAmount > 0
+    ? Math.round((collectedAmount / targetAmount) * 100)
+    : Math.round(input.progress || 0);
+  const progress = Math.min(100, Math.max(0, calculatedProgress));
+
+  if (!title || !href || !remainingTime) {
+    throw new Error("Judul, link donasi, dan sisa waktu wajib diisi.");
+  }
+
+  try {
+    const data = {
+      badge: input.badge.trim() || "OPEN DONASI",
+      collectedAmount,
+      href,
+      imageUrl: input.imageUrl.trim() || null,
+      org: input.org.trim() || "LAZNAS Dewan Dakwah Jawa Tengah",
+      progress,
+      remainingTime,
+      sortOrder: Math.max(0, Math.round(input.sortOrder || 0)),
+      status: input.status,
+      summary: input.summary.trim() || null,
+      targetAmount,
+      title,
+      authorRole: session.role,
+      authorName: session.name,
+    };
+
+    if (input.id) {
+      await prisma.donationCampaign.update({ where: { id: input.id }, data });
+    } else {
+      await prisma.donationCampaign.create({ data });
+    }
+  } catch {
+    throw new Error("Database donasi belum terhubung. Pastikan MySQL sedang berjalan dan tabel donation_campaigns sudah dibuat.");
+  }
+
+  revalidatePath("/");
+  revalidatePath("/super-admin");
+}
+
+export async function deleteDonationCampaign(id: number) {
+  const session = await getSession();
+  if (!session || session.role !== "super_admin") {
+    throw new Error("Hanya Super Admin yang dapat menghapus program donasi.");
+  }
+
+  try {
+    await prisma.donationCampaign.delete({ where: { id } });
+  } catch {
+    throw new Error("Database donasi belum terhubung. Pastikan MySQL sedang berjalan.");
+  }
+
+  revalidatePath("/");
+  revalidatePath("/super-admin");
 }
 
 export async function saveCertifiedUstadz(input: CertifiedUstadzInput) {

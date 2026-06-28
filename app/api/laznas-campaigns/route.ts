@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { prisma } from "../../lib/prisma";
 
 const laznasOrigin = "https://www.laznasdewandakwah.or.id";
 const laznasCampaignSource = `${laznasOrigin}/jawa-tengah`;
@@ -45,6 +46,14 @@ function rupiahToProgress(value: string) {
   return Math.min(95, Math.max(10, Math.round(Math.log10(amount + 1) * 12)));
 }
 
+function formatRupiah(value: number) {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0,
+  }).format(value);
+}
+
 function parseCampaigns(html: string): LaznasCampaign[] {
   const campaigns: LaznasCampaign[] = [];
   const linkPattern = /<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
@@ -87,6 +96,39 @@ function parseCampaigns(html: string): LaznasCampaign[] {
 }
 
 export async function GET() {
+  try {
+    const managedCampaigns = await prisma.donationCampaign.findMany({
+      where: { status: "published" },
+      orderBy: [{ sortOrder: "asc" }, { updatedAt: "desc" }, { id: "desc" }],
+      take: 6,
+    });
+
+    if (managedCampaigns.length > 0) {
+      return NextResponse.json(
+        {
+          campaigns: managedCampaigns.map((campaign) => ({
+            badge: campaign.badge,
+            href: campaign.href,
+            id: `db-${campaign.id}`,
+            image: campaign.imageUrl ?? "",
+            org: campaign.org,
+            progress: campaign.progress,
+            sisaWaktu: campaign.remainingTime,
+            terkumpul: formatRupiah(campaign.collectedAmount),
+            title: campaign.title,
+          })),
+        },
+        {
+          headers: {
+            "Cache-Control": "public, s-maxage=300, stale-while-revalidate=900",
+          },
+        },
+      );
+    }
+  } catch {
+    // Fallback below keeps the public homepage usable while the local DB is unavailable.
+  }
+
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 8000);
 

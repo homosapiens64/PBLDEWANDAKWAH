@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "../../lib/prisma";
+import { getPublishedDonationCampaigns } from "../../lib/donation-campaigns";
 
 const laznasOrigin = "https://www.laznasdewandakwah.or.id";
 const laznasCampaignSource = `${laznasOrigin}/jawa-tengah`;
@@ -97,11 +97,7 @@ function parseCampaigns(html: string): LaznasCampaign[] {
 
 export async function GET() {
   try {
-    const managedCampaigns = await prisma.donationCampaign.findMany({
-      where: { status: "published" },
-      orderBy: [{ sortOrder: "asc" }, { updatedAt: "desc" }, { id: "desc" }],
-      take: 6,
-    });
+    const managedCampaigns = await getPublishedDonationCampaigns();
 
     if (managedCampaigns.length > 0) {
       return NextResponse.json(
@@ -120,7 +116,7 @@ export async function GET() {
         },
         {
           headers: {
-            "Cache-Control": "public, s-maxage=300, stale-while-revalidate=900",
+            "Cache-Control": "no-store",
           },
         },
       );

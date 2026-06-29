@@ -11,6 +11,7 @@ import {
 } from "./lib/auth";
 import { sendConsultationEmailNotification } from "./lib/consultation-notifications";
 import { canEditModule } from "./lib/content";
+import { ensureDonationCampaignsTable } from "./lib/donation-campaigns";
 import { prisma } from "./lib/prisma";
 
 export type ContentInput = {
@@ -435,6 +436,8 @@ export async function saveDonationCampaign(input: DonationCampaignInput) {
   }
 
   try {
+    await ensureDonationCampaignsTable();
+
     const data = {
       badge: input.badge.trim() || "OPEN DONASI",
       collectedAmount,
@@ -458,7 +461,7 @@ export async function saveDonationCampaign(input: DonationCampaignInput) {
       await prisma.donationCampaign.create({ data });
     }
   } catch {
-    throw new Error("Database donasi belum terhubung. Pastikan MySQL sedang berjalan dan tabel donation_campaigns sudah dibuat.");
+    throw new Error("Database donasi belum terhubung. Pastikan MySQL sedang berjalan, database ddi tersedia, dan tabel donation_campaigns sudah dibuat.");
   }
 
   revalidatePath("/");
@@ -472,9 +475,10 @@ export async function deleteDonationCampaign(id: number) {
   }
 
   try {
+    await ensureDonationCampaignsTable();
     await prisma.donationCampaign.delete({ where: { id } });
   } catch {
-    throw new Error("Database donasi belum terhubung. Pastikan MySQL sedang berjalan.");
+    throw new Error("Database donasi belum terhubung. Pastikan MySQL sedang berjalan dan database ddi tersedia.");
   }
 
   revalidatePath("/");

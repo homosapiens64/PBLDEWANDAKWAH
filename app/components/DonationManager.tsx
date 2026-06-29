@@ -150,7 +150,7 @@ export default function DonationManager({
           <span className="financeDatabaseNoticeIcon">!</span>
           <div>
             <strong>Database donasi belum dapat dibaca.</strong>
-            <p>Pastikan MySQL aktif, database dewandakwah tersedia, dan tabel donation_campaigns sudah dibuat.</p>
+            <p>Pastikan MySQL aktif, database ddi tersedia, dan tabel donation_campaigns sudah dibuat.</p>
           </div>
         </div>
       ) : null}

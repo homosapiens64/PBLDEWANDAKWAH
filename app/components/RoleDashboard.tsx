@@ -25,6 +25,7 @@ import {
   getCertifiedUstadzItems,
   type CertifiedUstadzItem,
 } from "../lib/certified-ustadz";
+import { getDonationCampaigns } from "../lib/donation-campaigns";
 import {
   getContentItems,
   getModuleContentItems,
@@ -1449,9 +1450,7 @@ export default async function RoleDashboard({
 
   if (activeModule === "donasi" && role === "super_admin") {
     try {
-      const campaigns = await prisma.donationCampaign.findMany({
-        orderBy: [{ sortOrder: "asc" }, { updatedAt: "desc" }, { id: "desc" }],
-      });
+      const campaigns = await getDonationCampaigns();
 
       donationCampaigns = campaigns.map((campaign: typeof campaigns[0]) => ({
         badge: campaign.badge,

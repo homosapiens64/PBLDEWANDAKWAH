@@ -9,7 +9,9 @@ import {
   isEducationInstitution,
   roleHomePaths,
 } from "./lib/auth";
+import { sendConsultationEmailNotification } from "./lib/consultation-notifications";
 import { canEditModule } from "./lib/content";
+import { ensureDonationCampaignsTable } from "./lib/donation-campaigns";
 import { prisma } from "./lib/prisma";
 
 export type ContentInput = {
@@ -34,6 +36,37 @@ export type FinanceInput = {
   detail: string;
   note: string;
   amount: number;
+};
+
+export type CertifiedUstadzInput = {
+  id?: number;
+  isActive: boolean;
+  name: string;
+  sortOrder: number;
+  specialization: string;
+};
+
+export type ConsultationAnswerInput = {
+  answer: string;
+  id: number;
+  summary: string;
+  title: string;
+};
+
+export type DonationCampaignInput = {
+  id?: number;
+  badge: string;
+  collectedAmount: number;
+  href: string;
+  imageUrl: string;
+  org: string;
+  progress: number;
+  remainingTime: string;
+  sortOrder: number;
+  status: "draft" | "published";
+  summary: string;
+  targetAmount?: number | null;
+  title: string;
 };
 
 export type CreateAdminState = {
@@ -109,6 +142,45 @@ function getPublicPath(module: string, section: string) {
   if (module === "pmb") return "/Pendidikan/pendaftaran";
   if (module === "tentang-kami") return section ? `/TentangKami/${capitalizeSegment(section)}` : "/TentangKami";
   return "/";
+}
+
+function extractSubmittedQuestion(body: string) {
+  const normalized = body.replace(/\r\n/g, "\n").trim();
+  const lines = normalized.split("\n");
+  const blankIndex = lines.findIndex((line) => line.trim() === "");
+  const rest = blankIndex >= 0 ? lines.slice(blankIndex + 1).join("\n") : "";
+
+  if (rest.trim()) {
+    return rest.trim();
+  }
+
+  return lines
+    .filter((line) => !/^(Nama|Email|WhatsApp|Sub-topik|Lampiran):/i.test(line.trim()))
+    .join("\n")
+    .trim();
+}
+
+function extractPublishedQuestion(body: string) {
+  const normalized = body.replace(/\r\n/g, "\n").trim();
+  const questionMarker = "Pertanyaan:";
+  const answerMarker = "Jawaban:";
+  const questionIndex = normalized.indexOf(questionMarker);
+  const answerIndex = normalized.indexOf(answerMarker);
+
+  if (questionIndex >= 0 && answerIndex > questionIndex) {
+    return normalized.slice(questionIndex + questionMarker.length, answerIndex).trim();
+  }
+
+  return extractSubmittedQuestion(body);
+}
+
+function extractSubmittedEmail(body: string) {
+  const line = body
+    .replace(/\r\n/g, "\n")
+    .split("\n")
+    .find((item) => /^Email:/i.test(item.trim()));
+
+  return line ? line.slice(line.indexOf(":") + 1).trim() : "";
 }
 
 export async function saveContentItem(input: ContentInput) {
@@ -339,6 +411,250 @@ export async function deleteFinanceTransaction(id: number) {
   }
   revalidatePath("/");
   revalidatePath(roleHomePaths[session.role]);
+}
+
+export async function saveDonationCampaign(input: DonationCampaignInput) {
+  const session = await getSession();
+  if (!session || session.role !== "super_admin") {
+    throw new Error("Hanya Super Admin yang dapat mengubah program donasi.");
+  }
+
+  const title = input.title.trim();
+  const href = input.href.trim();
+  const remainingTime = input.remainingTime.trim();
+  const collectedAmount = Math.max(0, Math.round(input.collectedAmount || 0));
+  const targetAmount = input.targetAmount
+    ? Math.max(0, Math.round(input.targetAmount))
+    : null;
+  const calculatedProgress = targetAmount && targetAmount > 0
+    ? Math.round((collectedAmount / targetAmount) * 100)
+    : Math.round(input.progress || 0);
+  const progress = Math.min(100, Math.max(0, calculatedProgress));
+
+  if (!title || !href || !remainingTime) {
+    throw new Error("Judul, link donasi, dan sisa waktu wajib diisi.");
+  }
+
+  try {
+    await ensureDonationCampaignsTable();
+
+    const data = {
+      badge: input.badge.trim() || "OPEN DONASI",
+      collectedAmount,
+      href,
+      imageUrl: input.imageUrl.trim() || null,
+      org: input.org.trim() || "LAZNAS Dewan Dakwah Jawa Tengah",
+      progress,
+      remainingTime,
+      sortOrder: Math.max(0, Math.round(input.sortOrder || 0)),
+      status: input.status,
+      summary: input.summary.trim() || null,
+      targetAmount,
+      title,
+      authorRole: session.role,
+      authorName: session.name,
+    };
+
+    if (input.id) {
+      await prisma.donationCampaign.update({ where: { id: input.id }, data });
+    } else {
+      await prisma.donationCampaign.create({ data });
+    }
+  } catch {
+    throw new Error("Database donasi belum terhubung. Pastikan MySQL sedang berjalan, database ddi tersedia, dan tabel donation_campaigns sudah dibuat.");
+  }
+
+  revalidatePath("/");
+  revalidatePath("/super-admin");
+}
+
+export async function deleteDonationCampaign(id: number) {
+  const session = await getSession();
+  if (!session || session.role !== "super_admin") {
+    throw new Error("Hanya Super Admin yang dapat menghapus program donasi.");
+  }
+
+  try {
+    await ensureDonationCampaignsTable();
+    await prisma.donationCampaign.delete({ where: { id } });
+  } catch {
+    throw new Error("Database donasi belum terhubung. Pastikan MySQL sedang berjalan dan database ddi tersedia.");
+  }
+
+  revalidatePath("/");
+  revalidatePath("/super-admin");
+}
+
+export async function saveCertifiedUstadz(input: CertifiedUstadzInput) {
+  const session = await getSession();
+  if (!session || session.role !== "super_admin") {
+    throw new Error("Hanya Super Admin yang dapat mengubah daftar ustadz bersertifikat.");
+  }
+
+  const name = input.name.trim();
+  const specialization = input.specialization.trim();
+  const sortOrder = Number.isFinite(input.sortOrder)
+    ? Math.max(0, Math.round(input.sortOrder))
+    : 0;
+
+  if (name.length < 3 || name.length > 120) {
+    throw new Error("Nama ustadz harus terdiri dari 3-120 karakter.");
+  }
+  if (specialization.length < 3 || specialization.length > 180) {
+    throw new Error("Spesialisasi harus terdiri dari 3-180 karakter.");
+  }
+
+  try {
+    if (input.id) {
+      await prisma.certifiedUstadz.update({
+        where: { id: input.id },
+        data: {
+          isActive: input.isActive,
+          name,
+          sortOrder,
+          specialization,
+        },
+      });
+    } else {
+      await prisma.certifiedUstadz.create({
+        data: {
+          isActive: input.isActive,
+          name,
+          sortOrder,
+          specialization,
+        },
+      });
+    }
+  } catch {
+    throw new Error("Database ustadz belum terhubung. Pastikan MySQL sedang berjalan.");
+  }
+
+  revalidatePath("/Konsultasi");
+  revalidatePath("/super-admin");
+}
+
+export async function deleteCertifiedUstadz(id: number) {
+  const session = await getSession();
+  if (!session || session.role !== "super_admin") {
+    throw new Error("Hanya Super Admin yang dapat menghapus ustadz bersertifikat.");
+  }
+
+  try {
+    await prisma.certifiedUstadz.delete({ where: { id } });
+  } catch {
+    throw new Error("Database ustadz belum terhubung. Pastikan MySQL sedang berjalan.");
+  }
+
+  revalidatePath("/Konsultasi");
+  revalidatePath("/super-admin");
+}
+
+export async function answerConsultationQuestion(input: ConsultationAnswerInput) {
+  const session = await getSession();
+  if (!session || (session.role !== "super_admin" && session.role !== "ustadz")) {
+    throw new Error("Hanya Super Admin atau Ustadz yang dapat menjawab konsultasi.");
+  }
+
+  const answer = input.answer.trim();
+  const title = input.title.trim();
+  const summary = input.summary.trim();
+
+  if (!title || title.length > 180) {
+    throw new Error("Judul jawaban wajib diisi dan maksimal 180 karakter.");
+  }
+
+  if (answer.length < 10) {
+    throw new Error("Jawaban konsultasi minimal 10 karakter.");
+  }
+
+  try {
+    const question = await prisma.contentItem.findUnique({
+      where: { id: input.id },
+    });
+
+    if (
+      !question
+      || question.module !== "konsultasi"
+      || !["pertanyaan-masuk", "jawaban"].includes(question.section)
+    ) {
+      throw new Error("Pertanyaan konsultasi tidak ditemukan.");
+    }
+
+    const isPublishedAnswer = question.section === "jawaban";
+    const submittedQuestion = isPublishedAnswer
+      ? extractPublishedQuestion(question.body)
+      : extractSubmittedQuestion(question.body);
+    const submittedEmail = isPublishedAnswer ? "" : extractSubmittedEmail(question.body);
+    await prisma.contentItem.update({
+      where: { id: input.id },
+      data: {
+        authorName: session.name,
+        authorRole: session.role,
+        body: [
+          "Pertanyaan:",
+          submittedQuestion,
+          "",
+          "Jawaban:",
+          answer,
+        ].join("\n"),
+        publishedAt: new Date(),
+        section: "jawaban",
+        status: "published",
+        summary: summary || question.summary || submittedQuestion.slice(0, 220),
+        title,
+      },
+    });
+
+    if (submittedEmail) {
+      void sendConsultationEmailNotification({
+        body: [
+          `Assalamu'alaikum, pertanyaan konsultasi Anda sudah dijawab oleh Tim Ustadz Dewan Da'wah Semarang.`,
+          `Judul: ${title}`,
+          "",
+          answer,
+          "",
+          "Silakan buka halaman Konsultasi untuk melihat jawaban yang sudah diterbitkan.",
+        ].join("\n"),
+        subject: `Jawaban Konsultasi: ${title}`,
+        to: [submittedEmail],
+      });
+    }
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("tidak ditemukan")) {
+      throw error;
+    }
+    throw new Error("Database konsultasi belum terhubung. Pastikan MySQL sedang berjalan.");
+  }
+
+  revalidatePath("/Konsultasi");
+  revalidatePath("/super-admin");
+  revalidatePath("/ustadz");
+}
+
+export async function deleteConsultationQuestion(id: number) {
+  const session = await getSession();
+  if (!session || (session.role !== "super_admin" && session.role !== "ustadz")) {
+    throw new Error("Anda tidak memiliki akses untuk menghapus konsultasi.");
+  }
+
+  try {
+    const question = await prisma.contentItem.findUnique({ where: { id } });
+
+    if (!question || question.module !== "konsultasi") {
+      throw new Error("Pertanyaan konsultasi tidak ditemukan.");
+    }
+
+    await prisma.contentItem.delete({ where: { id } });
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("tidak ditemukan")) {
+      throw error;
+    }
+    throw new Error("Database konsultasi belum terhubung. Pastikan MySQL sedang berjalan.");
+  }
+
+  revalidatePath("/Konsultasi");
+  revalidatePath("/super-admin");
+  revalidatePath("/ustadz");
 }
 
 export async function createEducationAdmin(

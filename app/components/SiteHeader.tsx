@@ -19,6 +19,12 @@ const tentangKamiMenu = [
   { label: "Program Kerja", href: "/TentangKami/Program" },
 ];
 
+const pendidikanMenu = [
+  { label: "ADI", href: "/Pendidikan/ADI" },
+  { label: "Ponpes Suruh", href: "/Pendidikan/PonpesSuruh" },
+  { label: "Al Khawarizmi", href: "/Pendidikan/AlKhawarizmi" },
+];
+
 function ChevronDown() {
   return (
     <svg className="navCaret" viewBox="0 0 24 24" aria-hidden="true">
@@ -61,7 +67,7 @@ function MenuIcon({ open }: { open: boolean }) {
 export default function SiteHeader() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState<"berita" | "tentang" | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<"berita" | "pendidikan" | "tentang" | null>(null);
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
@@ -132,13 +138,38 @@ export default function SiteHeader() {
             Konsultasi
           </Link>
 
-          <Link
-            className={pathname.startsWith("/Pendidikan") ? "navActive" : undefined}
-            href="/Pendidikan/Institusi"
-            onClick={closeNavigation}
-          >
-            Pendidikan
-          </Link>
+          <div className={`navGroup educationNavGroup ${isActive("/Pendidikan") ? "navGroupActive" : ""} ${openDropdown === "pendidikan" ? "menuOpen" : ""}`}>
+            <Link
+              className={isActive("/Pendidikan") ? "navActive navLabel navSplitLink" : "navLabel navSplitLink"}
+              href="/Pendidikan"
+              onClick={closeNavigation}
+            >
+              <span>Pendidikan</span>
+            </Link>
+            <button
+              type="button"
+              className="navDropdownToggle"
+              aria-label="Buka menu Pendidikan"
+              aria-haspopup="true"
+              aria-expanded={openDropdown === "pendidikan"}
+              onClick={() => setOpenDropdown((current) => current === "pendidikan" ? null : "pendidikan")}
+            >
+              <ChevronDown />
+            </button>
+            <div className="navMenu" role="menu" aria-label="Menu Pendidikan">
+              {pendidikanMenu.map((item) => (
+                <Link
+                  key={item.href}
+                  className={isActive(item.href) ? "navMenuItem active" : "navMenuItem"}
+                  href={item.href}
+                  role="menuitem"
+                  onClick={closeNavigation}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
 
           <div className={`navGroup ${isActive("/TentangKami") ? "navGroupActive" : ""} ${openDropdown === "tentang" ? "menuOpen" : ""}`}>
             <button

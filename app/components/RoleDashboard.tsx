@@ -16,8 +16,16 @@ import KajianManager from "./KajianManager";
 import AboutManager from "./AboutManager";
 import NewsManager from "./NewsManager";
 import AdminManagement, { type EducationAdminRow } from "./AdminManagement";
+import CertifiedUstadzManager from "./CertifiedUstadzManager";
+import ConsultationQuestionsManager from "./ConsultationQuestionsManager";
+import DonationManager, { type DonationCampaignRow } from "./DonationManager";
 import EducationPmbWorkspace, { type PmbApplicant } from "./EducationPmbWorkspace";
 import EducationParticipantWorkspace from "./EducationParticipantWorkspace";
+import {
+  getCertifiedUstadzItems,
+  type CertifiedUstadzItem,
+} from "../lib/certified-ustadz";
+import { getDonationCampaigns } from "../lib/donation-campaigns";
 import {
   getContentItems,
   getModuleContentItems,
@@ -130,7 +138,7 @@ const navItems: DashboardNavItem[] = [
   {
     icon: "list",
     label: "Konsultasi",
-    children: ["Pertanyaan Masuk", "Jawaban"],
+    children: ["Pertanyaan Masuk", "Jawaban", "Ustadz Bersertifikat"],
     roles: ["super_admin", "ustadz"] satisfies UserRole[],
   },
   {
@@ -146,6 +154,12 @@ const navItems: DashboardNavItem[] = [
     roles: ["super_admin", "bendahara"] satisfies UserRole[],
   },
   {
+    icon: "wallet",
+    label: "Donasi",
+    children: [],
+    roles: ["super_admin"] satisfies UserRole[],
+  },
+  {
     icon: "users",
     label: "Manajemen",
     children: ["Admin Pendidikan"],
@@ -156,10 +170,11 @@ const navItems: DashboardNavItem[] = [
 type EducationView = "adi" | "ponpes-suruh" | "al-khawarizmi";
 type EducationMode = "view" | "edit";
 type EducationParticipantSection = "mahasiswa" | "santri" | "siswa";
-type DashboardModule = "beranda" | "kajian" | "konsultasi" | "website" | "manajemen" | "tentang-kami";
+type DashboardModule = "beranda" | "donasi" | "kajian" | "konsultasi" | "website" | "manajemen" | "tentang-kami";
 
 const moduleLabels: Record<DashboardModule, string> = {
   beranda: "Beranda",
+  donasi: "Donasi",
   kajian: "Kajian",
   konsultasi: "Konsultasi",
   website: "Berita",
@@ -168,7 +183,7 @@ const moduleLabels: Record<DashboardModule, string> = {
 };
 
 const moduleAccess: Record<UserRole, DashboardModule[]> = {
-  super_admin: ["beranda", "kajian", "konsultasi", "website", "manajemen", "tentang-kami"],
+  super_admin: ["beranda", "donasi", "kajian", "konsultasi", "website", "manajemen", "tentang-kami"],
   admin: [],
   pengurus: ["website", "tentang-kami"],
   bendahara: [],
@@ -178,6 +193,7 @@ const moduleAccess: Record<UserRole, DashboardModule[]> = {
 const moduleLinks: Record<string, DashboardModule> = {
   Beranda: "beranda",
   Berita: "website",
+  Donasi: "donasi",
   Kajian: "kajian",
   Konsultasi: "konsultasi",
   Manajemen: "manajemen",
@@ -1041,6 +1057,7 @@ function normalizeEducationParticipantSection(
 function normalizeModule(view?: string): DashboardModule | null {
   if (
     view === "beranda"
+    || view === "donasi"
     || view === "kajian"
     || view === "konsultasi"
     || view === "website"
@@ -1381,6 +1398,13 @@ export default async function RoleDashboard({
   const visibleNavItems = navItems
     .filter((item) => item.roles.includes(role))
     .map((item) => {
+      if (item.label === "Konsultasi" && role !== "super_admin") {
+        return {
+          ...item,
+          children: item.children.filter((child) => child !== "Ustadz Bersertifikat"),
+        };
+      }
+
       if (
         role !== "admin"
         || item.label !== "PendidikanHub"
@@ -1414,9 +1438,15 @@ export default async function RoleDashboard({
           ? "pertanyaan-masuk"
           : slugifySection(moduleLabels[activeModule]))
     : "";
+  const activeCertifiedUstadz = activeModule === "konsultasi"
+    && activeSection === "ustadz-bersertifikat";
+  const activeIncomingConsultation = activeModule === "konsultasi"
+    && ["pertanyaan-masuk", "jawaban"].includes(activeSection);
   const contentItems = activeModule === "tentang-kami"
     ? await getModuleContentItems(activeModule)
-    : activeModule
+    : activeModule === "konsultasi" && !activeCertifiedUstadz
+      ? await getModuleContentItems(activeModule)
+    : activeModule && activeModule !== "donasi" && !activeCertifiedUstadz
       ? await getContentItems(activeModule, activeSection)
       : [];
   let databaseAvailable = true;
@@ -1424,7 +1454,35 @@ export default async function RoleDashboard({
   let dashboardTransactions: DashboardTransaction[] = [];
   let dashboardContent: DashboardContent[] = [];
   let educationAdmins: EducationAdminRow[] = [];
+  let certifiedUstadz: CertifiedUstadzItem[] = [];
+  let donationCampaigns: DonationCampaignRow[] = [];
   let pmbApplicants: PmbApplicant[] = [];
+
+  if (activeModule === "donasi" && role === "super_admin") {
+    try {
+      const campaigns = await getDonationCampaigns();
+
+      donationCampaigns = campaigns.map((campaign: typeof campaigns[0]) => ({
+        badge: campaign.badge,
+        collectedAmount: campaign.collectedAmount,
+        href: campaign.href,
+        id: campaign.id,
+        imageUrl: campaign.imageUrl ?? "",
+        org: campaign.org,
+        progress: campaign.progress,
+        remainingTime: campaign.remainingTime,
+        sortOrder: campaign.sortOrder,
+        status: campaign.status === "draft" ? "draft" : "published",
+        summary: campaign.summary ?? "",
+        targetAmount: campaign.targetAmount,
+        title: campaign.title,
+        updatedAt: campaign.updatedAt.toISOString(),
+      }));
+    } catch (error) {
+      databaseAvailable = false;
+      console.error("Donation database is unavailable:", error);
+    }
+  }
 
   if (activeModule === "manajemen" && role === "super_admin") {
     try {
@@ -1466,6 +1524,10 @@ export default async function RoleDashboard({
   }
 
   const pmbDataView = activePmbView || (activeParticipantSection ? activeEducationView : null);
+
+  if (activeCertifiedUstadz && role === "super_admin") {
+    certifiedUstadz = await getCertifiedUstadzItems();
+  }
 
   if (pmbDataView) {
     try {
@@ -1927,8 +1989,23 @@ export default async function RoleDashboard({
             <NewsManager items={contentItems} readOnly={contentReadOnly} section={activeSection} />
           ) : activeModule === "tentang-kami" ? (
             <AboutManager items={contentItems} readOnly={contentReadOnly} section={activeSection} />
+          ) : activeModule === "donasi" ? (
+            <DonationManager
+              databaseAvailable={databaseAvailable}
+              items={donationCampaigns}
+            />
           ) : activeModule === "manajemen" ? (
             <AdminManagement admins={educationAdmins} />
+          ) : activeIncomingConsultation ? (
+            <ConsultationQuestionsManager items={contentItems} readOnly={contentReadOnly} section={activeSection} />
+          ) : activeCertifiedUstadz ? (
+            role === "super_admin" ? (
+              <CertifiedUstadzManager items={certifiedUstadz} />
+            ) : (
+              <div className="dashboardDatabaseNotice">
+                Hanya Super Admin yang dapat mengelola daftar ustadz bersertifikat.
+              </div>
+            )
           ) : (
             <ContentManager
               items={contentItems}

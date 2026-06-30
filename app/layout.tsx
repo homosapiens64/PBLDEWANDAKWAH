@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Image from "next/image";
+import Script from "next/script";
 import "./globals.css";
 import "./portal.css";
 import SiteHeader from "./components/SiteHeader";
@@ -32,6 +33,43 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <Script
+          id="remove-extension-hydration-attributes"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function () {
+                function clean(root) {
+                  if (!root) return;
+                  if (root.removeAttribute && root.hasAttribute && root.hasAttribute("fdprocessedid")) {
+                    root.removeAttribute("fdprocessedid");
+                  }
+                  if (!root.querySelectorAll) return;
+                  root.querySelectorAll("[fdprocessedid]").forEach(function (element) {
+                    element.removeAttribute("fdprocessedid");
+                  });
+                }
+
+                clean(document.documentElement);
+
+                if (!window.MutationObserver) return;
+                new MutationObserver(function (mutations) {
+                  mutations.forEach(function (mutation) {
+                    if (mutation.type === "attributes" && mutation.attributeName === "fdprocessedid") {
+                      mutation.target.removeAttribute("fdprocessedid");
+                    }
+                    mutation.addedNodes.forEach(clean);
+                  });
+                }).observe(document.documentElement, {
+                  attributeFilter: ["fdprocessedid"],
+                  attributes: true,
+                  childList: true,
+                  subtree: true
+                });
+              })();
+            `,
+          }}
+        />
         <div className="topStrip">
           <div className="container">
             <div className="topStripInner">

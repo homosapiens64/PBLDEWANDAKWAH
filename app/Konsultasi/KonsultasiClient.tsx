@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, type FormEvent } from "react";
+import type { CertifiedUstadzItem } from "../lib/certified-ustadz";
 import type { PublicContentItem } from "../lib/content";
 
 const subtopics = [
@@ -26,13 +27,6 @@ const topicCards = [
   },
 ];
 
-const ustadzList = [
-  "Dr. Ahmad Hadi, Lc",
-  "Dr. Saiful Rahman, M.A",
-  "Dr. Fathur Rahman, Lc",
-  "Ust. Hasan Sabil, M.Ag",
-];
-
 const faqItems = [
   "Seberapa cepat pertanyaan dijawab?",
   "Apakah jawaban dikirim via email?",
@@ -46,6 +40,8 @@ const tips = [
   "Jika perlu, lampirkan foto atau dokumen pendukung.",
   "Gunakan bahasa yang sopan dan mudah dipahami.",
 ];
+
+const answerPreviewLimit = 180;
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("id-ID", {
@@ -64,20 +60,51 @@ function sectionLabel(value: string) {
   return labels[value] ?? value.replaceAll("-", " ");
 }
 
-export default function KonsultasiClient({ items }: { items: PublicContentItem[] }) {
+function getPublishedAnswer(body: string) {
+  const answerMarker = "Jawaban:";
+  const answerIndex = body.indexOf(answerMarker);
+
+  if (answerIndex < 0) return body.trim();
+
+  return body.slice(answerIndex + answerMarker.length).trim();
+}
+
+function getPreviewText(value: string, isExpanded: boolean) {
+  if (isExpanded || value.length <= answerPreviewLimit) return value;
+
+  return `${value.slice(0, answerPreviewLimit).trimEnd()}...`;
+}
+
+export default function KonsultasiClient({
+  certifiedUstadz,
+  items,
+}: {
+  certifiedUstadz: CertifiedUstadzItem[];
+  items: PublicContentItem[];
+}) {
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [expandedAnswerIds, setExpandedAnswerIds] = useState<number[]>([]);
 
   const recentItems = useMemo(
     () => items.filter((item) => item.section === "jawaban").slice(0, 5),
     [items],
   );
+  const toggleAnswer = (id: number) => {
+    setExpandedAnswerIds((current) =>
+      current.includes(id)
+        ? current.filter((answerId) => answerId !== id)
+        : [...current, id],
+    );
+  };
+
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setMessage("");
     setIsSubmitting(true);
 
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
 
     try {
       const response = await fetch("/api/konsultasi", {
@@ -90,7 +117,7 @@ export default function KonsultasiClient({ items }: { items: PublicContentItem[]
         throw new Error(payload?.message ?? "Pertanyaan gagal dikirim.");
       }
 
-      event.currentTarget.reset();
+      form.reset();
       setMessage("Pertanyaan berhasil dikirim. Tim ustadz akan meninjau dari dashboard.");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Pertanyaan gagal dikirim.");
@@ -181,6 +208,15 @@ export default function KonsultasiClient({ items }: { items: PublicContentItem[]
                   placeholder="Jelaskan pertanyaan Anda secara lengkap dan detail. Sertakan konteks bila perlu."
                 />
               </label>
+              <label className="fullWidth">
+                Lampiran
+                <input
+                  accept=".jpg,.jpeg,.png,.webp,.pdf"
+                  name="attachment"
+                  type="file"
+                />
+                <small className="consultFieldHint">Opsional, format JPG, PNG, WEBP, atau PDF. Maksimal 5 MB.</small>
+              </label>
 
               <label className="checkLine fullWidth">
                 <input name="privacy" required type="checkbox" defaultChecked />
@@ -212,19 +248,42 @@ export default function KonsultasiClient({ items }: { items: PublicContentItem[]
             </div>
 
             <div className="recentList" id="recent-konsultasi">
-              {recentItems.map((item, index) => (
-                <article key={item.id} className="recentItem">
-                  <div className="recentIndex">{index + 1}</div>
-                  <div className="recentContent">
-                    <h4>{item.title}</h4>
-                    <p>{item.summary || item.body.slice(0, 140)}</p>
-                    <div className="recentMeta">
-                      <span className="pill tiny">{sectionLabel(item.section)}</span>
-                      <span>{formatDate(item.publishedAt)}</span>
+              {recentItems.map((item, index) => {
+                const answer = getPublishedAnswer(item.body);
+                const isExpanded = expandedAnswerIds.includes(item.id);
+                const isLongAnswer = answer.length > answerPreviewLimit;
+
+                return (
+                  <article key={item.id} className="recentItem">
+                    <div className="recentContent">
+                      <div className="recentItemHeader">
+                        <div className="recentIndex">{index + 1}</div>
+                        <div>
+                          <h4>{item.title}</h4>
+                          {item.summary ? <p className="recentSummary">{item.summary}</p> : null}
+                        </div>
+                      </div>
+                      <div className="recentAnswer">
+                        <span className="recentAnswerLabel">Jawaban</span>
+                        <p>{getPreviewText(answer, isExpanded)}</p>
+                        {isLongAnswer ? (
+                          <button
+                            className="recentToggleButton"
+                            type="button"
+                            onClick={() => toggleAnswer(item.id)}
+                          >
+                            {isExpanded ? "Tutup" : "Lihat selengkapnya"}
+                          </button>
+                        ) : null}
+                      </div>
+                      <div className="recentMeta">
+                        <span className="pill tiny">{sectionLabel(item.section)}</span>
+                        <span>{formatDate(item.publishedAt)}</span>
+                      </div>
                     </div>
-                  </div>
-                </article>
-              ))}
+                  </article>
+                );
+              })}
               {recentItems.length === 0 ? (
                 <div className="financeEmptyState">Belum ada jawaban konsultasi yang diterbitkan.</div>
               ) : null}
@@ -256,16 +315,19 @@ export default function KonsultasiClient({ items }: { items: PublicContentItem[]
           <section className="sidebarCard whiteCard">
             <p className="sidebarTitle muted">Ustadz Bersertifikat</p>
             <div className="ustadzList">
-              {ustadzList.map((name, index) => (
-                <div key={name} className="ustadzItem">
+              {certifiedUstadz.map((ustadz, index) => (
+                <div key={ustadz.id} className="ustadzItem">
                   <div className="ustadzAvatar">{index + 1}</div>
                   <div>
-                    <strong>{name}</strong>
-                    <p>Spesialis fikih dan pembinaan keluarga</p>
+                    <strong>{ustadz.name}</strong>
+                    <p>{ustadz.specialization}</p>
                   </div>
                   <span className="statusDot" />
                 </div>
               ))}
+              {certifiedUstadz.length === 0 ? (
+                <div className="financeEmptyState">Belum ada ustadz bersertifikat.</div>
+              ) : null}
             </div>
           </section>
 

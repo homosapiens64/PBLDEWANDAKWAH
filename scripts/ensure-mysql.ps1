@@ -1,5 +1,25 @@
 $ErrorActionPreference = "Stop"
 
+function Resolve-Executable {
+  param(
+    [string]$Name,
+    [string[]]$Fallbacks
+  )
+
+  $fromPath = Get-Command $Name -ErrorAction SilentlyContinue | Select-Object -First 1
+  if ($fromPath) {
+    return $fromPath.Source
+  }
+
+  foreach ($fallback in $Fallbacks) {
+    if (Test-Path -LiteralPath $fallback) {
+      return $fallback
+    }
+  }
+
+  return $null
+}
+
 function Get-XamppMySqlPath {
   $xamppHomes = @(
     $env:XAMPP_HOME,
@@ -24,6 +44,28 @@ function Get-XamppMySqlPath {
     }
   }
 
+  $mysqlExecutable = Resolve-Executable "mysqld.exe" @(
+    "C:\xampp\mysql\bin\mysqld.exe",
+    "D:\xampp\mysql\bin\mysqld.exe"
+  )
+  $mysqlAdmin = Resolve-Executable "mysqladmin.exe" @(
+    "C:\xampp\mysql\bin\mysqladmin.exe",
+    "D:\xampp\mysql\bin\mysqladmin.exe"
+  )
+
+  if ($mysqlExecutable -and $mysqlAdmin) {
+    $mysqlBin = Split-Path -Parent $mysqlExecutable
+    $mysqlConfig = Join-Path $mysqlBin "my.ini"
+
+    return @{
+      Executable = $mysqlExecutable
+      Admin = $mysqlAdmin
+      Config = $mysqlConfig
+      Bin = $mysqlBin
+      Home = Split-Path -Parent (Split-Path -Parent $mysqlBin)
+    }
+  }
+
   return $null
 }
 
@@ -34,8 +76,17 @@ function Test-MySqlReady {
     return $false
   }
 
-  & $mysql.Admin --protocol=tcp --host=localhost --port=3306 --user=root --connect-timeout=2 ping *> $null
-  return $LASTEXITCODE -eq 0
+  $previousErrorActionPreference = $ErrorActionPreference
+  try {
+    $ErrorActionPreference = "Continue"
+    & $mysql.Admin --protocol=tcp --host=localhost --port=3306 --user=root --connect-timeout=2 ping *> $null
+    $exitCode = $LASTEXITCODE
+    $ErrorActionPreference = $previousErrorActionPreference
+    return $exitCode -eq 0
+  } catch {
+    $ErrorActionPreference = $previousErrorActionPreference
+    return $false
+  }
 }
 
 if (Test-MySqlReady) {
@@ -43,7 +94,7 @@ if (Test-MySqlReady) {
 }
 
 if ($null -eq $mysql) {
-  Write-Warning "MySQL XAMPP tidak ditemukan di D:\xampp atau C:\xampp. Jalankan MySQL secara manual sebelum memakai fitur penyimpanan, atau set XAMPP_HOME ke folder XAMPP."
+  Write-Warning "MySQL XAMPP tidak ditemukan. Jalankan MySQL secara manual sebelum memakai fitur penyimpanan, atau set XAMPP_HOME ke folder XAMPP."
   exit 0
 }
 

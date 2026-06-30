@@ -5,6 +5,18 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { PublicContentItem } from "./lib/content";
 
+type LaznasCampaign = {
+  badge: string;
+  href: string;
+  id: string;
+  image: string;
+  org: string;
+  progress: number;
+  sisaWaktu: string;
+  terkumpul: string;
+  title: string;
+};
+
 // ─── DATA ────────────────────────────────────────────────────────────────────
 const kajianTabs = ["Semua", "Artikel Kajian", "Tauhid", "Tazkiyah", "Khutbah"];
 
@@ -40,9 +52,10 @@ const kajianData = [
 
 const programData = [
   {
-    id: 1,
+    id: "fallback-1",
     badge: "URGENT",
-    badgeColor: "bg-red-600",
+    badgeColor: "#dc2626",
+    href: "https://www.laznasdewandakwah.or.id/zakat",
     image: "/images/program1.jpg",
     title: "Zakat untuk Muallaf Pedalaman bersama Koh Dondy Tan",
     org: "LAZNAS Dewan Da'wah",
@@ -51,9 +64,10 @@ const programData = [
     progress: 45,
   },
   {
-    id: 2,
+    id: "fallback-2",
     badge: "URGENT",
-    badgeColor: "bg-red-600",
+    badgeColor: "#dc2626",
+    href: "https://www.laznasdewandakwah.or.id/zakat",
     image: "/images/program2.jpg",
     title: "Beasiswa untuk Santri Penghafal Quran di Depok",
     org: "LAZNAS Dewan Da'wah",
@@ -62,9 +76,10 @@ const programData = [
     progress: 10,
   },
   {
-    id: 3,
+    id: "fallback-3",
     badge: "OPEN DONASI",
-    badgeColor: "bg-green-600",
+    badgeColor: "#16a34a",
+    href: "https://www.laznasdewandakwah.or.id/zakat",
     image: "/images/program3.jpg",
     title: "Pembebasan Lahan Ponthok Tahfidz Darul Qur'an - Bedugul, Bali",
     org: "LAZNAS Dewan Da'wah",
@@ -204,101 +219,70 @@ function BeritaSection({ items }: { items: PublicContentItem[] }) {
     .slice(0, 4);
 
   return (
-    <section className="py-12 bg-white">
-      <div className="max-w-6xl mx-auto px-6">
+    <section className="homeNewsSection">
+      <div className="container">
         {/* Heading row */}
-        <div className="flex items-end justify-between mb-8">
+        <div className="homeSectionHeader homeNewsHeader">
           <div>
-            <p
-              className="text-gray-500 uppercase tracking-widest font-semibold mb-1"
-              style={{ fontSize: "0.75rem" }}
-            >
-              INFORMASI TERKINI
-            </p>
-            <h2
-              className="font-extrabold leading-none"
-              style={{
-                fontSize: "2rem",
-                color: "#d4890a",
-                fontFamily: "'Georgia', serif",
-              }}
-            >
-              BERITA &amp; KEGIATAN
-            </h2>
+            <p>Informasi Terkini</p>
+            <h2>Berita &amp; Kegiatan</h2>
           </div>
           <Link
             href="/Berita/Terkini"
-            className="flex items-center gap-2 border px-4 py-2 font-semibold text-sm hover:bg-orange-50 transition-colors"
-            style={{
-              borderColor: "#d4890a",
-              color: "#d4890a",
-              borderRadius: "2px",
-            }}
+            className="homeSectionLink"
           >
-            SELENGKAPNYA{" "}
-            <span>↗</span>
+            Selengkapnya <span>-&gt;</span>
           </Link>
         </div>
 
-        <div className="flex gap-6">
+        <div className="homeNewsLayout">
           {/* Left: 2 main image cards */}
-          <div className="flex gap-4 flex-1">
+          <div className="homeNewsFeaturedGrid">
             {displayedMain.length ? displayedMain.map((item) => (
-              <div
+              <Link
                 key={item.id}
-                className="flex-1 rounded overflow-hidden shadow-sm border border-gray-100 group cursor-pointer"
+                className="homeNewsCard"
+                href="/Berita/Terkini"
               >
                 <div
-                  className="bg-gray-200"
+                  className="homeNewsImage"
                   style={{
-                    height: 160,
                     backgroundImage: item.image ? `url("${item.image.replaceAll('"', "%22")}")` : undefined,
-                    backgroundPosition: "center",
-                    backgroundSize: "cover",
                   }}
-                />
-                <div className="p-3">
-                  <h3
-                    className="font-semibold leading-snug mb-2 group-hover:text-teal-700 transition-colors"
-                    style={{ fontSize: "0.88rem", color: "#1a1a1a" }}
-                  >
-                    {item.title}
-                  </h3>
-                  <p
-                    className="text-gray-500 leading-snug"
-                    style={{ fontSize: "0.75rem" }}
-                  >
-                    {item.author}
-                    <br />
-                    {item.source}
-                  </p>
+                >
+                  <span>{item.location}</span>
                 </div>
-              </div>
+                <div className="homeNewsBody">
+                  <div className="homeNewsMeta">
+                    <span>{item.date}</span>
+                    <span>{item.author}</span>
+                  </div>
+                  <h3>{item.title}</h3>
+                  <p>{item.source}</p>
+                </div>
+              </Link>
             )) : (
-              <div className="flex-1 rounded border border-dashed border-gray-200 bg-white p-6 text-sm text-gray-500">
+              <div className="homeNewsEmpty">
                 Belum ada berita terbit. Konten akan tampil otomatis setelah admin menerbitkan berita dari dashboard.
               </div>
             )}
           </div>
 
           {/* Right: list items */}
-          <div className="flex flex-col gap-3" style={{ width: 280 }}>
+          <div className="homeNewsSideList">
             {displayedSide.map((item) => (
-              <div
+              <Link
                 key={item.id}
-                className="flex gap-3 items-start cursor-pointer group"
+                className="homeNewsSideItem"
+                href="/Berita/Terkini"
               >
                 <div
-                  className="flex-shrink-0 rounded bg-gray-200"
+                  className="homeNewsThumb"
                   style={{
-                    width: 72,
-                    height: 56,
                     backgroundImage: item.image ? `url("${item.image.replaceAll('"', "%22")}")` : undefined,
-                    backgroundPosition: "center",
-                    backgroundSize: "cover",
                   }}
                 />
-                <div className="flex-1">
+                <div>
                   <p
                     className="text-gray-400 mb-0.5"
                     style={{ fontSize: "0.68rem" }}
@@ -312,7 +296,7 @@ function BeritaSection({ items }: { items: PublicContentItem[] }) {
                     {item.title}
                   </p>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -821,14 +805,99 @@ function ProgramSection() {
 
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 
+void ProgramSection;
+
+function LaznasProgramSection({ campaigns }: { campaigns: LaznasCampaign[] }) {
+  const displayedPrograms = campaigns.length ? campaigns : programData;
+
+  return (
+    <section className="homeProgramSection">
+      <div className="container">
+        <div className="homeSectionHeader">
+          <div>
+            <p>LAZNAS Jawa Tengah</p>
+            <h2>Program Kebaikan</h2>
+          </div>
+          <a
+            className="homeSectionLink"
+            href="https://www.laznasdewandakwah.or.id/zakat"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Bayar Zakat <span>-&gt;</span>
+          </a>
+        </div>
+
+        <div className="homeProgramGrid">
+          {displayedPrograms.map((item) => (
+            <a
+              key={item.id}
+              className="homeProgramCard"
+              href={item.href || "https://www.laznasdewandakwah.or.id/zakat"}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <div
+                className="homeProgramImage"
+                style={item.image ? { backgroundImage: `url("${item.image.replaceAll('"', "%22")}")` } : undefined}
+              >
+                <span>{item.badge}</span>
+              </div>
+              <div className="homeProgramBody">
+                <h3>{item.title}</h3>
+                <div className="homeProgramOrg">
+                  <span />
+                  <p>{item.org}</p>
+                </div>
+                <div className="homeProgramProgress">
+                  <div style={{ width: `${item.progress}%` }} />
+                </div>
+                <div className="homeProgramFooter">
+                  <div>
+                    <p>Sisa Waktu</p>
+                    <strong>{item.sisaWaktu}</strong>
+                  </div>
+                  <div>
+                    <p>Terkumpul</p>
+                    <strong>{item.terkumpul}</strong>
+                  </div>
+                  <span className="homeProgramArrow" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path
+                        d="M3 8h10M8 3l5 5-5 5"
+                        stroke="#fff"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.8"
+                      />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function HomePage() {
   const [managedItems, setManagedItems] = useState<PublicContentItem[]>([]);
+  const [campaigns, setCampaigns] = useState<LaznasCampaign[]>([]);
 
   useEffect(() => {
     fetch("/api/public-content")
       .then((response) => response.ok ? response.json() : null)
       .then((payload) => setManagedItems(payload?.items ?? []))
       .catch(() => setManagedItems([]));
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/laznas-campaigns")
+      .then((response) => response.ok ? response.json() : null)
+      .then((payload) => setCampaigns(payload?.campaigns ?? []))
+      .catch(() => setCampaigns([]));
   }, []);
 
   const newsItems = managedItems.filter((item) => item.module === "website");
@@ -844,7 +913,7 @@ export default function HomePage() {
       <KajianSection items={kajianItems} />
       <EducationSection items={educationItems} />
       <KonsultasiSection />
-      <ProgramSection />
+      <LaznasProgramSection campaigns={campaigns} />
     </main>
   );
 }

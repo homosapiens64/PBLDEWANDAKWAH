@@ -1,7 +1,16 @@
 import { prisma } from "@/app/lib/prisma";
 
+const institutionSlugs = ["adi", "al-khawarizmi", "ponpes-suruh"] as const;
+
 function cleanText(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
+}
+
+function cleanInstitution(value: unknown) {
+  const institution = cleanText(value);
+  return institutionSlugs.includes(institution as typeof institutionSlugs[number])
+    ? institution
+    : "";
 }
 
 export async function POST(request: Request) {
@@ -15,6 +24,7 @@ export async function POST(request: Request) {
 
   const nisn = cleanText(payload.nisn);
   const email = cleanText(payload.email).toLowerCase();
+  const institution = cleanInstitution(payload.institution || payload.institution_slug);
 
   if (!nisn || !email) {
     return Response.json(
@@ -26,6 +36,7 @@ export async function POST(request: Request) {
   const application = await prisma.pmbApplication.findFirst({
     where: {
       email,
+      institution: institution || undefined,
       nisn,
     },
     select: {

@@ -60,6 +60,7 @@ export default function PmbLoginPage() {
       const params = new URLSearchParams({
         email: data.email,
         institution: data.institution_id,
+        institution_slug: data.institution,
         name: data.full_name,
         nisn: data.nisn,
       });

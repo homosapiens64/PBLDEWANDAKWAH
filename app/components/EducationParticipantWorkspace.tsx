@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
+import type { PmbApplicant } from "./EducationPmbWorkspace";
 
 type ParticipantStatus = "Aktif" | "Lulus" | "Cuti/Keluar";
 
@@ -11,11 +12,14 @@ type Participant = {
   id: number;
   name: string;
   nis: string;
+  pmbApplicant: PmbApplicant | null;
   phone: string;
+  source: "Manual" | "PMB";
   status: ParticipantStatus;
 };
 
 type EducationParticipantWorkspaceProps = {
+  acceptedPmbApplicants?: PmbApplicant[];
   institutionName: string;
   participantLabel: string;
 };
@@ -26,7 +30,9 @@ const emptyForm = {
   gender: "Laki-laki",
   name: "",
   nis: "",
+  pmbApplicant: null,
   phone: "",
+  source: "Manual" as const,
   status: "Aktif" as ParticipantStatus,
 };
 
@@ -63,14 +69,67 @@ function MiniIcon({ name }: { name: "bell" | "chevron" | "plus" | "search" | "us
   );
 }
 
+function getInitials(name: string) {
+  return name
+    .split(/\s+/)
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
+
+function formatRupiah(value: number) {
+  return new Intl.NumberFormat("id-ID", {
+    currency: "IDR",
+    maximumFractionDigits: 0,
+    style: "currency",
+  }).format(value || 0);
+}
+
+function DetailItem({ label, value }: { label: string; value: string }) {
+  return (
+    <p>
+      {label}: <strong>{value || "-"}</strong>
+    </p>
+  );
+}
+
+function DocumentLink({ href, label }: { href: string; label: string }) {
+  if (!href || href === "#") {
+    return <span className="pmbDocumentMissing">{label}: belum diupload</span>;
+  }
+
+  return (
+    <a href={href} target="_blank" rel="noreferrer">
+      {label}
+    </a>
+  );
+}
+
 export default function EducationParticipantWorkspace({
+  acceptedPmbApplicants = [],
   institutionName,
   participantLabel,
 }: EducationParticipantWorkspaceProps) {
-  const [participants, setParticipants] = useState<Participant[]>([]);
+  const pmbParticipants = useMemo<Participant[]>(() => acceptedPmbApplicants.map((applicant) => ({
+    angkatan: "2026",
+    asalDaerah: applicant.address,
+    gender: applicant.gender,
+    id: applicant.id,
+    name: applicant.name,
+    nis: applicant.nisn || applicant.nomorDaftar,
+    pmbApplicant: applicant,
+    phone: applicant.phone,
+    source: "PMB",
+    status: "Aktif",
+  })), [acceptedPmbApplicants]);
+  const [manualParticipants, setManualParticipants] = useState<Participant[]>([]);
   const [query, setQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
   const [form, setForm] = useState(emptyForm);
+  const participants = useMemo(() => [...pmbParticipants, ...manualParticipants], [manualParticipants, pmbParticipants]);
+  const selectedParticipant = participants.find((participant) => participant.id === selectedId) ?? null;
 
   const filteredParticipants = useMemo(() => {
     const keyword = query.trim().toLowerCase();
@@ -79,13 +138,15 @@ export default function EducationParticipantWorkspace({
     return participants.filter((participant) => (
       participant.name.toLowerCase().includes(keyword)
       || participant.nis.toLowerCase().includes(keyword)
+      || participant.phone.toLowerCase().includes(keyword)
+      || (participant.pmbApplicant?.nomorDaftar.toLowerCase().includes(keyword) ?? false)
     ));
   }, [participants, query]);
 
   const stats = [
     { label: `Total ${participantLabel}`, value: participants.length, tone: "neutral" },
+    { label: "Dari PMB", value: pmbParticipants.length, tone: "teal" },
     { label: "Aktif", value: participants.filter((item) => item.status === "Aktif").length, tone: "green" },
-    { label: "Lulus", value: participants.filter((item) => item.status === "Lulus").length, tone: "blue" },
     { label: "Cuti/Keluar", value: participants.filter((item) => item.status === "Cuti/Keluar").length, tone: "red" },
   ];
 
@@ -100,7 +161,7 @@ export default function EducationParticipantWorkspace({
     const name = form.name.trim();
     if (!name) return;
 
-    setParticipants((current) => [
+    setManualParticipants((current) => [
       ...current,
       {
         ...form,
@@ -108,6 +169,7 @@ export default function EducationParticipantWorkspace({
         id: Date.now(),
         name,
         nis: form.nis.trim(),
+        pmbApplicant: null,
         phone: form.phone.trim(),
       },
     ]);
@@ -140,7 +202,7 @@ export default function EducationParticipantWorkspace({
       <div className="participantPageHead">
         <div>
           <h1>Data {participantLabel}</h1>
-          <p>{institutionName}</p>
+          <p>{institutionName} - {pmbParticipants.length} data diterima dari PMB</p>
         </div>
         <button className="participantAddButton" type="button" onClick={() => setIsModalOpen(true)}>
           <MiniIcon name="plus" />
@@ -168,45 +230,114 @@ export default function EducationParticipantWorkspace({
             value={query}
           />
         </label>
+        <p className="participantImportNote">
+          Data dari PMB otomatis diambil jika pendaftar sudah bayar dan statusnya diterima.
+        </p>
       </div>
 
       <section className="participantListCard" aria-label={`Daftar ${participantLabel}`}>
-        {filteredParticipants.length > 0 ? (
-          <div className="participantTableWrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Nama</th>
-                  <th>NIS/NIM</th>
-                  <th>Angkatan</th>
-                  <th>Status</th>
-                  <th>Asal Daerah</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredParticipants.map((participant) => (
-                  <tr key={participant.id}>
-                    <td>{participant.name}</td>
-                    <td>{participant.nis || "-"}</td>
-                    <td>{participant.angkatan}</td>
-                    <td>
-                      <span className={`participantStatus ${participant.status.toLowerCase().replace("/", "-")}`}>
-                        {participant.status}
-                      </span>
-                    </td>
-                    <td>{participant.asalDaerah || "-"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
+        {filteredParticipants.length > 0 ? filteredParticipants.map((participant) => (
+          <button
+            className="participantApplicantCard"
+            key={`${participant.source}-${participant.id}`}
+            onClick={() => setSelectedId(participant.id)}
+            type="button"
+          >
+            <span className="pmbAvatar">{getInitials(participant.name)}</span>
+            <span className="pmbApplicantMain">
+              <strong>{participant.name}</strong>
+              <small className="participantMeta">
+                <span>NIS/NIM: {participant.nis || "-"}</span>
+                <span>{participant.pmbApplicant?.nomorDaftar ?? "Manual"}</span>
+                <span>{(participant.pmbApplicant?.placeOfBirth ?? participant.asalDaerah) || "-"}</span>
+              </small>
+            </span>
+            <span className="participantBadges">
+              <span className={`participantStatus ${participant.status.toLowerCase().replace("/", "-")}`}>
+                {participant.status}
+              </span>
+              <span className={`participantSource ${participant.source.toLowerCase()}`}>
+                {participant.source}
+              </span>
+            </span>
+            <span className="pmbMore"><MiniIcon name="chevron" /></span>
+          </button>
+        )) : (
           <div className="participantEmptyState">
             <MiniIcon name="users" />
             <p>Belum ada data {participantLabel}</p>
           </div>
         )}
       </section>
+
+      {selectedParticipant ? (
+        <div className="pmbDetailOverlay" role="presentation" onMouseDown={() => setSelectedId(null)}>
+          <section className="pmbDetailModal" onMouseDown={(event) => event.stopPropagation()}>
+            <div className="pmbDetailHead">
+              <h2>Detail {participantLabel} - {selectedParticipant.name}</h2>
+              <button type="button" aria-label="Tutup" onClick={() => setSelectedId(null)}>
+                <MiniIcon name="x" />
+              </button>
+            </div>
+
+            {selectedParticipant.pmbApplicant ? (
+              <>
+                <div className="pmbDetailGrid">
+                  <DetailItem label="NISN" value={selectedParticipant.pmbApplicant.nisn} />
+                  <DetailItem label="No. Daftar" value={selectedParticipant.pmbApplicant.nomorDaftar} />
+                  <DetailItem label="Jenis Kelamin" value={selectedParticipant.pmbApplicant.gender} />
+                  <DetailItem label="Agama" value={selectedParticipant.pmbApplicant.agama} />
+                  <DetailItem label="Tempat Lahir" value={selectedParticipant.pmbApplicant.placeOfBirth} />
+                  <DetailItem label="Tanggal Lahir" value={selectedParticipant.pmbApplicant.birthDate} />
+                  <DetailItem label="Kewarganegaraan" value={selectedParticipant.pmbApplicant.citizenship} />
+                  <DetailItem label="No. HP" value={selectedParticipant.pmbApplicant.phone} />
+                  <DetailItem label="Email" value={selectedParticipant.pmbApplicant.email} />
+                  <DetailItem label="Jalur" value={selectedParticipant.pmbApplicant.jalurName} />
+                  <DetailItem label="Program/Kelas" value={selectedParticipant.pmbApplicant.jurusanName} />
+                  <DetailItem label="Asal Sekolah" value={selectedParticipant.pmbApplicant.asalSekolah} />
+                  <DetailItem label="Status Sekolah" value={selectedParticipant.pmbApplicant.schoolStatus} />
+                  <DetailItem label="Kecamatan Sekolah" value={selectedParticipant.pmbApplicant.schoolKecamatan} />
+                  <DetailItem label="Nomor Ijazah" value={selectedParticipant.pmbApplicant.nomorIjazah} />
+                  <DetailItem label="Tahun Ijazah" value={selectedParticipant.pmbApplicant.graduationYear} />
+                  <DetailItem label="Nama Ayah" value={selectedParticipant.pmbApplicant.fatherName} />
+                  <DetailItem label="Nama Ibu" value={selectedParticipant.pmbApplicant.motherName} />
+                  <DetailItem label="Penghasilan Gabungan" value={selectedParticipant.pmbApplicant.income} />
+                  <DetailItem label="Kode Tagihan" value={selectedParticipant.pmbApplicant.billingCode} />
+                  <DetailItem label="Nominal" value={formatRupiah(selectedParticipant.pmbApplicant.billingAmount)} />
+                  <DetailItem label="Alamat" value={selectedParticipant.pmbApplicant.address} />
+                </div>
+
+                <div className="pmbDocuments">
+                  <h3>Dokumen</h3>
+                  <div className="pmbDocumentLinks">
+                    <DocumentLink href={selectedParticipant.pmbApplicant.photoUrl} label="Foto" />
+                    <DocumentLink href={selectedParticipant.pmbApplicant.ijazahUrl} label="Ijazah" />
+                    <DocumentLink href={selectedParticipant.pmbApplicant.docKtpUrl} label="KTP/Akta" />
+                    <DocumentLink href={selectedParticipant.pmbApplicant.docKkUrl} label="Kartu Keluarga" />
+                    <DocumentLink href={selectedParticipant.pmbApplicant.paymentProofUrl} label="Bukti Pembayaran" />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="pmbDetailGrid">
+                <DetailItem label="NIS/NIM" value={selectedParticipant.nis} />
+                <DetailItem label="Angkatan" value={selectedParticipant.angkatan} />
+                <DetailItem label="Jenis Kelamin" value={selectedParticipant.gender} />
+                <DetailItem label="Status" value={selectedParticipant.status} />
+                <DetailItem label="No. HP" value={selectedParticipant.phone} />
+                <DetailItem label="Asal Daerah" value={selectedParticipant.asalDaerah} />
+                <DetailItem label="Sumber Data" value="Manual" />
+              </div>
+            )}
+
+            <div className="pmbDetailActions">
+              <button className="participantCancelButton" type="button" onClick={() => setSelectedId(null)}>
+                Tutup
+              </button>
+            </div>
+          </section>
+        </div>
+      ) : null}
 
       {isModalOpen ? (
         <div className="participantModalOverlay" role="presentation" onMouseDown={closeModal}>

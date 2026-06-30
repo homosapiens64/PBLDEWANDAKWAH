@@ -44,7 +44,6 @@ export async function POST(request: Request) {
     const account = await prisma.pmbApplicantAccount.findFirst({
       where: {
         email,
-        institution,
         nisn,
       },
       select: { id: true },

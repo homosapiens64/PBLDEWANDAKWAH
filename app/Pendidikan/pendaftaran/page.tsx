@@ -39,6 +39,11 @@ const INSTITUTIONS = [
   { id: "inst-2", name: "Pondok Pesantren Suruh", short_name: "Ponpes Suruh" },
   { id: "inst-3", name: "Sekolah Al Khawarizmi", short_name: "Al Khawarizmi" },
 ];
+const INSTITUTION_SLUGS: Record<string, string> = {
+  adi: "inst-1",
+  "al-khawarizmi": "inst-3",
+  "ponpes-suruh": "inst-2",
+};
 const JALUR = [
   { id: "jalur-1", name: "Reguler" },
   { id: "jalur-2", name: "Beasiswa" },
@@ -227,7 +232,11 @@ export default function PendaftaranPage() {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
-    const institutionId = searchParams.get("institution") || searchParams.get("institusi") || "";
+    const institutionParam = searchParams.get("institution") || searchParams.get("institusi") || "";
+    const institutionSlug = searchParams.get("institution_slug") || "";
+    const institutionId = INSTITUTION_SLUGS[institutionSlug]
+      || INSTITUTION_SLUGS[institutionParam]
+      || institutionParam;
     const institution = INSTITUTIONS.find((item) => item.id === institutionId);
     const nisn = searchParams.get("nisn") || "";
     const name = searchParams.get("name") || "";
@@ -403,8 +412,8 @@ export default function PendaftaranPage() {
               {sendingEmail ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />} Kirim ke Email
             </button>
           )}
-          <button onClick={() => { setSubmitted(null); setForm(emptyForm); setStep(0); }} className="w-full px-4 py-2 text-sm text-gray-400 hover:text-gray-600">
-            Daftar Lagi
+          <button onClick={() => router.push("/Pendidikan/pmb/login")} className="w-full px-4 py-2 text-sm text-gray-400 hover:text-gray-600">
+            Kembali ke Login PMB
           </button>
         </div>
       </div>

@@ -51,6 +51,8 @@ export type PmbApplicant = {
 type EducationPmbWorkspaceProps = {
   initialApplicants: PmbApplicant[];
   institutionShortName: string;
+  participantHref: string;
+  participantLabel: string;
 };
 
 function PmbIcon({ name }: { name: "bell" | "gear" | "more" | "search" | "x" }) {
@@ -145,10 +147,12 @@ function DocumentLink({ href, label }: { href: string; label: string }) {
 export default function EducationPmbWorkspace({
   initialApplicants,
   institutionShortName,
+  participantHref,
+  participantLabel,
 }: EducationPmbWorkspaceProps) {
   const [applicants, setApplicants] = useState<PmbApplicant[]>(initialApplicants);
   const [query, setQuery] = useState("");
-  const [activeTab, setActiveTab] = useState<PmbStatus | "Semua">("Semua");
+  const [activeTab, setActiveTab] = useState<PmbStatus | "Semua" | "Siap Dipindahkan">("Semua");
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [draftStatus, setDraftStatus] = useState<PmbStatus>("Menunggu Verifikasi");
   const [draftNote, setDraftNote] = useState("");
@@ -161,7 +165,9 @@ export default function EducationPmbWorkspace({
     const keyword = query.trim().toLowerCase();
 
     return applicants.filter((applicant) => {
-      const matchesTab = activeTab === "Semua" || applicant.status === activeTab;
+      const isReadyForParticipant = applicant.status === "Diterima" && applicant.sudahBayar;
+      const matchesTab = activeTab === "Semua"
+        || (activeTab === "Siap Dipindahkan" ? isReadyForParticipant : applicant.status === activeTab);
       const matchesQuery = !keyword
         || applicant.name.toLowerCase().includes(keyword)
         || applicant.nisn.toLowerCase().includes(keyword)
@@ -173,7 +179,7 @@ export default function EducationPmbWorkspace({
 
   const waitingCount = applicants.filter((item) => item.status === "Menunggu Verifikasi").length;
   const acceptedCount = applicants.filter((item) => item.status === "Diterima").length;
-  const paidCount = applicants.filter((item) => item.sudahBayar).length;
+  const readyApplicants = applicants.filter((item) => item.status === "Diterima" && item.sudahBayar);
   const tabStatuses = pmbStatuses.filter((status) => (
     status === "Menunggu Verifikasi" || applicants.some((item) => item.status === status)
   ));
@@ -182,7 +188,7 @@ export default function EducationPmbWorkspace({
     { label: "Total Daftar", tone: "neutral", value: applicants.length },
     { label: "Menunggu Verifikasi", tone: "gold", value: waitingCount },
     { label: "Diterima", tone: "green", value: acceptedCount },
-    { label: "Sudah Bayar", tone: "teal", value: paidCount },
+    { label: `Siap Jadi ${participantLabel}`, tone: "teal", value: readyApplicants.length },
   ];
 
   function openDetail(applicant: PmbApplicant) {
@@ -280,6 +286,13 @@ export default function EducationPmbWorkspace({
         >
           Semua ({applicants.length})
         </button>
+        <button
+          className={activeTab === "Siap Dipindahkan" ? "active" : ""}
+          onClick={() => setActiveTab("Siap Dipindahkan")}
+          type="button"
+        >
+          Siap Jadi {participantLabel} ({readyApplicants.length})
+        </button>
         {tabStatuses.map((status) => (
           <button
             className={activeTab === status ? "active" : ""}
@@ -303,6 +316,9 @@ export default function EducationPmbWorkspace({
             <span className={`pmbStatusBadge ${statusClassName(applicant.status)}`}>
               {applicant.status}
             </span>
+            {applicant.status === "Diterima" && applicant.sudahBayar ? (
+              <span className="pmbTransferBadge">Siap masuk Data {participantLabel}</span>
+            ) : null}
             <span className="pmbMore"><PmbIcon name="more" /></span>
           </button>
         )) : (
@@ -391,6 +407,11 @@ export default function EducationPmbWorkspace({
             </div>
 
             <div className="pmbDetailActions">
+              {selectedApplicant.status === "Diterima" && selectedApplicant.sudahBayar ? (
+                <a className="participantSaveButton pmbParticipantLink" href={participantHref}>
+                  Buka Data {participantLabel}
+                </a>
+              ) : null}
               <button className="participantCancelButton" type="button" onClick={() => setSelectedId(null)}>
                 Tutup
               </button>

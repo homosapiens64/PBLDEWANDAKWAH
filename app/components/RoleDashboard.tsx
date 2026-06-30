@@ -47,6 +47,7 @@ type DashboardContent = {
   id: number;
   module: string;
   section: string;
+  source: string;
   title: string;
   status: string;
   authorName: string;
@@ -684,7 +685,7 @@ function buildActivities(
       date: item.updatedAt,
     })),
     ...content.map((item) => ({
-      key: `content-${item.id}`,
+      key: `content-${item.source}-${item.id}`,
       accent: item.status === "published" ? "blue" : "gold",
       icon: "file",
       title: `${item.status === "published" ? "Konten diterbitkan" : "Draft diperbarui"}: ${item.title}`,
@@ -1289,8 +1290,13 @@ function EducationWorkspace({
   const profile = educationContent[view];
 
   if (module === "education" && participantLabel) {
+    const acceptedPmbApplicants = pmbApplicants.filter((applicant) => (
+      applicant.status === "Diterima" && applicant.sudahBayar
+    ));
+
     return (
       <EducationParticipantWorkspace
+        acceptedPmbApplicants={acceptedPmbApplicants}
         institutionName={profile.institutionName}
         participantLabel={participantLabel}
       />
@@ -1302,10 +1308,14 @@ function EducationWorkspace({
   }
 
   if (module === "pmb") {
+    const participantGroup = educationNavGroups.find((item) => item.view === view);
+
     return (
       <EducationPmbWorkspace
         initialApplicants={pmbApplicants}
         institutionShortName={educationShortNames[view]}
+        participantHref={`${roleHomePaths[role]}?education=${view}&section=${participantGroup?.participantSection ?? "mahasiswa"}`}
+        participantLabel={participantGroup?.participantLabel ?? "Peserta"}
       />
     );
   }
@@ -1455,10 +1465,12 @@ export default async function RoleDashboard({
     }
   }
 
-  if (activePmbView) {
+  const pmbDataView = activePmbView || (activeParticipantSection ? activeEducationView : null);
+
+  if (pmbDataView) {
     try {
       const applications = await prisma.pmbApplication.findMany({
-        where: { institution: activePmbView },
+        where: { institution: pmbDataView },
         orderBy: { createdAt: "desc" },
         select: {
           address: true,
@@ -1637,10 +1649,10 @@ export default async function RoleDashboard({
       ]);
       dashboardTransactions = transactions;
       dashboardContent = [
-        ...genericContent,
-        ...news.map((item: typeof news[0]) => ({ ...item, module: "website" })),
-        ...studies.map((item: typeof studies[0]) => ({ ...item, module: "kajian" })),
-        ...education,
+        ...genericContent.map((item: typeof genericContent[0]) => ({ ...item, source: `content-${item.module}` })),
+        ...news.map((item: typeof news[0]) => ({ ...item, module: "website", source: "news" })),
+        ...studies.map((item: typeof studies[0]) => ({ ...item, module: "kajian", source: "study-article" })),
+        ...education.map((item: typeof education[0]) => ({ ...item, source: `education-${item.module}` })),
       ];
     } catch (error) {
       databaseAvailable = false;

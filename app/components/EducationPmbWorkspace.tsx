@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { updatePmbApplicationStatus } from "../dashboard-actions";
 
 type PmbStatus =
@@ -158,6 +158,16 @@ export default function EducationPmbWorkspace({
   const [draftNote, setDraftNote] = useState("");
   const [message, setMessage] = useState("");
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    setApplicants(initialApplicants);
+    setQuery("");
+    setActiveTab("Semua");
+    setSelectedId(null);
+    setDraftStatus("Menunggu Verifikasi");
+    setDraftNote("");
+    setMessage("");
+  }, [initialApplicants, institutionShortName]);
 
   const selectedApplicant = applicants.find((item) => item.id === selectedId) ?? null;
 

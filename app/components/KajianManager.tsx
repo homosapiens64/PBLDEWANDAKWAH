@@ -8,6 +8,7 @@ import {
   type ContentInput,
 } from "../dashboard-actions";
 import type { PublicContentItem } from "../lib/content";
+import ImageUploadField from "./ImageUploadField";
 
 type KajianForm = Omit<ContentInput, "module" | "section" | "id">;
 
@@ -332,9 +333,15 @@ export default function KajianManager({
 
                 <section className="kajianSettingsCard">
                   <h3><Icon name="image" /> Gambar Cover</h3>
+                  <ImageUploadField
+                    label="Upload cover kajian"
+                    value={form.imageUrl}
+                    onUploaded={(imageUrl) =>
+                      setForm((current) => ({ ...current, imageUrl }))
+                    }
+                  />
                   <label className="kajianCoverUpload">
-                    <Icon name="image" />
-                    <span>Masukkan URL gambar cover</span>
+                    <span>Atau tempel URL gambar</span>
                     <input
                       type="url"
                       value={form.imageUrl}

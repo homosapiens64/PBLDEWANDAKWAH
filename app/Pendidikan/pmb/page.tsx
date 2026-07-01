@@ -4,21 +4,21 @@ import { Building2, GraduationCap, School } from "lucide-react";
 const schools = [
   {
     description: "Program Diploma Da'wah & Kepemimpinan Islam",
-    href: "/Pendidikan/pendaftaran?institution=adi",
+    href: "/Pendidikan/pmb/daftar/adi",
     icon: GraduationCap,
     name: "ADI (Akademi Da'wah Indonesia)",
     tone: "green",
   },
   {
     description: "Pondok Pesantren Terpadu",
-    href: "/Pendidikan/pendaftaran?institution=ponpes-suruh",
+    href: "/Pendidikan/pmb/daftar/ponpes-suruh",
     icon: School,
     name: "Ponpes Suruh",
     tone: "teal",
   },
   {
     description: "Sekolah Islam Terpadu",
-    href: "/Pendidikan/pendaftaran?institution=al-khawarizmi",
+    href: "/Pendidikan/pmb/daftar/al-khawarizmi",
     icon: Building2,
     name: "Al Khawarizmi",
     tone: "blue",
@@ -56,7 +56,7 @@ export default function PmbPortalPage() {
         </div>
 
         <section className="pmbLoginCallout">
-          <Link href="/Pendidikan/pmb/dashboard">
+          <Link href="/Pendidikan/pmb/login">
             Login & Cek Status Pendaftaran
             <b aria-hidden="true">-&gt;</b>
           </Link>

@@ -120,7 +120,7 @@ const navItems: DashboardNavItem[] = [
   {
     icon: "list",
     label: "Berita",
-    children: ["Terkini", "Kegiatan", "Nasional", "Internasional"],
+    children: ["Nasional", "Internasional", "Kegiatan"],
     roles: ["super_admin", "pengurus"] satisfies UserRole[],
   },
   {
@@ -1090,69 +1090,34 @@ function getSectionSlug(parent: string, child: string) {
   return slugifySection(child);
 }
 
+function normalizeModuleSection(module: DashboardModule, section?: string) {
+  if (module === "website") {
+    return ["nasional", "internasional", "kegiatan"].includes(section ?? "")
+      ? section!
+      : "nasional";
+  }
+
+  if (module === "kajian") {
+    return ["artikel-kajian", "tauhid", "tazkiyah", "khutbah"].includes(section ?? "")
+      ? section!
+      : "artikel-kajian";
+  }
+
+  if (module === "konsultasi") {
+    return ["pertanyaan-masuk", "jawaban", "ustadz-bersertifikat"].includes(section ?? "")
+      ? section!
+      : "pertanyaan-masuk";
+  }
+
+  return section || slugifySection(moduleLabels[module]);
+}
+
 function EditPencilIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="m12 20 8-8-4-4-8 8-2 6z" />
       <path d="m14 6 4 4" />
     </svg>
-  );
-}
-
-function VisionMissionCard({
-  editable,
-  profile,
-  role,
-  view,
-}: {
-  editable: boolean;
-  profile: EducationDisplayProfile;
-  role: UserRole;
-  view: EducationView;
-}) {
-
-  return (
-    <article className="educationVisionCard">
-      <header className="educationCardHeader">
-        <span className="educationHeaderIcon">
-          <DashboardIcon name="list" />
-        </span>
-        <div>
-          <h2>Visi & Misi</h2>
-          <p>Tujuan pendirian lembaga</p>
-        </div>
-        {editable ? (
-          <Link
-            className="educationInlineEdit"
-            href={`${roleHomePaths[role]}?education=${view}&educationMode=edit`}
-          >
-            <EditPencilIcon />
-            <span>Edit</span>
-          </Link>
-        ) : null}
-      </header>
-
-      <div className="educationVisionGrid">
-        <section className="educationVisionBlock">
-          <h3>Visi</h3>
-          <blockquote>
-            &quot;{profile.vision}&quot;
-          </blockquote>
-        </section>
-
-        <section className="educationMissionBlock">
-          <h3>Misi</h3>
-          <ol>
-            {profile.missions.map((item, index) => (
-              <li key={item}>
-                <span>{index + 1}</span>
-                {item}
-              </li>
-            ))}
-          </ol>
-        </section>
-      </div>
-    </article>
   );
 }
 
@@ -1331,6 +1296,7 @@ function EducationWorkspace({
       <EducationPmbWorkspace
         initialApplicants={pmbApplicants}
         institutionShortName={educationShortNames[view]}
+        key={view}
         participantHref={`${roleHomePaths[role]}?education=${view}&section=${participantGroup?.participantSection ?? "mahasiswa"}`}
         participantLabel={participantGroup?.participantLabel ?? "Peserta"}
       />
@@ -1431,12 +1397,7 @@ export default async function RoleDashboard({
     timeZone: "Asia/Jakarta",
   }).format(new Date());
   const activeSection = activeModule
-    ? sectionView
-      || (activeModule === "kajian"
-        ? "artikel-kajian"
-        : activeModule === "konsultasi"
-          ? "pertanyaan-masuk"
-          : slugifySection(moduleLabels[activeModule]))
+    ? normalizeModuleSection(activeModule, sectionView)
     : "";
   const activeCertifiedUstadz = activeModule === "konsultasi"
     && activeSection === "ustadz-bersertifikat";

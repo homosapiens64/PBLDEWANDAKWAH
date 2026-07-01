@@ -162,3 +162,27 @@ export async function getPublishedContentItems(module: string, section?: string)
     return [];
   }
 }
+
+export async function getPublishedContentItemById(
+  module: "website" | "kajian",
+  id: number,
+): Promise<PublicContentItem | null> {
+  try {
+    if (module === "website") {
+      const item = await prisma.news.findFirst({
+        where: { id, status: "published" },
+      });
+
+      return item ? serializeDomainContentItem(item, "website") : null;
+    }
+
+    const item = await prisma.studyArticle.findFirst({
+      where: { id, status: "published" },
+    });
+
+    return item ? serializeDomainContentItem(item, "kajian") : null;
+  } catch {
+    console.warn(`Published content database is unavailable for ${module}/${id}.`);
+    return null;
+  }
+}

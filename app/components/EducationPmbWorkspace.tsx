@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
+import Link from "next/link";
 import { deletePmbApplication, updatePmbApplicationStatus } from "../dashboard-actions";
 
 type PmbStatus =
@@ -162,16 +163,6 @@ export default function EducationPmbWorkspace({
   const [draftNote, setDraftNote] = useState("");
   const [message, setMessage] = useState("");
   const [isPending, startTransition] = useTransition();
-
-  useEffect(() => {
-    setApplicants(initialApplicants);
-    setQuery("");
-    setActiveTab("Semua");
-    setSelectedId(null);
-    setDraftStatus("Menunggu Verifikasi");
-    setDraftNote("");
-    setMessage("");
-  }, [initialApplicants, institutionShortName]);
 
   const selectedApplicant = applicants.find((item) => item.id === selectedId) ?? null;
 
@@ -372,7 +363,28 @@ export default function EducationPmbWorkspace({
             </span>
           </article>
         )) : (
-          <div className="pmbEmpty">Belum ada data pendaftar.</div>
+          <div className="rounded-xl border border-dashed border-[#C8E4D9] bg-[#F7FBF9] p-8 text-center">
+            <strong className="block text-base font-bold text-[#0F4E35]">
+              Belum ada pendaftar di PMB {institutionShortName}
+            </strong>
+            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[#667085]">
+              Data akan muncul di sini setelah calon peserta membuat akun PMB dan mengirim formulir pendaftaran.
+            </p>
+            <div className="mt-5 flex flex-wrap justify-center gap-2">
+              <Link
+                className="inline-flex min-h-10 items-center rounded-lg bg-[#168453] px-4 text-sm font-semibold text-white"
+                href="/Pendidikan/pmb"
+              >
+                Buka Portal PMB
+              </Link>
+              <Link
+                className="inline-flex min-h-10 items-center rounded-lg border border-[#C8E4D9] bg-white px-4 text-sm font-semibold text-[#0F4E35]"
+                href={participantHref}
+              >
+                Lihat Data {participantLabel}
+              </Link>
+            </div>
+          </div>
         )}
       </div>
 

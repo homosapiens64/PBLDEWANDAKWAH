@@ -242,12 +242,12 @@ function BeritaSection({ items }: { items: PublicContentItem[] }) {
               <Link
                 key={item.id}
                 className="homeNewsCard"
-                href="/Berita/Terkini"
+                href={item.id.startsWith("managed-") ? `/Berita/baca/${item.id.replace("managed-", "")}` : "/Berita/Terkini"}
               >
                 <div
                   className="homeNewsImage"
                   style={{
-                    backgroundImage: item.image ? `url("${item.image.replaceAll('"', "%22")}")` : undefined,
+                    backgroundImage: item.image ? `url("${item.image.replace(/\s/g, "").replaceAll('"', "%22")}")` : undefined,
                   }}
                 >
                   <span>{item.location}</span>
@@ -274,12 +274,12 @@ function BeritaSection({ items }: { items: PublicContentItem[] }) {
               <Link
                 key={item.id}
                 className="homeNewsSideItem"
-                href="/Berita/Terkini"
+                href={item.id.startsWith("managed-") ? `/Berita/baca/${item.id.replace("managed-", "")}` : "/Berita/Terkini"}
               >
                 <div
                   className="homeNewsThumb"
                   style={{
-                    backgroundImage: item.image ? `url("${item.image.replaceAll('"', "%22")}")` : undefined,
+                    backgroundImage: item.image ? `url("${item.image.replace(/\s/g, "").replaceAll('"', "%22")}")` : undefined,
                   }}
                 />
                 <div>

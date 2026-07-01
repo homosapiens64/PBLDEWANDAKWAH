@@ -12,21 +12,6 @@ const subtopics = [
   "Ekonomi Islam",
 ];
 
-const topicCards = [
-  {
-    title: "Hukum Islam",
-    description: "Fiqih, ibadah, muamalah, dan adab sehari-hari.",
-    icon: "o",
-    active: true,
-  },
-  {
-    title: "Keluarga Sakinah",
-    description: "Pernikahan, waris, rumah tangga, dan anak.",
-    icon: "o",
-    active: false,
-  },
-];
-
 const faqItems = [
   "Seberapa cepat pertanyaan dijawab?",
   "Apakah jawaban dikirim via email?",
@@ -138,18 +123,6 @@ export default function KonsultasiClient({
           secara gratis, terpercaya, dan berlandaskan Al-Qur&apos;an serta Sunnah.
         </p>
 
-        <div className="consultTopicsHeader">PILIH TOPIK KONSULTASI</div>
-        <div className="consultTopicRow">
-          {topicCards.map((topic) => (
-            <article key={topic.title} className={`consultTopicCard ${topic.active ? "active" : ""}`}>
-              <div className="consultTopicIcon">{topic.icon}</div>
-              <div className="consultTopicCopy">
-                <h2>{topic.title}</h2>
-                <p>{topic.description}</p>
-              </div>
-            </article>
-          ))}
-        </div>
       </section>
 
       <section className="container consultLayout">
@@ -292,26 +265,6 @@ export default function KonsultasiClient({
         </div>
 
         <aside className="consultSidebar">
-          <section className="sidebarCard chatCard darkCard">
-            <p className="sidebarTitle">Chat Langsung dengan Ustadz</p>
-            <div className="chatHeader">
-              <div className="chatAvatar">TS</div>
-              <div>
-                <strong>Tim Ustadz DDI Semarang</strong>
-                <p>Online</p>
-              </div>
-            </div>
-
-            <div className="chatMessage user">Apa hukum zakat penghasilan?</div>
-            <div className="chatMessage admin">Silakan kirim nominal gaji dan kebutuhan pokoknya.</div>
-            <div className="chatMessage user">Baik, saya kirimkan data via form.</div>
-
-            <div className="chatInputRow">
-              <input type="text" placeholder="Tulis pesan disini..." />
-              <button type="button">➤</button>
-            </div>
-          </section>
-
           <section className="sidebarCard whiteCard">
             <p className="sidebarTitle muted">Ustadz Bersertifikat</p>
             <div className="ustadzList">
@@ -336,7 +289,7 @@ export default function KonsultasiClient({
             <div className="tipsList">
               {tips.map((tip) => (
                 <div key={tip} className="tipItem">
-                  <span>•</span>
+                  <span aria-hidden="true">-</span>
                   <p>{tip}</p>
                 </div>
               ))}

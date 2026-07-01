@@ -31,7 +31,7 @@ export async function POST(request: Request) {
       id,
       nisn,
     },
-    select: { id: true },
+    select: { id: true, status: true },
   });
 
   if (!application) {
@@ -43,8 +43,18 @@ export async function POST(request: Request) {
 
   await prisma.pmbApplication.update({
     where: { id },
-    data: { paymentProofUrl },
+    data: {
+      paymentProofUrl,
+      status: ["menunggu_bayar", "menunggu_pembayaran"].includes(application.status)
+        ? "sudah_bayar"
+        : application.status,
+    },
   });
 
-  return Response.json({ payment_proof_url: paymentProofUrl });
+  return Response.json({
+    payment_proof_url: paymentProofUrl,
+    status: ["menunggu_bayar", "menunggu_pembayaran"].includes(application.status)
+      ? "sudah_bayar"
+      : application.status,
+  });
 }

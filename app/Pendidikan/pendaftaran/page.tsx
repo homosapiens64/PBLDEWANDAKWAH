@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, type ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle2, ChevronRight, ChevronLeft, BookOpen, Loader2, Copy, Mail, AlertCircle, Upload, X, Check } from "lucide-react";
+import { CheckCircle2, ChevronRight, ChevronLeft, BookOpen, Loader2, AlertCircle, Upload, X, Check } from "lucide-react";
 
 // ============================================================
 // STATIC DATA
@@ -215,8 +215,6 @@ export default function PendaftaranPage() {
   const [form, setForm] = useState(emptyForm);
   const [submitted, setSubmitted] = useState<any>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [sendingEmail, setSendingEmail] = useState(false);
-  const [paymentMessage, setPaymentMessage] = useState("");
 
   const [provinsiList, setProvinsiList] = useState<any[]>([]);
   const [kotaList, setKotaList] = useState<any[]>([]);
@@ -242,8 +240,8 @@ export default function PendaftaranPage() {
     const name = searchParams.get("name") || "";
     const email = searchParams.get("email") || "";
 
-    if (!institution || !nisn || !name || !email) {
-      router.replace("/Pendidikan/pmb/login");
+    if (!institution) {
+      router.replace("/Pendidikan/pmb");
       return;
     }
 
@@ -285,7 +283,7 @@ export default function PendaftaranPage() {
 
   const canNext = () => {
     if (step === 0) return form.institution_id && form.jalur_id && form.jurusan_id;
-    if (step === 1) return form.full_name && form.gender && form.religion && form.phone;
+    if (step === 1) return form.full_name && form.nisn && form.gender && form.religion && form.phone && form.email;
     if (step === 2) return form.provinsi && form.kota && form.kecamatan && form.kelurahan;
     return true;
   };
@@ -312,59 +310,6 @@ export default function PendaftaranPage() {
     setSubmitting(false);
   };
 
-  const sendEmail = async () => {
-    if (!submitted?.email) return alert("Email tidak tersedia");
-    setSendingEmail(true);
-    try {
-      await fetch("/api/send-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          to: submitted.email,
-          subject: `Kode Tagihan PMB DDI Semarang - ${submitted.registration_number}`,
-          body: `Yth. ${submitted.full_name},\n\nNomor Registrasi: ${submitted.registration_number}\nKode Tagihan: ${submitted.billing_code}\nJumlah: Rp 150.000\n\nSalam,\nAdmin PMB DDI Semarang`,
-        }),
-      });
-      alert("Email berhasil dikirim!");
-    } catch { alert("Gagal mengirim email"); }
-    setSendingEmail(false);
-  };
-
-  const savePaymentProof = async (fileUrl: string) => {
-    if (!submitted?.id) {
-      alert("Data pendaftaran belum tersedia.");
-      return;
-    }
-
-    setPaymentMessage("Menyimpan bukti pembayaran...");
-    try {
-      const response = await fetch("/api/pendaftaran/payment-proof", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: submitted.email,
-          id: submitted.id,
-          nisn: submitted.nisn,
-          payment_proof_url: fileUrl,
-        }),
-      });
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data?.message || "Gagal menyimpan bukti pembayaran.");
-      }
-
-      setSubmitted((current: any) => ({
-        ...current,
-        payment_proof_url: data.payment_proof_url,
-      }));
-      setPaymentMessage("Bukti pembayaran tersimpan. Admin dapat melihatnya di dashboard PMB.");
-    } catch (error) {
-      setPaymentMessage("");
-      alert(error instanceof Error ? error.message : "Gagal menyimpan bukti pembayaran.");
-    }
-  };
-
   // ===== SUCCESS =====
   if (submitted) return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-yellow-50 flex items-center justify-center p-4">
@@ -373,49 +318,28 @@ export default function PendaftaranPage() {
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle2 className="w-10 h-10 text-green-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-800">Pendaftaran Terkirim!</h2>
-          <p className="text-gray-500 mt-1">Selamat, {submitted.full_name?.split(" ")[0]}!</p>
+          <h2 className="text-2xl font-bold text-gray-800">Anda Sudah Mendaftar</h2>
+          <p className="text-gray-500 mt-2">
+            Data pendaftaran Anda sudah tersimpan dan masuk ke dashboard admin PMB.
+          </p>
         </div>
-        <div className="space-y-3 mb-6">
-          <div className="bg-gray-50 rounded-xl p-4">
-            <p className="text-xs text-gray-400 mb-1">Nomor Registrasi</p>
-            <div className="flex items-center justify-between">
-              <span className="text-lg font-bold text-green-700 font-mono">{submitted.registration_number}</span>
-              <button onClick={() => navigator.clipboard.writeText(submitted.registration_number)} className="p-1.5 hover:bg-gray-200 rounded-lg"><Copy className="w-4 h-4 text-gray-400" /></button>
-            </div>
-          </div>
-          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
-            <p className="text-xs text-gray-400 mb-1">Kode Tagihan Pembayaran</p>
-            <div className="flex items-center justify-between">
-              <span className="text-lg font-bold text-yellow-700 font-mono">{submitted.billing_code}</span>
-              <button onClick={() => navigator.clipboard.writeText(submitted.billing_code)} className="p-1.5 hover:bg-gray-200 rounded-lg"><Copy className="w-4 h-4 text-gray-400" /></button>
-            </div>
-            <p className="text-sm font-semibold mt-2">Total: <span className="text-green-700">Rp 150.000</span></p>
-          </div>
-        </div>
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 mb-6 flex gap-2">
-          <AlertCircle className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
-          <p className="text-xs text-blue-700">Simpan nomor registrasi & kode tagihan. Lakukan pembayaran lalu hubungi admin PMB. Verifikasi 1–3 hari kerja.</p>
-        </div>
-        <div className="mb-6">
-          <UploadBox
-            label="Bukti Pembayaran"
-            description="Upload bukti transfer setelah melakukan pembayaran"
-            value={submitted.payment_proof_url}
-            onChange={savePaymentProof}
-          />
-          {paymentMessage && <p className="text-xs text-green-700 mt-2">{paymentMessage}</p>}
-        </div>
-        <div className="space-y-2">
-          {submitted.email && (
-            <button onClick={sendEmail} disabled={sendingEmail} className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 disabled:opacity-50">
-              {sendingEmail ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />} Kirim ke Email
-            </button>
-          )}
-          <button onClick={() => router.push("/Pendidikan/pmb/login")} className="w-full px-4 py-2 text-sm text-gray-400 hover:text-gray-600">
-            Kembali ke Login PMB
-          </button>
-        </div>
+        <p className="rounded-xl border border-green-200 bg-green-50 p-4 text-center text-sm text-green-700">
+          Silakan login menggunakan NISN dan email yang didaftarkan untuk memantau status pendaftaran.
+        </p>
+        <button
+          onClick={() => {
+            const params = new URLSearchParams({
+              email: submitted.email || "",
+              institution: submitted.institution || "",
+              nisn: submitted.nisn || "",
+            });
+            router.push(`/Pendidikan/pmb/login?${params.toString()}`);
+          }}
+          className="mt-6 w-full rounded-lg bg-green-700 px-4 py-3 text-sm font-semibold text-white hover:bg-green-800"
+          type="button"
+        >
+          Kembali ke Halaman Login
+        </button>
       </div>
     </div>
   );
@@ -482,7 +406,7 @@ export default function PendaftaranPage() {
             {step === 1 && (
               <div className="space-y-4">
                 <FInput label="Nama Lengkap" required value={form.full_name} onChange={(e: any) => sf("full_name", e.target.value)} placeholder="Sesuai KTP / Ijazah / Akta Lahir" />
-                <FInput label="NISN / NIK" value={form.nisn} onChange={(e: ChangeEvent<HTMLInputElement>) => sf("nisn", e.target.value)} placeholder="Nomor induk siswa atau identitas" />
+                <FInput label="NISN / NIK" required value={form.nisn} onChange={(e: ChangeEvent<HTMLInputElement>) => sf("nisn", e.target.value)} placeholder="Nomor induk siswa atau identitas" />
                 <div className="grid grid-cols-2 gap-4">
                   <FSelect label="Jenis Kelamin" required value={form.gender} onChange={(v: string) => sf("gender", v)}
                     options={[{ value: "Laki-laki", label: "Laki-laki" }, { value: "Perempuan", label: "Perempuan" }]} placeholder="— Pilih —" />
@@ -497,7 +421,7 @@ export default function PendaftaranPage() {
                     options={[{ value: "WNI", label: "WNI" }, { value: "WNA", label: "WNA" }]} />
                   <FInput label="No. Telepon / WA" required value={form.phone} onChange={(e: any) => sf("phone", e.target.value)} placeholder="08xx-xxxx-xxxx" />
                 </div>
-                <FInput label="Email" type="email" value={form.email} onChange={(e: any) => sf("email", e.target.value)} placeholder="contoh@email.com" />
+                <FInput label="Email" required type="email" value={form.email} onChange={(e: any) => sf("email", e.target.value)} placeholder="contoh@email.com" />
               </div>
             )}
 

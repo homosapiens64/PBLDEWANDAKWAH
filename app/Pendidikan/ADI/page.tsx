@@ -56,7 +56,7 @@ const adiData: InstitutionDetailData = {
     email: "adi@dewandakwah-semarang.or.id",
     hours: "Senin-Jumat, 08.00-16.00 WIB",
   },
-  registerHref: "/Pendidikan/pmb/login?institution=adi",
+  registerHref: "/Pendidikan/pmb",
 };
 
 export default function ADIPage() {

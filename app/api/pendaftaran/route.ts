@@ -1,10 +1,17 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/app/lib/prisma";
+import { sendConsultationEmailNotification as sendEmailNotification } from "@/app/lib/consultation-notifications";
 
 const institutionMap: Record<string, string> = {
   ADI: "adi",
   "Al Khawarizmi": "al-khawarizmi",
   "Ponpes Suruh": "ponpes-suruh",
+};
+
+const institutionIds: Record<string, string> = {
+  ADI: "inst-1",
+  "Al Khawarizmi": "inst-3",
+  "Ponpes Suruh": "inst-2",
 };
 
 function cleanText(value: unknown) {
@@ -43,17 +50,72 @@ export async function POST(request: Request) {
   try {
     const account = await prisma.pmbApplicantAccount.findFirst({
       where: {
-        email,
-        nisn,
+        OR: [
+          { institution, nisn },
+          { nisn, email },
+        ],
       },
-      select: { id: true },
+      select: { id: true, institution: true },
     });
 
-    if (!account) {
-      return Response.json(
-        { message: "Silakan daftar akun dan login terlebih dahulu sebelum mengirim formulir." },
-        { status: 403 },
-      );
+    try {
+      if (account && account.institution === institution) {
+        await prisma.pmbApplicantAccount.update({
+          where: { id: account.id },
+          data: {
+            email,
+            fullName,
+            institutionId: institutionIds[institutionShort],
+            institutionName: cleanText(payload.institution_name) || institutionShort,
+            institutionShort,
+          },
+        });
+      } else if (!account) {
+        await prisma.pmbApplicantAccount.create({
+          data: {
+            email,
+            fullName,
+            institution,
+            institutionId: institutionIds[institutionShort],
+            institutionName: cleanText(payload.institution_name) || institutionShort,
+            institutionShort,
+            nisn,
+          },
+        });
+      }
+    } catch (error) {
+      console.warn("Akun pendaftar tidak dapat dibuat/diperbarui, pendaftaran tetap disimpan.", error);
+    }
+
+    const existingApplication = await prisma.pmbApplication.findFirst({
+      where: {
+        email,
+        institution,
+        nisn,
+      },
+      orderBy: { createdAt: "desc" },
+      select: {
+        billingAmount: true,
+        billingCode: true,
+        id: true,
+        registrationNumber: true,
+        status: true,
+      },
+    });
+
+    if (existingApplication) {
+      return Response.json({
+        already_registered: true,
+        billing_amount: existingApplication.billingAmount,
+        billing_code: existingApplication.billingCode,
+        email,
+        full_name: fullName,
+        id: existingApplication.id,
+        institution,
+        nisn,
+        registration_number: existingApplication.registrationNumber,
+        status: existingApplication.status,
+      });
     }
 
     const application = await prisma.pmbApplication.create({
@@ -110,8 +172,29 @@ export async function POST(request: Request) {
     revalidatePath("/admin");
     revalidatePath("/super-admin");
 
+    void sendEmailNotification({
+      body: [
+        `Assalamu'alaikum ${application.fullName},`,
+        "",
+        "Pendaftaran PMB DDI Semarang Anda sudah kami terima.",
+        `Lembaga: ${application.institutionName}`,
+        application.jurusanName ? `Program/Kelas: ${application.jurusanName}` : "",
+        "",
+        "Silakan login ke dashboard PMB menggunakan NISN dan email yang didaftarkan untuk memantau status pendaftaran.",
+        "",
+        "Salam,",
+        "Admin PMB DDI Semarang",
+      ].filter(Boolean).join("\n"),
+      subject: "Pendaftaran PMB DDI Semarang Berhasil Diterima",
+      to: [application.email || email],
+    });
+
     return Response.json({
+      email: application.email,
+      full_name: application.fullName,
       id: application.id,
+      institution: application.institution,
+      nisn: application.nisn,
       registration_number: application.registrationNumber,
       billing_code: application.billingCode,
       billing_amount: application.billingAmount,

@@ -147,7 +147,7 @@ export default function Institusi() {
 
                 {/* Tombol Daftar — pakai query param ?institusi=id */}
                 <Link
-                  href="/Pendidikan/pmb/login"
+                  href="/Pendidikan/pmb"
                   style={{
                     display: "inline-flex", alignItems: "center", gap: 6,
                     backgroundColor: "#fff", color: "#009688",

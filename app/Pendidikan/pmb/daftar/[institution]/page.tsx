@@ -1,5 +1,4 @@
-import { notFound } from "next/navigation";
-import PmbRegisterClient from "./PmbRegisterClient";
+import { notFound, redirect } from "next/navigation";
 
 const institutionSlugs = ["adi", "al-khawarizmi", "ponpes-suruh"] as const;
 type InstitutionSlug = typeof institutionSlugs[number];
@@ -19,5 +18,5 @@ export default async function PmbRegisterPage({
     notFound();
   }
 
-  return <PmbRegisterClient institution={institution} />;
+  redirect(`/Pendidikan/pendaftaran?institution=${institution}`);
 }

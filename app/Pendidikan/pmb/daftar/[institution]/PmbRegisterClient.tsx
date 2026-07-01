@@ -1,8 +1,8 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Building2, GraduationCap, School, Search } from "lucide-react";
 
 type InstitutionSlug = "adi" | "al-khawarizmi" | "ponpes-suruh";
@@ -26,14 +26,6 @@ const institutionMeta: Record<
     shortName: "ADI",
     tone: "green",
   },
-  "ponpes-suruh": {
-    description: "Pondok Pesantren Terpadu",
-    icon: School,
-    id: "inst-2",
-    name: "Ponpes Suruh",
-    shortName: "Ponpes Suruh",
-    tone: "teal",
-  },
   "al-khawarizmi": {
     description: "Sekolah Islam Terpadu",
     icon: Building2,
@@ -41,6 +33,14 @@ const institutionMeta: Record<
     name: "Al Khawarizmi",
     shortName: "Al Khawarizmi",
     tone: "blue",
+  },
+  "ponpes-suruh": {
+    description: "Pondok Pesantren Terpadu",
+    icon: School,
+    id: "inst-2",
+    name: "Ponpes Suruh",
+    shortName: "Ponpes Suruh",
+    tone: "teal",
   },
 };
 
@@ -55,9 +55,10 @@ export default function PmbRegisterClient({ institution }: { institution: Instit
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const canSubmit = useMemo(() => (
-    nisn.trim().length > 0 && name.trim().length > 0 && email.trim().length > 0
-  ), [email, name, nisn]);
+  const canSubmit = useMemo(
+    () => nisn.trim().length > 0 && name.trim().length > 0 && email.trim().length > 0,
+    [email, name, nisn],
+  );
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

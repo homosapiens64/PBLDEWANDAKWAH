@@ -4,21 +4,21 @@ import { Building2, GraduationCap, School } from "lucide-react";
 const schools = [
   {
     description: "Program Diploma Da'wah & Kepemimpinan Islam",
-    href: "/Pendidikan/pmb/daftar/adi",
+    href: "/Pendidikan/pendaftaran?institution=adi",
     icon: GraduationCap,
     name: "ADI (Akademi Da'wah Indonesia)",
     tone: "green",
   },
   {
     description: "Pondok Pesantren Terpadu",
-    href: "/Pendidikan/pmb/daftar/ponpes-suruh",
+    href: "/Pendidikan/pendaftaran?institution=ponpes-suruh",
     icon: School,
     name: "Ponpes Suruh",
     tone: "teal",
   },
   {
     description: "Sekolah Islam Terpadu",
-    href: "/Pendidikan/pmb/daftar/al-khawarizmi",
+    href: "/Pendidikan/pendaftaran?institution=al-khawarizmi",
     icon: Building2,
     name: "Al Khawarizmi",
     tone: "blue",
@@ -46,21 +46,23 @@ export default function PmbPortalPage() {
                 </span>
                 <strong>{school.name}</strong>
                 <small>{school.description}</small>
-                <em>Daftar Akun -&gt;</em>
+                <em>Isi Formulir -&gt;</em>
               </Link>
             );
           })}
         </div>
 
         <section className="pmbLoginCallout">
-          <Link href="/Pendidikan/pmb/login">
+          <Link href="/Pendidikan/pmb/dashboard">
             Login & Cek Status Pendaftaran
             <b aria-hidden="true">-&gt;</b>
           </Link>
           <p>Gunakan NISN + email untuk masuk ke dashboard pendaftaran</p>
         </section>
 
-        <p className="pmbAuthFooter">&copy; 2026 DDI Semarang &middot; Portal Penerimaan Peserta Didik Baru</p>
+        <p className="pmbAuthFooter">
+          &copy; 2026 DDI Semarang &middot; Portal Penerimaan Peserta Didik Baru
+        </p>
       </section>
     </main>
   );

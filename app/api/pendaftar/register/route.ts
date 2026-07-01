@@ -1,4 +1,5 @@
 import { prisma } from "@/app/lib/prisma";
+import { sendConsultationEmailNotification as sendEmailNotification } from "@/app/lib/consultation-notifications";
 
 const institutionMeta: Record<string, { id: string; name: string; shortName: string }> = {
   adi: {
@@ -71,6 +72,24 @@ export async function POST(request: Request) {
       institutionShort: meta.shortName,
       nisn,
     },
+  });
+
+  void sendEmailNotification({
+    body: [
+      `Assalamu'alaikum ${account.fullName},`,
+      "",
+      "Akun pendaftar PMB DDI Semarang Anda berhasil dibuat.",
+      `Lembaga: ${account.institutionName}`,
+      `NISN: ${account.nisn}`,
+      `Email: ${account.email}`,
+      "",
+      "Silakan lanjut login ke Portal PMB menggunakan NISN dan email tersebut, lalu lengkapi formulir pendaftaran.",
+      "",
+      "Salam,",
+      "Admin PMB DDI Semarang",
+    ].join("\n"),
+    subject: "Akun PMB DDI Semarang Berhasil Dibuat",
+    to: [account.email],
   });
 
   return Response.json({

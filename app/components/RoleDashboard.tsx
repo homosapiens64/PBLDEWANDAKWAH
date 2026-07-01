@@ -1308,7 +1308,7 @@ function EducationWorkspace({
 
   if (module === "education" && participantLabel) {
     const acceptedPmbApplicants = pmbApplicants.filter((applicant) => (
-      applicant.status === "Diterima" && applicant.sudahBayar
+      applicant.status === "Daftar Ulang" || (applicant.status === "Diterima" && applicant.sudahBayar)
     ));
 
     return (
@@ -1607,7 +1607,9 @@ export default async function RoleDashboard({
         schoolStatus: application.schoolStatus || "-",
         status: toPmbDisplayStatus(application.status),
         statusNote: application.adminNote || "",
-        sudahBayar: Boolean(application.paymentProofUrl) || application.status === "sudah_bayar",
+        sudahBayar: Boolean(application.paymentProofUrl)
+          || application.status === "sudah_bayar"
+          || application.status === "daftar_ulang",
       }));
     } catch {
       databaseAvailable = false;

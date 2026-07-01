@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, useTransition } from "react";
-import { updatePmbApplicationStatus } from "../dashboard-actions";
+import { deletePmbApplication, updatePmbApplicationStatus } from "../dashboard-actions";
 
 type PmbStatus =
   | "Draft"
@@ -124,6 +124,10 @@ function statusClassName(status: PmbStatus) {
   return status.toLowerCase().replaceAll(" ", "-").replaceAll(".", "");
 }
 
+function isReadyForParticipant(applicant: PmbApplicant) {
+  return applicant.status === "Daftar Ulang" || (applicant.status === "Diterima" && applicant.sudahBayar);
+}
+
 function DetailItem({ label, value }: { label: string; value: string }) {
   return (
     <p>
@@ -175,9 +179,8 @@ export default function EducationPmbWorkspace({
     const keyword = query.trim().toLowerCase();
 
     return applicants.filter((applicant) => {
-      const isReadyForParticipant = applicant.status === "Diterima" && applicant.sudahBayar;
       const matchesTab = activeTab === "Semua"
-        || (activeTab === "Siap Dipindahkan" ? isReadyForParticipant : applicant.status === activeTab);
+        || (activeTab === "Siap Dipindahkan" ? isReadyForParticipant(applicant) : applicant.status === activeTab);
       const matchesQuery = !keyword
         || applicant.name.toLowerCase().includes(keyword)
         || applicant.nisn.toLowerCase().includes(keyword)
@@ -189,7 +192,7 @@ export default function EducationPmbWorkspace({
 
   const waitingCount = applicants.filter((item) => item.status === "Menunggu Verifikasi").length;
   const acceptedCount = applicants.filter((item) => item.status === "Diterima").length;
-  const readyApplicants = applicants.filter((item) => item.status === "Diterima" && item.sudahBayar);
+  const readyApplicants = applicants.filter(isReadyForParticipant);
   const tabStatuses = pmbStatuses.filter((status) => (
     status === "Menunggu Verifikasi" || applicants.some((item) => item.status === status)
   ));
@@ -224,13 +227,32 @@ export default function EducationPmbWorkspace({
                 ...applicant,
                 status: draftStatus,
                 statusNote: draftNote,
-                sudahBayar: applicant.sudahBayar || draftStatus === "Sudah Bayar",
+                sudahBayar: applicant.sudahBayar || draftStatus === "Sudah Bayar" || draftStatus === "Daftar Ulang",
               }
             : applicant
         )));
         setSelectedId(null);
       } catch (error) {
         setMessage(error instanceof Error ? error.message : "Gagal menyimpan perubahan.");
+      }
+    });
+  }
+
+  function deleteApplicant(applicant: PmbApplicant) {
+    const confirmed = window.confirm(`Hapus data pendaftar ${applicant.name}? Data ini akan terhapus dari database.`);
+    if (!confirmed) return;
+
+    setMessage("");
+    startTransition(async () => {
+      try {
+        await deletePmbApplication({ id: applicant.id });
+        setApplicants((current) => current.filter((item) => item.id !== applicant.id));
+        if (selectedId === applicant.id) {
+          setSelectedId(null);
+        }
+        setMessage(`Data ${applicant.name} berhasil dihapus.`);
+      } catch (error) {
+        setMessage(error instanceof Error ? error.message : "Gagal menghapus data pendaftar.");
       }
     });
   }
@@ -317,7 +339,7 @@ export default function EducationPmbWorkspace({
 
       <div className="pmbApplicantList" aria-label="Daftar pendaftar PMB">
         {filteredApplicants.length > 0 ? filteredApplicants.map((applicant) => (
-          <button className="pmbApplicantCard" key={applicant.id} onClick={() => openDetail(applicant)} type="button">
+          <article className="pmbApplicantCard" key={applicant.id}>
             <span className="pmbAvatar">{getInitials(applicant.name)}</span>
             <span className="pmbApplicantMain">
               <strong>{applicant.name}</strong>
@@ -326,11 +348,29 @@ export default function EducationPmbWorkspace({
             <span className={`pmbStatusBadge ${statusClassName(applicant.status)}`}>
               {applicant.status}
             </span>
-            {applicant.status === "Diterima" && applicant.sudahBayar ? (
+            {isReadyForParticipant(applicant) ? (
               <span className="pmbTransferBadge">Siap masuk Data {participantLabel}</span>
             ) : null}
-            <span className="pmbMore"><PmbIcon name="more" /></span>
-          </button>
+            <span className="pmbCardActions">
+              <button
+                aria-label={`Lihat detail ${applicant.name}`}
+                className="pmbMore"
+                onClick={() => openDetail(applicant)}
+                type="button"
+              >
+                <PmbIcon name="more" />
+                <span>Detail</span>
+              </button>
+              <button
+                className="pmbDeleteButton"
+                disabled={isPending}
+                onClick={() => deleteApplicant(applicant)}
+                type="button"
+              >
+                Hapus
+              </button>
+            </span>
+          </article>
         )) : (
           <div className="pmbEmpty">Belum ada data pendaftar.</div>
         )}
@@ -417,13 +457,21 @@ export default function EducationPmbWorkspace({
             </div>
 
             <div className="pmbDetailActions">
-              {selectedApplicant.status === "Diterima" && selectedApplicant.sudahBayar ? (
+              {isReadyForParticipant(selectedApplicant) ? (
                 <a className="participantSaveButton pmbParticipantLink" href={participantHref}>
                   Buka Data {participantLabel}
                 </a>
               ) : null}
               <button className="participantCancelButton" type="button" onClick={() => setSelectedId(null)}>
                 Tutup
+              </button>
+              <button
+                className="participantDangerButton"
+                disabled={isPending}
+                onClick={() => selectedApplicant && deleteApplicant(selectedApplicant)}
+                type="button"
+              >
+                Hapus
               </button>
               <button className="participantSaveButton" type="button" onClick={saveDetail} disabled={isPending}>
                 {isPending ? "Menyimpan..." : "Simpan Perubahan"}

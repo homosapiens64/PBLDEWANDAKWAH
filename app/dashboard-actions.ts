@@ -80,6 +80,10 @@ export type PmbStatusInput = {
   status: string;
 };
 
+export type PmbDeleteInput = {
+  id: number;
+};
+
 function canEditSection(
   session: NonNullable<Awaited<ReturnType<typeof getSession>>>,
   module: string,
@@ -391,6 +395,34 @@ export async function updatePmbApplicationStatus(input: PmbStatusInput) {
       adminNote: input.note.trim() || null,
       status: input.status,
     },
+  });
+
+  revalidatePath("/admin");
+  revalidatePath("/super-admin");
+  revalidatePath(roleHomePaths[session.role]);
+}
+
+export async function deletePmbApplication(input: PmbDeleteInput) {
+  const session = await getSession();
+  if (!session || (session.role !== "super_admin" && session.role !== "admin")) {
+    throw new Error("Anda tidak memiliki akses untuk menghapus data PMB.");
+  }
+
+  const application = await prisma.pmbApplication.findUnique({
+    where: { id: input.id },
+    select: { institution: true },
+  });
+
+  if (!application) {
+    throw new Error("Data pendaftar tidak ditemukan.");
+  }
+
+  if (session.role === "admin" && session.institution !== application.institution) {
+    throw new Error("Anda tidak memiliki akses ke pendaftar lembaga ini.");
+  }
+
+  await prisma.pmbApplication.delete({
+    where: { id: input.id },
   });
 
   revalidatePath("/admin");

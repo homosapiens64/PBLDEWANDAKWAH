@@ -51,7 +51,7 @@ const alKhawarizmiData: InstitutionDetailData = {
     email: "alkhawarizmi@dewandakwah-semarang.or.id",
     hours: "Senin-Jumat, 08.00-15.30 WIB",
   },
-  registerHref: "/Pendidikan/pmb",
+  registerHref: "/Pendidikan/pendaftaran?institution=al-khawarizmi",
 };
 
 export default function AlKhawarizmiPage() {

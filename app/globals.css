@@ -7605,9 +7605,9 @@ body:has(.loginPage) .siteFooter {
     grid-template-columns: 42px minmax(0, 1fr);
   }
 
-  .institutionRequirement li span {
-    min-width: 42px;
-  }
+.institutionRequirement li span {
+  min-width: 42px;
+}
 
   .institutionProgramGrid {
     grid-template-columns: 1fr;
@@ -7632,5 +7632,155 @@ body:has(.loginPage) .siteFooter {
     flex-direction: column;
     justify-content: center;
     text-align: center;
+  }
+}
+
+/* Focused education public/form polish */
+.educationPublicIndex {
+  background: linear-gradient(180deg, #fbfffd 0%, #f4fbf8 100%) !important;
+}
+
+.educationPublicIndex > section:first-of-type {
+  padding-top: clamp(2.6rem, 6vw, 4.6rem) !important;
+  padding-bottom: clamp(1.8rem, 4vw, 3rem) !important;
+}
+
+.educationPublicIndex > section:first-of-type h1 {
+  color: #163528 !important;
+  letter-spacing: -0.03em;
+}
+
+.educationPublicIndex > section:first-of-type p {
+  border: 1px solid #dcece5;
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 1rem 1.1rem;
+  box-shadow: 0 10px 24px rgba(20, 92, 62, 0.06);
+}
+
+.educationPublicIndex > section:nth-of-type(2) > div > div:first-child {
+  border-radius: 10px !important;
+}
+
+.educationPublicIndex > section:nth-of-type(2) > div > div:last-child {
+  border: 1px solid #dbe8e2;
+  background:
+    linear-gradient(135deg, rgba(22, 132, 83, 0.12), rgba(242, 186, 40, 0.09)),
+    #eef7f2 !important;
+  color: #5b7067 !important;
+}
+
+.educationPublicIndex > section:nth-of-type(3) {
+  background: #eef8f3 !important;
+  border-top: 1px solid #dcebe4;
+  border-bottom: 1px solid #dcebe4;
+}
+
+.educationPublicIndex > section:nth-of-type(3) h2 {
+  color: #17362a !important;
+}
+
+.educationPublicIndex > section:nth-of-type(3) > div:last-child > div > div {
+  border-color: #cfe4db !important;
+  box-shadow: 0 10px 24px rgba(20, 92, 62, 0.08) !important;
+}
+
+.institutionDetailPage {
+  background: #f6fbf8;
+}
+
+.institutionHero {
+  background:
+    radial-gradient(circle at 10% 0%, rgba(22, 132, 83, 0.12), transparent 30%),
+    linear-gradient(180deg, #ffffff 0%, #f1faf5 100%);
+}
+
+.institutionHeroInner {
+  min-height: clamp(430px, 58vw, 520px);
+}
+
+.institutionHero h1 {
+  color: #224b3b;
+  letter-spacing: -0.035em;
+}
+
+.institutionHero h1 strong {
+  color: #168453;
+}
+
+.institutionRequirement,
+.institutionPrograms,
+.institutionAction {
+  overflow: hidden;
+}
+
+.institutionRequirement {
+  background: #edf8f2;
+}
+
+.institutionPrograms {
+  background: #f4fbf8;
+}
+
+.institutionAction {
+  background: #eef8f3;
+}
+
+.institutionProgramCard,
+.institutionInfoCard {
+  border-radius: 8px;
+}
+
+.pmbFormPage {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(22, 132, 83, 0.1), transparent 26%),
+    linear-gradient(180deg, #f6fffa 0%, #edf8f2 100%) !important;
+  color: #17362a;
+}
+
+.pmbFormHeader {
+  background:
+    linear-gradient(135deg, #0d6b48 0%, #168453 58%, #1a9a67 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 14px 34px rgba(15, 78, 53, 0.16);
+}
+
+.pmbFormPage .bg-white {
+  border-color: #dbe8e2;
+}
+
+.pmbFormPage .rounded-2xl {
+  border-radius: 10px;
+}
+
+.pmbFormPage input,
+.pmbFormPage select,
+.pmbFormPage textarea {
+  border-color: #cfded7 !important;
+}
+
+.pmbFormPage input:focus,
+.pmbFormPage select:focus,
+.pmbFormPage textarea:focus {
+  border-color: #168453 !important;
+  box-shadow: 0 0 0 3px rgba(22, 132, 83, 0.14) !important;
+}
+
+.pmbFormPage .bg-yellow-50,
+.pmbFormPage .to-yellow-50 {
+  background-color: #f8fbf8 !important;
+}
+
+@media (max-width: 760px) {
+  .educationPublicIndex > section {
+    padding-inline: 1rem !important;
+  }
+
+  .educationPublicIndex > section:nth-of-type(2) > div {
+    flex-direction: column !important;
+  }
+
+  .educationPublicIndex > section:nth-of-type(3) {
+    padding-inline: 1rem !important;
   }
 }

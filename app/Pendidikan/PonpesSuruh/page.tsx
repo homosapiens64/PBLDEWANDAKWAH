@@ -51,7 +51,7 @@ const ponpesSuruhData: InstitutionDetailData = {
     email: "ponpes-suruh@dewandakwah-semarang.or.id",
     hours: "Senin-Sabtu, 08.00-16.00 WIB",
   },
-  registerHref: "/Pendidikan/pmb/login?institution=ponpes-suruh",
+  registerHref: "/Pendidikan/pendaftaran?institution=ponpes-suruh",
 };
 
 export default function PonpesSuruhPage() {

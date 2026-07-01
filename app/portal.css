@@ -7498,6 +7498,117 @@ body:has(.pmbAuthPage) .siteFooter {
   justify-items: center;
 }
 
+/* Targeted PMB polish */
+.dashboardApp .pmbApplicantCard {
+  grid-template-columns: 52px minmax(0, 1fr) auto auto minmax(150px, auto);
+  cursor: default;
+}
+
+.dashboardApp .pmbCardActions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.45rem;
+}
+
+.dashboardApp .pmbMore,
+.dashboardApp .pmbDeleteButton,
+.dashboardApp .participantDangerButton {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  padding: 0 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.dashboardApp .pmbMore {
+  background: #f1f7f4;
+  color: #24624a;
+}
+
+.dashboardApp .pmbMore:hover {
+  border-color: #cfe2d9;
+  background: #e7f3ed;
+}
+
+.dashboardApp .pmbDeleteButton,
+.dashboardApp .participantDangerButton {
+  background: #fff0ef;
+  color: #b92f2a;
+}
+
+.dashboardApp .pmbDeleteButton:hover,
+.dashboardApp .participantDangerButton:hover {
+  border-color: #f3bbb8;
+  background: #ffe2df;
+}
+
+.dashboardApp .pmbDeleteButton:disabled,
+.dashboardApp .participantDangerButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.pmbAuthPage {
+  background:
+    radial-gradient(circle at 15% 8%, rgba(22, 132, 83, 0.14), transparent 28%),
+    linear-gradient(180deg, #f4fff9 0%, #dcf6e9 100%);
+}
+
+.pmbAuthBrand {
+  margin-bottom: 1.45rem;
+}
+
+.pmbBackHome {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+  border: 1px solid #bddfd1;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.74);
+  color: #0d6d4b;
+  padding: 0 0.95rem;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.pmbBackHome:hover {
+  background: #fff;
+  color: #084b35;
+  transform: translateY(-1px);
+}
+
+.pmbSchoolCard,
+.pmbLoginCallout,
+.pmbAuthCard,
+.pmbRegisterCard {
+  border-radius: 10px;
+  box-shadow: 0 16px 36px rgba(15, 78, 53, 0.12);
+}
+
+.pmbSchoolCard {
+  border: 1px solid #d9ebe3;
+}
+
+@media (max-width: 760px) {
+  .dashboardApp .pmbApplicantCard {
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+
+  .dashboardApp .pmbCardActions {
+    grid-column: 2;
+    justify-content: flex-start;
+  }
+}
+
 .pmbLookup p {
   margin: 0;
   color: #6f817b;
@@ -7649,4 +7760,142 @@ body:has(.pmbAuthPage) .siteFooter {
   .pmbSchoolCard {
     min-height: 150px;
   }
+}
+
+/* Final PMB visual cleanup: remove yellow cast and align the portal with the public PMB palette. */
+.pmbAuthPage,
+.pmbFormPage {
+  --pmb-ink: #102f29;
+  --pmb-muted: #607871;
+  --pmb-line: #d6e7e0;
+  --pmb-soft: #eef8f4;
+  --pmb-green: #0f766e;
+  --pmb-green-dark: #0b5d54;
+  --pmb-teal: #138a7a;
+}
+
+.pmbAuthPage {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(19, 138, 122, 0.13), transparent 30%),
+    linear-gradient(180deg, #f8fffc 0%, #edf8f4 100%) !important;
+  color: var(--pmb-ink);
+}
+
+.pmbAuthBrand > span,
+.pmbSchoolIcon.green,
+.pmbSchoolIcon.teal,
+.pmbLoginCallout a,
+.pmbAuthPrimary {
+  background: linear-gradient(135deg, var(--pmb-green), var(--pmb-teal)) !important;
+  color: #fff !important;
+}
+
+.pmbAuthBrand h1,
+.pmbRegisterHero h1,
+.pmbAuthCardHead h2,
+.pmbSchoolCard strong {
+  color: var(--pmb-ink) !important;
+}
+
+.pmbRegisterHero,
+.pmbRegisterHero.green,
+.pmbRegisterHero.teal {
+  background:
+    radial-gradient(circle at 92% 0%, rgba(255, 255, 255, 0.2), transparent 28%),
+    linear-gradient(135deg, #0b5d54 0%, #0f766e 56%, #138a7a 100%) !important;
+  color: #fff !important;
+}
+
+.pmbRegisterHero h1,
+.pmbRegisterInstitution strong {
+  color: #fff !important;
+  text-shadow: 0 1px 1px rgba(5, 38, 32, 0.18);
+}
+
+.pmbAuthBrand p,
+.pmbSchoolCard em,
+.pmbAuthSubtleLink:hover {
+  color: var(--pmb-green) !important;
+}
+
+.pmbAuthCard,
+.pmbRegisterCard,
+.pmbLoginCallout,
+.pmbSchoolCard {
+  border-color: var(--pmb-line) !important;
+  box-shadow: 0 18px 38px rgba(16, 87, 72, 0.12) !important;
+}
+
+.pmbBackHome,
+.pmbAuthField input,
+.pmbLookup input,
+.pmbLookup button {
+  border-color: var(--pmb-line) !important;
+}
+
+.pmbAuthField input:focus,
+.pmbLookup input:focus {
+  border-color: var(--pmb-green) !important;
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14) !important;
+}
+
+.pmbStatusPill,
+.pmbFormPage .bg-amber-50,
+.pmbFormPage .bg-yellow-50,
+.pmbFormPage .to-yellow-50 {
+  background: var(--pmb-soft) !important;
+  color: var(--pmb-green-dark) !important;
+}
+
+.pmbFormPage {
+  --tw-gradient-from: #f8fffc var(--tw-gradient-from-position) !important;
+  --tw-gradient-via: #ffffff var(--tw-gradient-via-position) !important;
+  --tw-gradient-to: #edf8f4 var(--tw-gradient-to-position) !important;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(19, 138, 122, 0.1), transparent 28%),
+    linear-gradient(180deg, #f8fffc 0%, #edf8f4 100%) !important;
+  color: var(--pmb-ink);
+}
+
+.pmbFormHeader {
+  background:
+    radial-gradient(circle at 92% 10%, rgba(255, 255, 255, 0.16), transparent 28%),
+    linear-gradient(135deg, #0b5d54 0%, #0f766e 56%, #138a7a 100%) !important;
+}
+
+.pmbFormHeader h1,
+.pmbFormHeader p,
+.pmbFormHeader svg {
+  color: #fff !important;
+}
+
+.pmbFormPage .bg-green-700,
+.pmbFormPage .bg-green-600 {
+  background-color: var(--pmb-green) !important;
+}
+
+.pmbFormPage .hover\:bg-green-800:hover {
+  background-color: var(--pmb-green-dark) !important;
+}
+
+.pmbFormPage .text-green-600,
+.pmbFormPage .text-green-700,
+.pmbFormPage .text-emerald-700 {
+  color: var(--pmb-green) !important;
+}
+
+.pmbFormPage .bg-green-50,
+.pmbFormPage .bg-green-100,
+.pmbFormPage .bg-emerald-50 {
+  background-color: var(--pmb-soft) !important;
+}
+
+.pmbFormPage .border-green-200,
+.pmbFormPage .border-green-400,
+.pmbFormPage .border-emerald-200 {
+  border-color: #bdded4 !important;
+}
+
+.pmbFormPage .focus\:ring-green-500\/50:focus {
+  --tw-ring-color: rgba(15, 118, 110, 0.18) !important;
 }

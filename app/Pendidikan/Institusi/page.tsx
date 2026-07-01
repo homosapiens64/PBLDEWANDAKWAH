@@ -79,7 +79,7 @@ const registrationSteps = [
 
 export default function Institusi() {
   return (
-    <div style={{ fontFamily: "'Segoe UI', sans-serif", color: "#1a1a1a", backgroundColor: "#fff" }}>
+    <div className="educationPublicIndex" style={{ fontFamily: "'Segoe UI', sans-serif", color: "#1a1a1a", backgroundColor: "#fff" }}>
 
       {/* Hero */}
       <section style={{ padding: "56px 80px 40px", maxWidth: 1200, margin: "0 auto" }}>
@@ -89,10 +89,10 @@ export default function Institusi() {
           <br />
           Berkualitas &amp; Terpercaya
         </h1>
-        <div style={{ borderLeft: "4px solid #009688", paddingLeft: 16, maxWidth: 620 }}>
+        <div style={{ maxWidth: 680 }}>
           <p style={{ fontSize: 15, lineHeight: 1.7, color: "#444", margin: 0 }}>
             DDI Semarang mengelola 3 lembaga pendidikan Islam unggulan — dari tingkat pesantren hingga{" "}
-            <span style={{ textDecoration: "line-through", color: "#009688", fontWeight: 600 }}>perguruan tinggi</span>{" "}
+            <span style={{ color: "#009688", fontWeight: 700 }}>perguruan tinggi</span>{" "}
             — untuk mencetak generasi Muslim yang <strong>berilmu, berakhlak, dan berdakwah.</strong>
           </p>
         </div>

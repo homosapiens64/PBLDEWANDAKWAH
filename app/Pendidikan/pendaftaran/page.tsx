@@ -312,7 +312,7 @@ export default function PendaftaranPage() {
 
   // ===== SUCCESS =====
   if (submitted) return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-yellow-50 flex items-center justify-center p-4">
+    <div className="pmbFormPage min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 max-w-lg w-full">
         <div className="text-center mb-6">
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -346,8 +346,8 @@ export default function PendaftaranPage() {
 
   // ===== FORM =====
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-yellow-50">
-      <div className="bg-green-800 text-white">
+    <div className="pmbFormPage min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+      <div className="pmbFormHeader text-white">
         <div className="max-w-2xl mx-auto px-4 py-5 flex items-center gap-3">
           <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
             <BookOpen className="w-5 h-5" />
@@ -397,7 +397,7 @@ export default function PendaftaranPage() {
                   options={jurusanOptions.map(j => ({ value: j.id, label: j.name }))}
                   placeholder={form.institution_id ? "Pilih program / kelas" : "Pilih lembaga dulu"} />
                 {form.institution_id && jurusanOptions.length === 0 && (
-                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-sm text-amber-700">Belum ada program tersedia.</div>
+                  <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-sm text-emerald-700">Belum ada program tersedia.</div>
                 )}
               </div>
             )}
@@ -519,7 +519,7 @@ export default function PendaftaranPage() {
             {/* STEP 5 */}
             {step === 5 && (
               <div className="space-y-4">
-                <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-700">
+                <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-xs text-emerald-700">
                   Periksa kembali semua data sebelum mengirim.
                 </div>
                 {[

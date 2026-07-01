@@ -33,6 +33,9 @@ export default function PmbPortalPage() {
           <span>DD</span>
           <h1>Portal PMB DDI Semarang</h1>
           <p>Penerimaan Peserta Didik Baru Tahun 2026</p>
+          <Link className="pmbBackHome" href="/">
+            &lt;- Kembali ke Beranda
+          </Link>
         </div>
 
         <div className="pmbSchoolGrid" aria-label="Pilihan lembaga PMB">

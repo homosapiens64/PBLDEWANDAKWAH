@@ -231,7 +231,7 @@ export default function EducationParticipantWorkspace({
           />
         </label>
         <p className="participantImportNote">
-          Data dari PMB otomatis diambil jika pendaftar sudah bayar dan statusnya diterima.
+          Data dari PMB otomatis diambil jika status pendaftar sudah daftar ulang, atau diterima dan sudah bayar.
         </p>
       </div>
 

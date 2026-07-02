@@ -1199,53 +1199,6 @@
   font-weight: 550;
 }
 
-.dashboardUserArea {
-  gap: 0.65rem;
-}
-
-.notificationButton {
-  width: 42px;
-  height: 42px;
-  border-radius: 11px;
-  box-shadow: none;
-}
-
-.notificationButton svg {
-  width: 19px;
-  height: 19px;
-}
-
-.notificationButton span {
-  top: 9px;
-  right: 9px;
-  width: 6px;
-  height: 6px;
-}
-
-.userProfileButton {
-  min-width: 205px;
-  min-height: 50px;
-  grid-template-columns: 36px minmax(0, 1fr) 16px;
-  gap: 0.65rem;
-  border-radius: 12px;
-  padding: 0.4rem 0.65rem;
-}
-
-.userProfileButton > strong {
-  width: 36px;
-  height: 36px;
-  border-radius: 9px;
-  font-size: 0.82rem;
-}
-
-.userProfileButton b {
-  font-size: 0.82rem;
-}
-
-.userProfileButton small {
-  font-size: 0.7rem;
-}
-
 .dashboardStats {
   grid-template-columns: repeat(3, minmax(180px, 1fr));
   gap: 1rem;
@@ -1685,15 +1638,6 @@
     padding: 0.9rem 1rem;
   }
 
-  .dashboardUserArea {
-    width: 100%;
-  }
-
-  .userProfileButton {
-    min-width: 0;
-    flex: 1;
-  }
-
   .dashboardStats {
     grid-template-columns: 1fr;
     padding: 1rem;
@@ -1897,6 +1841,25 @@ textarea {
   gap: 0.55rem;
 }
 
+.topStripBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  padding: 0 0.78rem;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.topStripTagline {
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+
 .dot {
   opacity: 0.55;
 }
@@ -1920,23 +1883,6 @@ textarea {
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
-}
-
-.langBox {
-  width: 30px;
-  height: 20px;
-  background: #fff;
-  border-radius: 3px;
-  display: inline-grid;
-  place-items: center;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
-  overflow: hidden;
-}
-
-.langBox img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 .header {
@@ -2882,11 +2828,11 @@ body:has(.dashboardApp) .footer {
   min-height: 84px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 1rem;
   background: #fff;
   border-bottom: 1px solid #eceee9;
-  padding: 0 1rem 0 2.5rem;
+  padding: 0 2.5rem;
   box-shadow: 0 6px 18px rgba(29, 38, 35, 0.05);
 }
 
@@ -2903,80 +2849,6 @@ body:has(.dashboardApp) .footer {
   color: #9299a3;
   font-size: 1rem;
   font-weight: 600;
-}
-
-.dashboardUserArea {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.notificationButton {
-  position: relative;
-  width: 54px;
-  height: 54px;
-  border: 1px solid #eceff1;
-  border-radius: 16px;
-  background: #fff;
-  color: #69707b;
-  display: grid;
-  place-items: center;
-  box-shadow: 0 2px 8px rgba(20, 36, 30, 0.04);
-}
-
-.notificationButton span {
-  position: absolute;
-  top: 13px;
-  right: 13px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #ef4444;
-}
-
-.userProfileButton {
-  min-height: 64px;
-  min-width: 252px;
-  display: grid;
-  grid-template-columns: 48px minmax(0, 1fr) 20px;
-  align-items: center;
-  gap: 0.85rem;
-  border: 1px solid #eceff1;
-  border-radius: 17px;
-  background: #f9faf9;
-  padding: 0.55rem 0.85rem;
-  color: #232630;
-}
-
-.userProfileButton > strong {
-  width: 48px;
-  height: 48px;
-  display: grid;
-  place-items: center;
-  border-radius: 12px;
-  background: #1f875f;
-  color: #fff;
-  font-size: 1.05rem;
-}
-
-.userProfileButton span {
-  display: grid;
-  text-align: left;
-}
-
-.userProfileButton b {
-  font-size: 1.02rem;
-}
-
-.userProfileButton small {
-  color: #7b828c;
-  font-size: 0.87rem;
-}
-
-.userProfileButton > svg {
-  width: 18px;
-  height: 18px;
-  color: #9aa0a8;
 }
 
 .dashboardStats {
@@ -6592,16 +6464,6 @@ body:has(.dashboardApp) .footer {
 
   .dashboardTopbar h1 {
     font-size: 1.15rem;
-  }
-
-  .dashboardUserArea {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .userProfileButton {
-    min-width: 0;
-    flex: 1;
   }
 
   .educationWorkspace,

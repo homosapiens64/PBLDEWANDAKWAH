@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Image from "next/image";
 import Script from "next/script";
 import "./globals.css";
 import "./portal.css";
@@ -93,16 +92,8 @@ export default function RootLayout({
               </div>
 
               <div className="topStripRight">
-                <span className="dot">|</span>
-                <div className="langBox">
-                  <Image src="/indonesia.png" alt="Indonesia" width={24} height={16} />
-                </div>
-                <div className="langBox">
-                  <Image src="/america.png" alt="Amerika Serikat" width={24} height={16} />
-                </div>
-                <div className="langBox">
-                  <Image src="/arab.png" alt="Arab" width={24} height={16} />
-                </div>
+                <span className="topStripBadge">DDI Kota Semarang</span>
+                <span className="topStripTagline">Melayani umat, menguatkan da&apos;wah</span>
               </div>
             </div>
           </div>

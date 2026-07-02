@@ -3147,11 +3147,6 @@
     align-items: stretch;
   }
 
-  .dashboardApp .userProfileButton {
-    min-width: 0;
-    flex: 1;
-  }
-
   .dashboardApp .financePageHead,
   .dashboardApp .financeFilters {
     align-items: stretch;
@@ -3234,25 +3229,6 @@
   gap: 1.35rem;
   padding: 0.95rem 1.35rem 2.2rem;
   color: #12332d;
-}
-
-.dashboardApp .superHomeTopbar {
-  min-height: 54px;
-  padding: 0.55rem 1.35rem 0.25rem;
-  border-bottom: 1px solid #e5ece8;
-  background: #f8fbf9;
-  box-shadow: none;
-}
-
-.dashboardApp .superHomeTopbar h1 {
-  color: #52625e;
-  font-size: 0.78rem;
-  font-weight: 650;
-}
-
-.dashboardApp .superHomeTopbar p,
-.dashboardApp .superHomeTopbar .dashboardUserArea {
-  display: none;
 }
 
 .dashboardApp .overviewSectionTitle {

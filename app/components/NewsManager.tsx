@@ -18,6 +18,9 @@ type NewsForm = {
 
 type NewsSection = "terkini" | "kegiatan" | "nasional" | "internasional";
 
+const MAX_COVER_IMAGE_SIZE_MB = 10;
+const MAX_COVER_IMAGE_SIZE = MAX_COVER_IMAGE_SIZE_MB * 1024 * 1024;
+
 const sectionConfig: Record<NewsSection, {
   addLabel: string;
   icon: "bolt" | "clipboard" | "pin" | "globe";
@@ -303,8 +306,8 @@ export default function NewsManager({
       setMessage("Format gambar harus JPG, PNG, atau WEBP.");
       return;
     }
-    if (file.size > 2 * 1024 * 1024) {
-      setMessage("Ukuran gambar maksimal 2 MB.");
+    if (file.size > MAX_COVER_IMAGE_SIZE) {
+      setMessage(`Ukuran gambar maksimal ${MAX_COVER_IMAGE_SIZE_MB} MB.`);
       return;
     }
     const reader = new FileReader();
@@ -421,7 +424,7 @@ export default function NewsManager({
                 <button className="newsUploadArea" type="button" onClick={() => fileInputRef.current?.click()}>
                   <NewsIcon name="upload" />
                   <span>Klik untuk upload gambar</span>
-                  <small>JPG, PNG, WEBP · maks. 2 MB</small>
+                  <small>JPG, PNG, WEBP · maks. {MAX_COVER_IMAGE_SIZE_MB} MB</small>
                 </button>
               )}
             </article>

@@ -303,6 +303,7 @@
 }
 
 .dashboardApp .imageUploadPreview small,
+.dashboardApp .imageUploadHint,
 .dashboardApp .imageUploadMessage {
   color: #64746e;
   font-size: 0.72rem;

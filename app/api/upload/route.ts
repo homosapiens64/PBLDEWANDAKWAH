@@ -11,7 +11,8 @@ const extensionByType: Record<string, string> = {
 };
 
 const PDF_MIME_TYPE = "application/pdf";
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+const MAX_IMAGE_SIZE_MB = 10;
+const MAX_IMAGE_SIZE = MAX_IMAGE_SIZE_MB * 1024 * 1024;
 const MAX_PDF_SIZE = 50 * 1024 * 1024;
 
 export async function POST(request: Request) {
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
 
   if (file.size > maxSize) {
     return Response.json(
-      { message: file.type === PDF_MIME_TYPE ? "Ukuran file PDF maksimal 50 MB." : "Ukuran file gambar maksimal 5 MB." },
+      { message: file.type === PDF_MIME_TYPE ? "Ukuran file PDF maksimal 50 MB." : `Ukuran file gambar maksimal ${MAX_IMAGE_SIZE_MB} MB.` },
       { status: 400 },
     );
   }

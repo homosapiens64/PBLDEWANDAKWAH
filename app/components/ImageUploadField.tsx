@@ -2,14 +2,15 @@
 
 import { useId, useState, type ChangeEvent } from "react";
 
+const MAX_IMAGE_SIZE = 50 * 1024 * 1024;
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
 export default function ImageUploadField({
   label = "Gambar",
-  maxSizeMB = 10,
   onUploaded,
   value,
 }: {
   label?: string;
-  maxSizeMB?: number;
   onUploaded: (url: string) => void;
   value: string;
 }) {
@@ -23,14 +24,14 @@ export default function ImageUploadField({
 
     setMessage("");
 
-    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
       setMessage("Format gambar harus JPG, PNG, atau WEBP.");
       event.target.value = "";
       return;
     }
 
-    if (file.size > maxSizeMB * 1024 * 1024) {
-      setMessage(`Ukuran gambar maksimal ${maxSizeMB} MB.`);
+    if (file.size > MAX_IMAGE_SIZE) {
+      setMessage("Ukuran gambar maksimal 50 MB.");
       event.target.value = "";
       return;
     }
@@ -78,7 +79,7 @@ export default function ImageUploadField({
         </svg>
         <span>{uploading ? "Mengunggah..." : value ? "Ganti Gambar" : "Pilih Gambar"}</span>
       </label>
-      <small className="imageUploadHint">JPG, PNG, WEBP · maks. {maxSizeMB} MB</small>
+      <small className="imageUploadHint">JPG, PNG, atau WEBP. Maksimal 50 MB.</small>
       {value ? (
         <div className="imageUploadPreview">
           <span style={{ backgroundImage: `url("${value.replaceAll('"', "%22")}")` }} />

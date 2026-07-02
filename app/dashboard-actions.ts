@@ -10,7 +10,7 @@ import {
   roleHomePaths,
 } from "./lib/auth";
 import { sendConsultationEmailNotification } from "./lib/consultation-notifications";
-import { canEditModule } from "./lib/content";
+import { canEditModule, ensureDomainContentTables } from "./lib/content";
 import { ensureDonationCampaignsTable } from "./lib/donation-campaigns";
 import {
   isEducationView,
@@ -246,12 +246,14 @@ export async function saveContentItem(input: ContentInput) {
 
   try {
     if (input.module === "website") {
+      await ensureDomainContentTables();
       if (input.id) {
         await prisma.news.update({ where: { id: input.id }, data });
       } else {
         await prisma.news.create({ data });
       }
     } else if (input.module === "kajian") {
+      await ensureDomainContentTables();
       if (input.id) {
         await prisma.studyArticle.update({ where: { id: input.id }, data });
       } else {
@@ -376,10 +378,12 @@ export async function deleteContentItem(id: number, module: string) {
   let publicPath = "/";
   try {
     if (module === "website") {
+      await ensureDomainContentTables();
       const existing = await prisma.news.findUnique({ where: { id } });
       publicPath = existing ? `/Berita/${capitalizeSegment(existing.section)}` : "/Berita";
       await prisma.news.delete({ where: { id } });
     } else if (module === "kajian") {
+      await ensureDomainContentTables();
       publicPath = "/Kajian";
       await prisma.studyArticle.delete({ where: { id } });
     } else if (module === "education" || module === "pmb") {

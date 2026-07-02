@@ -34,8 +34,8 @@ import {
 import { getEducationProfiles } from "../lib/education-profile";
 import { prisma } from "../lib/prisma";
 
-const roleTitles: Record<UserRole, string> = {
-  super_admin: "Super Administrator",
+const topbarRoleTitles: Record<UserRole, string> = {
+  super_admin: "Super Admin",
   admin: "Admin Pendidikan",
   pengurus: "Pengurus",
   bendahara: "Bendahara",
@@ -1338,9 +1338,6 @@ export default async function RoleDashboard({
   const hasWorkspace = Boolean(
     activeFinanceView || activeInstitutionView || activeModule,
   );
-  const showDashboardTopbar = !(
-    activeEducationView && activeEducationModule === "education" && activeParticipantSection
-  ) && !activePmbView;
   const visibleNavItems = navItems
     .filter((item) => item.roles.includes(role))
     .map((item) => {
@@ -1363,12 +1360,6 @@ export default async function RoleDashboard({
         children: item.children,
       };
     });
-  const initials = session.name
-    .split(" ")
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
   const currentDate = new Intl.DateTimeFormat("id-ID", {
     weekday: "long",
     day: "numeric",
@@ -1868,40 +1859,17 @@ export default async function RoleDashboard({
       </aside>
 
       <section className="dashboardMain">
-        {showDashboardTopbar ? (
-          <header className={role === "super_admin" && !hasWorkspace ? "dashboardTopbar superHomeTopbar" : "dashboardTopbar"}>
-            <div>
-              <h1>
-                {role === "super_admin" && !hasWorkspace
-                  ? "Selamat datang di Admin Panel DDI Semarang"
-                  : `Selamat datang, ${session.name}`}
-              </h1>
-              <p>{currentDate} - Sistem Internal Dewan Da&apos;wah</p>
-            </div>
-
-            <div className="dashboardUserArea">
-              <button className="notificationButton" type="button" aria-label="Notifikasi">
-                <DashboardIcon name="bell" />
-                <span />
-              </button>
-              <button className="userProfileButton" type="button">
-                <strong>{initials}</strong>
-                <span>
-                  <b>{session.name}</b>
-                  <small>
-                    {roleTitles[role]}
-                    {role === "admin" && session.institution
-                      ? ` - ${institutionLabels[session.institution]}`
-                      : ""}
-                  </small>
-                </span>
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </button>
-            </div>
-          </header>
-        ) : null}
+        <header className="dashboardTopbar">
+          <div>
+            <h1>Selamat datang, {topbarRoleTitles[role]}</h1>
+            <p>
+              {currentDate} - {session.name}
+              {role === "admin" && session.institution
+                ? ` - ${institutionLabels[session.institution]}`
+                : ""} - Sistem Internal Dewan Da&apos;wah
+            </p>
+          </div>
+        </header>
 
         {activeFinanceView ? (
           <FinanceWorkspace

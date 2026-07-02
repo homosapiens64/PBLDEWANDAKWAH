@@ -10,6 +10,10 @@ const extensionByType: Record<string, string> = {
   "image/webp": "webp",
 };
 
+const PDF_MIME_TYPE = "application/pdf";
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+const MAX_PDF_SIZE = 50 * 1024 * 1024;
+
 export async function POST(request: Request) {
   const formData = await request.formData();
   const file = formData.get("file");
@@ -25,9 +29,11 @@ export async function POST(request: Request) {
     );
   }
 
-  if (file.size > 5 * 1024 * 1024) {
+  const maxSize = file.type === PDF_MIME_TYPE ? MAX_PDF_SIZE : MAX_IMAGE_SIZE;
+
+  if (file.size > maxSize) {
     return Response.json(
-      { message: "Ukuran file maksimal 5 MB." },
+      { message: file.type === PDF_MIME_TYPE ? "Ukuran file PDF maksimal 50 MB." : "Ukuran file gambar maksimal 5 MB." },
       { status: 400 },
     );
   }

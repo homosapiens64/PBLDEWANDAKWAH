@@ -262,7 +262,7 @@
 .aboutDocumentPublicGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 .aboutDocumentPublicCard,
@@ -276,37 +276,37 @@
 
 .aboutDocumentPublicCard {
   overflow: hidden;
+  min-height: 100%;
 }
 
 .aboutDocumentPublicCard > header {
-  display: grid;
-  grid-template-columns: 58px minmax(0, 1fr);
-  align-items: center;
-  gap: 1rem;
-  background: #edf8f2;
-  padding: 1.5rem;
+  background:
+    linear-gradient(135deg, rgba(23, 107, 74, 0.12), rgba(245, 178, 43, 0.08)),
+    #f7fcf9;
+  border-bottom: 1px solid #e0ece6;
+  padding: 1.55rem 1.6rem 1.35rem;
 }
 
-.aboutDocumentPublicCard > header > span {
-  width: 58px;
-  height: 58px;
-  display: grid;
-  place-items: center;
-  border-radius: 14px;
-  background: #176b4a;
-  color: #fff;
-  font-size: 0.72rem;
+.aboutDocumentPublicLabel {
+  color: #176b4a;
+  display: block;
+  font-size: 0.64rem;
   font-weight: 900;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.55rem;
+  text-transform: uppercase;
 }
 
 .aboutDocumentPublicCard h2 {
-  font-size: 1.25rem;
+  color: #10291d;
+  font-size: 1.24rem;
+  line-height: 1.25;
 }
 
 .aboutDocumentPublicCard header p {
-  margin: 0.35rem 0 0;
-  color: #66786e;
-  font-size: 0.78rem;
+  margin: 0.5rem 0 0;
+  color: #587067;
+  font-size: 0.84rem;
   line-height: 1.55;
 }
 
@@ -323,51 +323,79 @@
 }
 
 .aboutPublicDocumentList > div {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  gap: 1.25rem;
   border-top: 1px solid #edf1ef;
-  padding: 1.2rem 1.5rem;
+  padding: 1.45rem 1.6rem;
+}
+
+.aboutPublicDocumentList > div:first-child {
+  border-top: 0;
+}
+
+.aboutPublicDocumentInfo > span {
+  border-radius: 999px;
+  color: #176b4a;
+  display: inline-flex;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.aboutPublicDocumentList > div.isMissing .aboutPublicDocumentInfo > span {
+  color: #9a6a12;
 }
 
 .aboutPublicDocumentList strong,
 .aboutLeader strong {
   display: block;
   color: #23322a;
-  font-size: 0.88rem;
+  font-size: 0.92rem;
+  line-height: 1.25;
 }
 
 .aboutPublicDocumentList small,
 .aboutLeader small {
   display: block;
-  margin-top: 0.2rem;
+  margin-top: 0.32rem;
   color: #829188;
   font-size: 0.68rem;
 }
 
 .aboutPublicDocumentList p {
-  margin: 0.45rem 0 0;
+  margin: 0.55rem 0 0;
   color: #65766d;
   font-size: 0.75rem;
-  line-height: 1.55;
+  line-height: 1.65;
 }
 
-.aboutPublicDocumentList a,
-.aboutPublicDocumentList > div > span {
+.aboutPublicDocumentAction,
+.aboutPublicFileNotice {
   flex: 0 0 auto;
-  border-radius: 8px;
+  border-radius: 999px;
   background: #176b4a;
   color: #fff;
-  padding: 0.55rem 0.75rem;
-  font-size: 0.7rem;
-  font-weight: 700;
+  box-shadow: 0 10px 22px rgba(23, 107, 74, 0.18);
+  min-width: 122px;
+  padding: 0.72rem 1.05rem;
+  font-size: 0.74rem;
+  font-weight: 800;
   text-decoration: none;
+  text-align: center;
+  white-space: nowrap;
 }
 
-.aboutPublicDocumentList > div > span {
-  background: #eef2f0;
-  color: #7a8981;
+.aboutPublicDocumentAction:hover {
+  background: #11553b;
+}
+
+.aboutPublicFileNotice {
+  background: #fff7e5;
+  box-shadow: none;
+  color: #9a6a12;
 }
 
 .aboutCategoryGroup {
@@ -781,7 +809,13 @@
 
   .aboutPublicDocumentList > div {
     align-items: flex-start;
-    flex-direction: column;
+    grid-template-columns: 1fr;
+  }
+
+  .aboutPublicDocumentAction,
+  .aboutPublicFileNotice {
+    width: 100%;
+    text-align: center;
   }
 }
 

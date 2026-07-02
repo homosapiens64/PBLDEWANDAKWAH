@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition, type FormEvent } from "react";
+import { useMemo, useState, useTransition, type ChangeEvent, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { deleteContentItem, saveContentItem } from "../dashboard-actions";
 import type { PublicContentItem } from "../lib/content";
@@ -50,6 +50,9 @@ const emptyDynamicForm = (): DynamicForm => ({
   leaderPhotoUrl: "",
   unitPhotoUrl: "",
 });
+
+const PDF_MIME_TYPE = "application/pdf";
+const MAX_PDF_SIZE = 50 * 1024 * 1024;
 
 const profileBlocks = [
   {
@@ -291,6 +294,8 @@ function AboutModal({
   pending: boolean;
 }) {
   const documentKind = kind === "ad" || kind === "art";
+  const [uploadMessage, setUploadMessage] = useState("");
+  const [uploadingPdf, setUploadingPdf] = useState(false);
   const title = kind === "ad"
     ? "Tambah Dokumen AD"
     : kind === "art"
@@ -298,6 +303,53 @@ function AboutModal({
       : kind === "unit"
         ? "Tambah Unit"
         : "Tambah Program";
+
+  const uploadPdf = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const hasPdfExtension = file.name.toLowerCase().endsWith(".pdf");
+    if (!hasPdfExtension || (file.type && file.type !== PDF_MIME_TYPE)) {
+      setUploadMessage("Format file harus PDF.");
+      event.target.value = "";
+      return;
+    }
+
+    if (file.size > MAX_PDF_SIZE) {
+      setUploadMessage("Ukuran file maksimal 50 MB.");
+      event.target.value = "";
+      return;
+    }
+
+    setUploadMessage("");
+    setUploadingPdf(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const payload = await response.json();
+
+      if (!response.ok || !payload?.file_url) {
+        throw new Error(payload?.message || "Upload PDF gagal.");
+      }
+
+      onChange("fileName", file.name);
+      onChange("pdfUrl", payload.file_url);
+      setUploadMessage(`PDF siap disimpan: ${file.name}`);
+    } catch (error) {
+      onChange("fileName", "");
+      onChange("pdfUrl", "");
+      setUploadMessage(error instanceof Error ? error.message : "Upload PDF gagal.");
+      event.target.value = "";
+    } finally {
+      setUploadingPdf(false);
+    }
+  };
 
   return (
     <div className="aboutModalOverlay" role="presentation" onMouseDown={onClose}>
@@ -362,20 +414,18 @@ function AboutModal({
                 </label>
               </div>
               <label>
-                <span>Upload File (PDF)</span>
+                <span>Upload File (PDF, maks. 50 MB)</span>
                 <span className="aboutFilePicker">
                   <AboutIcon name="upload" />
-                  {form.fileName || "Pilih File"}
+                  {uploadingPdf ? "Mengunggah..." : form.fileName || "Pilih File"}
                   <input
                     type="file"
-                    accept="application/pdf"
-                    onChange={(event) => onChange("fileName", event.target.files?.[0]?.name ?? "")}
+                    accept="application/pdf,.pdf"
+                    disabled={uploadingPdf}
+                    onChange={uploadPdf}
                   />
                 </span>
-              </label>
-              <label>
-                <span>URL PDF (opsional, agar dapat dibuka di website)</span>
-                <input type="url" value={form.pdfUrl} placeholder="https://..." onChange={(event) => onChange("pdfUrl", event.target.value)} />
+                {uploadMessage ? <small>{uploadMessage}</small> : null}
               </label>
             </>
           ) : null}
@@ -407,7 +457,7 @@ function AboutModal({
 
           <div className="aboutModalActions">
             <button type="button" className="aboutCancelButton" onClick={onClose}>Batal</button>
-            <button type="submit" className="aboutPrimaryButton" disabled={pending}>
+            <button type="submit" className="aboutPrimaryButton" disabled={pending || uploadingPdf}>
               {pending ? "Menyimpan..." : "Simpan"}
             </button>
           </div>
@@ -514,6 +564,11 @@ function DynamicWorkspace({
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!editorKind) return;
+    const documentKind = editorKind === "ad" || editorKind === "art";
+    if (documentKind && !form.pdfUrl) {
+      onMessage("Upload file PDF terlebih dahulu sebelum menyimpan dokumen AD/ART.");
+      return;
+    }
     const section = editorKind === "ad"
       ? "ad-document"
       : editorKind === "art"
@@ -521,6 +576,7 @@ function DynamicWorkspace({
         : editorKind === "unit"
           ? "struktur-unit"
           : "program-kerja";
+
     const metadata = editorKind === "unit"
       ? {
           unitType: form.unitType,

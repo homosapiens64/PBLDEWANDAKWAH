@@ -1,6 +1,18 @@
 import { getAboutItems, parseAboutMeta } from "../../lib/about";
 import InlineContentEditor from "../../components/InlineContentEditor";
 
+function formatDate(value: string) {
+  if (!value) return "";
+  const date = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return value;
+
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
+
 export default async function AdDanArtPage() {
   const items = await getAboutItems();
   const groups = [
@@ -28,16 +40,20 @@ export default async function AdDanArtPage() {
 
       <section className="container aboutDocumentPublicGrid">
         {groups.map((group) => {
-          const documents = items.filter((item) => item.section === group.section);
+          const documents = items
+            .filter((item) => item.section === group.section)
+            .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+
           return (
             <article className="aboutDocumentPublicCard" key={group.section}>
               <header>
-                <span>PDF</span>
                 <div>
+                  <span className="aboutDocumentPublicLabel">Dokumen resmi</span>
                   <h2>{group.title}</h2>
                   <p>{group.description}</p>
                 </div>
               </header>
+
               {documents.length === 0 ? (
                 <div className="aboutPublicEmpty">Dokumen belum diterbitkan.</div>
               ) : (
@@ -46,18 +62,27 @@ export default async function AdDanArtPage() {
                     const meta = parseAboutMeta(item.summary, {
                       version: "-",
                       effectiveDate: "",
-                      fileName: "",
                     });
+
                     return (
-                      <div key={item.id}>
-                        <div>
+                      <div className={item.imageUrl ? "isAvailable" : "isMissing"} key={item.id}>
+                        <div className="aboutPublicDocumentInfo">
+                          <span>{item.imageUrl ? "Tersedia" : "Perlu upload ulang"}</span>
                           <strong>{item.title}</strong>
-                          <small>Versi {meta.version} {meta.effectiveDate ? `· ${meta.effectiveDate}` : ""}</small>
+                          <small>
+                            Versi {meta.version}
+                            {meta.effectiveDate ? ` - Berlaku ${formatDate(meta.effectiveDate)}` : ""}
+                          </small>
                           <p>{item.body}</p>
                         </div>
+
                         {item.imageUrl ? (
-                          <a href={item.imageUrl} target="_blank" rel="noreferrer">Buka PDF</a>
-                        ) : <span>Belum ada berkas</span>}
+                          <a className="aboutPublicDocumentAction" href={item.imageUrl} target="_blank" rel="noreferrer">
+                            Buka PDF
+                          </a>
+                        ) : (
+                          <span className="aboutPublicFileNotice">Upload ulang PDF</span>
+                        )}
                       </div>
                     );
                   })}
@@ -68,7 +93,6 @@ export default async function AdDanArtPage() {
         })}
       </section>
 
-      {/* Inline Editor untuk Super Admin */}
       <InlineContentEditor items={items} module="tentang-kami" section="tentang-kami" />
     </main>
   );

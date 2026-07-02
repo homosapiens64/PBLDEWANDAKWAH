@@ -62,6 +62,114 @@
   line-height: 1.7;
 }
 
+.aboutProfileShowcase {
+  display: grid;
+  gap: 1.25rem;
+  padding-top: 4rem;
+  padding-bottom: 5rem;
+}
+
+.aboutProfileLead {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.55fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: stretch;
+  border: 1px solid #dfe8e3;
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(238, 248, 242, 0.95), rgba(255, 255, 255, 0.98)),
+    #ffffff;
+  padding: clamp(1.6rem, 4vw, 3rem);
+  box-shadow: 0 16px 36px rgba(23, 58, 42, 0.07);
+}
+
+.aboutProfileLeadText {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.aboutProfileLead h2 {
+  margin: 0;
+  max-width: 720px;
+  color: #17251f;
+  font-size: clamp(1.55rem, 3vw, 2.45rem);
+  line-height: 1.16;
+}
+
+.aboutProfileIdentity {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 280px;
+  border-radius: 16px;
+  background:
+    linear-gradient(160deg, rgba(20, 115, 80, 0.96), rgba(13, 73, 52, 0.98)),
+    #176b4a;
+  padding: 1.5rem;
+  color: #fff;
+}
+
+.aboutProfileIdentity > span {
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  margin-bottom: auto;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
+  color: #fff5d8;
+  font-weight: 900;
+}
+
+.aboutProfileIdentity strong {
+  display: block;
+  margin-top: 2rem;
+  color: #fff;
+  font-size: 1.12rem;
+  line-height: 1.35;
+}
+
+.aboutProfileIdentity p {
+  margin: 0.65rem 0 0;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.aboutProfileCards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.aboutProfileInfoCard {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #dfe8e3;
+  border-radius: 16px;
+  background: #fff;
+  padding: 1.45rem;
+  box-shadow: 0 12px 28px rgba(23, 58, 42, 0.055);
+}
+
+.aboutProfileInfoCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #e7ad37;
+}
+
+.aboutProfileInfoCard h2 {
+  margin: 0;
+  color: #17251f;
+  font-size: 1.18rem;
+  line-height: 1.28;
+}
+
 .aboutPublicSections {
   display: grid;
   gap: 1.5rem;
@@ -145,7 +253,7 @@
 }
 
 .aboutDocumentPublicGrid,
-.aboutStructureGrid,
+.aboutStructurePublic,
 .aboutProgramPublic {
   padding-top: 3.5rem;
   padding-bottom: 5rem;
@@ -262,14 +370,181 @@
   color: #7a8981;
 }
 
+.aboutCategoryGroup {
+  margin-top: 3.5rem;
+  margin-bottom: 2rem;
+}
+
+.aboutCategoryGroup:first-of-type {
+  margin-top: 1rem;
+}
+
+.aboutCategoryHeader {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(23, 107, 74, 0.12);
+  padding-bottom: 0.6rem;
+}
+
+.aboutCategoryTitle {
+  font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+  font-weight: 800;
+  color: #17251f;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.aboutLeaderFeatured > img.aboutLeaderAvatar {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+.aboutLeader > img.aboutLeaderAvatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #e2ebe6;
+}
+
+.aboutStructureCard > header > img.aboutUnitAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 13px;
+  object-fit: cover;
+  border: 1px solid rgba(23, 107, 74, 0.1);
+}
+
 .aboutStructureGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.25rem;
 }
 
+.aboutStructurePublic {
+  display: grid;
+  gap: 1.4rem;
+}
+
+.aboutStructureFeatured {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.55fr);
+  gap: 1rem;
+  overflow: hidden;
+  border: 1px solid rgba(23, 107, 74, 0.2);
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, #0f6547, #1d8361),
+    #176b4a;
+  padding: clamp(1.5rem, 4vw, 2.4rem);
+  color: #fff;
+  box-shadow: 0 18px 42px rgba(23, 58, 42, 0.13);
+}
+
+.aboutStructureFeaturedHead {
+  align-self: center;
+}
+
+.aboutStructureFeatured .aboutPublicEyebrow {
+  color: #d9f4e7;
+}
+
+.aboutStructureFeatured h2 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(1.65rem, 3.2vw, 2.8rem);
+  line-height: 1.08;
+}
+
+.aboutStructureFeaturedHead > span {
+  display: block;
+  max-width: 620px;
+  margin-top: 0.9rem;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.92rem;
+  line-height: 1.75;
+}
+
+.aboutLeaderFeatured {
+  display: grid;
+  grid-template-columns: 68px minmax(0, 1fr);
+  align-items: center;
+  gap: 0.9rem;
+  align-self: start;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.11);
+  padding: 1rem;
+}
+
+.aboutLeaderFeatured > span {
+  width: 68px;
+  height: 68px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff5d8;
+  color: #176b4a;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.aboutLeaderFeatured small,
+.aboutMemberFeatured small {
+  display: block;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.aboutLeaderFeatured strong {
+  display: block;
+  margin-top: 0.2rem;
+  color: #fff;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.aboutMemberFeatured {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 0.65rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  padding-top: 1rem;
+}
+
+.aboutMemberFeatured > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.aboutMemberFeatured span {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.45rem 0.75rem;
+  color: #fff;
+  font-size: 0.74rem;
+}
+
 .aboutStructureCard {
+  position: relative;
+  overflow: hidden;
   padding: 1.5rem;
+}
+
+.aboutStructureCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 5px;
+  background: #e7ad37;
 }
 
 .aboutStructureCard > header {
@@ -285,8 +560,9 @@
   display: grid;
   place-items: center;
   border-radius: 13px;
-  background: #176b4a;
-  color: #fff;
+  background: #edf8f2;
+  color: #176b4a;
+  font-size: 0.74rem;
   font-weight: 850;
 }
 
@@ -461,6 +737,9 @@
   .aboutPublicSection,
   .aboutPublicSection.reverse,
   .aboutDocumentPublicGrid,
+  .aboutProfileLead,
+  .aboutProfileCards,
+  .aboutStructureFeatured,
   .aboutStructureGrid {
     grid-template-columns: 1fr;
   }
@@ -475,6 +754,10 @@
     min-height: 220px;
   }
 
+  .aboutProfileIdentity {
+    min-height: 220px;
+  }
+
   .aboutProgramPublicGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -483,6 +766,12 @@
 @media (max-width: 640px) {
   .aboutPublicHero {
     padding: 3.5rem 0;
+  }
+
+  .aboutProfileShowcase,
+  .aboutStructurePublic {
+    padding-top: 2.4rem;
+    padding-bottom: 3.4rem;
   }
 
   .aboutProgramPublicStats,
@@ -7019,6 +7308,42 @@ textarea:focus-visible {
   color: #24362f;
 }
 
+.institutionHeroImage {
+  width: min(920px, 100%);
+  min-height: clamp(220px, 36vw, 390px);
+  position: relative;
+  overflow: hidden;
+  margin-top: clamp(1.6rem, 4vw, 2.6rem);
+  border: 1px solid #dcebe5;
+  border-radius: 10px;
+  background-color: #e7f0ec;
+  background-position: center;
+  background-size: cover;
+  box-shadow: 0 18px 44px rgba(24, 83, 61, 0.12);
+}
+
+.institutionHeroImage::after {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(10, 47, 34, 0.02), rgba(10, 47, 34, 0.28)),
+    linear-gradient(90deg, rgba(10, 47, 34, 0.18), transparent 60%);
+  content: "";
+}
+
+.institutionHeroImage span {
+  position: absolute;
+  left: 1rem;
+  bottom: 0.9rem;
+  z-index: 1;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  padding: 0.44rem 0.75rem;
+  color: #173b32;
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
 .institutionVision {
   position: relative;
   width: min(880px, 100%);
@@ -7995,6 +8320,27 @@ body:has(.loginPage) .siteFooter {
   background:
     linear-gradient(135deg, rgba(18, 80, 70, 0.95), rgba(42, 139, 132, 0.84)),
     #2a8b84;
+}
+
+.educationInstitutionBanner.hasImage {
+  background-position: center;
+  background-size: cover;
+}
+
+.educationInstitutionBanner.hasImage::before,
+.educationInstitutionBanner.hasImage::after {
+  content: none;
+}
+
+.educationInstitutionBanner.hasImage > svg {
+  display: none;
+}
+
+.educationInstitutionBanner.hasImage > span {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 0.42rem 0.72rem;
+  color: #173b32;
 }
 
 .educationInstitutionBanner > svg {

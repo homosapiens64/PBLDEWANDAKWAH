@@ -4,6 +4,7 @@ import { useMemo, useState, useTransition, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { deleteContentItem, saveContentItem } from "../dashboard-actions";
 import type { PublicContentItem } from "../lib/content";
+import ImageUploadField from "./ImageUploadField";
 
 type AboutSection =
   | "profil-organisasi"
@@ -28,6 +29,8 @@ type DynamicForm = {
   status: string;
   startDate: string;
   endDate: string;
+  leaderPhotoUrl: string;
+  unitPhotoUrl: string;
 };
 
 const emptyDynamicForm = (): DynamicForm => ({
@@ -44,6 +47,8 @@ const emptyDynamicForm = (): DynamicForm => ({
   status: "aktif",
   startDate: new Date().toISOString().slice(0, 10),
   endDate: "",
+  leaderPhotoUrl: "",
+  unitPhotoUrl: "",
 });
 
 const profileBlocks = [
@@ -318,10 +323,20 @@ function AboutModal({
                   <option>Sub Unit</option>
                 </select>
               </label>
+              <ImageUploadField
+                label="Logo / Foto Unit (Lingkaran Kiri)"
+                value={form.unitPhotoUrl}
+                onUploaded={(url) => onChange("unitPhotoUrl", url)}
+              />
               <label>
                 <span>Nama Ketua / Penanggung Jawab</span>
                 <input value={form.leader} onChange={(event) => onChange("leader", event.target.value)} />
               </label>
+              <ImageUploadField
+                label="Foto Ketua / Penanggung Jawab"
+                value={form.leaderPhotoUrl}
+                onUploaded={(url) => onChange("leaderPhotoUrl", url)}
+              />
               <label>
                 <span>Anggota (satu nama per baris)</span>
                 <textarea value={form.members} onChange={(event) => onChange("members", event.target.value)} />
@@ -365,12 +380,7 @@ function AboutModal({
             </>
           ) : null}
 
-          {kind === "unit" ? (
-            <label>
-              <span>Urutan</span>
-              <input type="number" min="0" value={form.order} onChange={(event) => onChange("order", event.target.value)} />
-            </label>
-          ) : null}
+          {/* Automated sorting used instead of manual order */}
 
           {kind === "program" ? (
             <>
@@ -407,6 +417,26 @@ function AboutModal({
   );
 }
 
+function getCategoryWeight(type: string): number {
+  switch (type) {
+    case "Pimpinan Harian": return 1;
+    case "Dewan Penasehat": return 2;
+    case "Unit Pelaksana": return 3;
+    case "Sub Unit": return 4;
+    default: return 5;
+  }
+}
+
+function getUnitRank(title: string): number {
+  const t = title.toLowerCase();
+  if (t.includes("ketua") && !t.includes("wakil")) return 1;
+  if (t.includes("wakil")) return 2;
+  if (t.includes("sekretaris")) return 3;
+  if (t.includes("bendahara")) return 4;
+  if (t.includes("staff") || t.includes("staf")) return 5;
+  return 10;
+}
+
 function DynamicWorkspace({
   items,
   mode,
@@ -429,7 +459,21 @@ function DynamicWorkspace({
   const units = useMemo(
     () => items
       .filter((item) => item.section === "struktur-unit")
-      .sort((a, b) => Number(parseMeta(a.summary, { order: "0" }).order) - Number(parseMeta(b.summary, { order: "0" }).order)),
+      .sort((a, b) => {
+        const metaA = parseMeta(a.summary, { unitType: "Unit Pelaksana" });
+        const metaB = parseMeta(b.summary, { unitType: "Unit Pelaksana" });
+        const catWeightA = getCategoryWeight(metaA.unitType);
+        const catWeightB = getCategoryWeight(metaB.unitType);
+        if (catWeightA !== catWeightB) {
+          return catWeightA - catWeightB;
+        }
+        const rankA = getUnitRank(a.title);
+        const rankB = getUnitRank(b.title);
+        if (rankA !== rankB) {
+          return rankA - rankB;
+        }
+        return a.title.localeCompare(b.title);
+      }),
     [items],
   );
   const programs = items.filter((item) => item.section === "program-kerja");
@@ -452,6 +496,8 @@ function DynamicWorkspace({
       status: "aktif",
       startDate: "",
       endDate: "",
+      leaderPhotoUrl: "",
+      unitPhotoUrl: "",
     });
     setEditorKind(kind);
     setForm({
@@ -481,6 +527,8 @@ function DynamicWorkspace({
           order: form.order,
           leader: form.leader,
           members: form.members,
+          leaderPhotoUrl: form.leaderPhotoUrl,
+          unitPhotoUrl: form.unitPhotoUrl,
         }
       : editorKind === "program"
         ? {

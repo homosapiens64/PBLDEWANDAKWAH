@@ -19,6 +19,7 @@ import AdminManagement, { type EducationAdminRow } from "./AdminManagement";
 import CertifiedUstadzManager from "./CertifiedUstadzManager";
 import ConsultationQuestionsManager from "./ConsultationQuestionsManager";
 import DonationManager, { type DonationCampaignRow } from "./DonationManager";
+import EducationProfileEditor from "./EducationProfileEditor";
 import EducationPmbWorkspace, { type PmbApplicant } from "./EducationPmbWorkspace";
 import EducationParticipantWorkspace from "./EducationParticipantWorkspace";
 import {
@@ -30,6 +31,7 @@ import {
   getContentItems,
   getModuleContentItems,
 } from "../lib/content";
+import { getEducationProfiles } from "../lib/education-profile";
 import { prisma } from "../lib/prisma";
 
 const roleTitles: Record<UserRole, string> = {
@@ -120,7 +122,7 @@ const navItems: DashboardNavItem[] = [
   {
     icon: "list",
     label: "Berita",
-    children: ["Nasional", "Internasional", "Kegiatan"],
+    children: ["Terkini", "Nasional", "Internasional", "Kegiatan"],
     roles: ["super_admin", "pengurus"] satisfies UserRole[],
   },
   {
@@ -334,6 +336,7 @@ type EducationDisplayProfile = {
   description: string;
   editTitle: string;
   icon: IconName;
+  imageUrl: string;
   institutionName: string;
   subtitle: string;
   tagline: string;
@@ -352,6 +355,7 @@ const educationContent: Record<EducationView, EducationDisplayProfile> = {
   adi: {
     ...educationProfiles.adi,
     icon: "graduation",
+    imageUrl: "",
     title: "ADI - Akademi Da'wah Islam",
     editTitle: "Edit Profil ADI - Akademi Da'wah Islam",
     institutionName: "Akademi Da'wah Islam (ADI) Semarang",
@@ -380,6 +384,7 @@ const educationContent: Record<EducationView, EducationDisplayProfile> = {
   "ponpes-suruh": {
     ...educationProfiles["ponpes-suruh"],
     icon: "home",
+    imageUrl: "",
     title: "Ponpes Suruh",
     editTitle: "Edit Profil Ponpes Suruh",
     institutionName: "Pondok Pesantren Suruh",
@@ -405,6 +410,7 @@ const educationContent: Record<EducationView, EducationDisplayProfile> = {
   "al-khawarizmi": {
     ...educationProfiles["al-khawarizmi"],
     icon: "file",
+    imageUrl: "",
     title: "Al Khawarizmi",
     editTitle: "Edit Profil Al Khawarizmi",
     institutionName: "Al Khawarizmi",
@@ -1092,9 +1098,9 @@ function getSectionSlug(parent: string, child: string) {
 
 function normalizeModuleSection(module: DashboardModule, section?: string) {
   if (module === "website") {
-    return ["nasional", "internasional", "kegiatan"].includes(section ?? "")
+    return ["terkini", "nasional", "internasional", "kegiatan"].includes(section ?? "")
       ? section!
-      : "nasional";
+      : "terkini";
   }
 
   if (module === "kajian") {
@@ -1107,6 +1113,12 @@ function normalizeModuleSection(module: DashboardModule, section?: string) {
     return ["pertanyaan-masuk", "jawaban", "ustadz-bersertifikat"].includes(section ?? "")
       ? section!
       : "pertanyaan-masuk";
+  }
+
+  if (module === "tentang-kami") {
+    return ["profil-organisasi", "ad-art", "struktur-kepengurusan", "program-kerja"].includes(section ?? "")
+      ? section!
+      : "profil-organisasi";
   }
 
   return section || slugifySection(moduleLabels[module]);
@@ -1200,54 +1212,22 @@ function EducationProfileSummary({
 }
 
 function EducationEditForm({
+  profile,
   role,
   view,
 }: {
+  profile: EducationDisplayProfile;
   role: UserRole;
   view: EducationView;
 }) {
-  const profile = educationContent[view];
-
   return (
     <section className="educationWorkspace edit">
       <EducationHeader editable={false} profile={profile} role={role} view={view} />
-      <form className="educationEditForm">
-        <div className="educationEditHeading">
-          <div>
-            <h2>{profile.editTitle}</h2>
-          </div>
-        </div>
-        <label>
-          <span>Nama Lembaga</span>
-          <input name="institutionName" defaultValue={profile.institutionName} />
-        </label>
-        <label>
-          <span>Tagline</span>
-          <input name="tagline" defaultValue={profile.tagline} />
-        </label>
-        <label>
-          <span>Deskripsi</span>
-          <textarea name="description" defaultValue={profile.description} />
-        </label>
-        <div className="educationEditGrid educationContactFields">
-          {profile.fields.map((field) => (
-            <label key={field.name}>
-              <span>{field.label}</span>
-              <input name={field.name} defaultValue={field.value} />
-            </label>
-          ))}
-        </div>
-        <div className="educationFormActions">
-          <button type="button" className="educationSaveButton">
-            <DashboardIcon name="save" />
-            <span>Simpan</span>
-          </button>
-          <Link href={`${roleHomePaths[role]}?education=${view}`} className="educationCancelButton">
-            <DashboardIcon name="x" />
-            <span>Batal</span>
-          </Link>
-        </div>
-      </form>
+      <EducationProfileEditor
+        cancelHref={`${roleHomePaths[role]}?education=${view}`}
+        profile={profile}
+        view={view}
+      />
     </section>
   );
 }
@@ -1257,6 +1237,7 @@ function EducationWorkspace({
   module,
   participantLabel,
   pmbApplicants,
+  profile,
   readOnly,
   role,
   view,
@@ -1265,12 +1246,11 @@ function EducationWorkspace({
   module: "education" | "pmb";
   participantLabel?: string;
   pmbApplicants: PmbApplicant[];
+  profile: EducationDisplayProfile;
   readOnly: boolean;
   role: UserRole;
   view: EducationView;
 }) {
-  const profile = educationContent[view];
-
   if (module === "education" && participantLabel) {
     const acceptedPmbApplicants = pmbApplicants.filter((applicant) => (
       applicant.status === "Daftar Ulang" || (applicant.status === "Diterima" && applicant.sudahBayar)
@@ -1286,7 +1266,7 @@ function EducationWorkspace({
   }
 
   if (mode === "edit" && module === "education" && !readOnly) {
-    return <EducationEditForm role={role} view={view} />;
+    return <EducationEditForm profile={profile} role={role} view={view} />;
   }
 
   if (module === "pmb") {
@@ -1418,6 +1398,9 @@ export default async function RoleDashboard({
   let certifiedUstadz: CertifiedUstadzItem[] = [];
   let donationCampaigns: DonationCampaignRow[] = [];
   let pmbApplicants: PmbApplicant[] = [];
+  const educationProfileContent = canAccessEducation
+    ? await getEducationProfiles() as unknown as Record<EducationView, EducationDisplayProfile>
+    : educationContent;
 
   if (activeModule === "donasi" && role === "super_admin") {
     try {
@@ -1934,6 +1917,7 @@ export default async function RoleDashboard({
             module={activeEducationModule}
             participantLabel={activeParticipantSection ? activeParticipantLabel : undefined}
             pmbApplicants={pmbApplicants}
+            profile={educationProfileContent[activeInstitutionView]}
             readOnly={contentReadOnly}
             role={role}
           />

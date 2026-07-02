@@ -12,6 +12,11 @@ import {
 import { sendConsultationEmailNotification } from "./lib/consultation-notifications";
 import { canEditModule } from "./lib/content";
 import { ensureDonationCampaignsTable } from "./lib/donation-campaigns";
+import {
+  isEducationView,
+  serializeEducationProfilePayload,
+  type EducationView,
+} from "./lib/education-profile";
 import { prisma } from "./lib/prisma";
 
 export type ContentInput = {
@@ -84,6 +89,15 @@ export type PmbDeleteInput = {
   id: number;
 };
 
+export type EducationProfileInput = {
+  description: string;
+  fields: Array<{ name: string; value: string }>;
+  imageUrl: string;
+  institutionName: string;
+  section: EducationView;
+  tagline: string;
+};
+
 function canEditSection(
   session: NonNullable<Awaited<ReturnType<typeof getSession>>>,
   module: string,
@@ -115,6 +129,7 @@ function revalidatePublicContent() {
   revalidatePath("/Pendidikan/Institusi");
   revalidatePath("/Pendidikan/pendaftaran");
   revalidatePath("/Pendidikan/PonpesSuruh");
+  revalidatePath("/TentangKami");
   revalidatePath("/TentangKami/Profile");
   revalidatePath("/TentangKami/AdDanArt");
   revalidatePath("/TentangKami/StrukturKepengurusan");
@@ -130,6 +145,19 @@ function capitalizeSegment(segment: string) {
 }
 
 function getPublicPath(module: string, section: string) {
+  const aboutPaths: Record<string, string> = {
+    "ad-art": "/TentangKami/AdDanArt",
+    "ad-document": "/TentangKami/AdDanArt",
+    "art-document": "/TentangKami/AdDanArt",
+    "profil-cabang-semarang": "/TentangKami/Profile",
+    "profil-kontak-lokasi": "/TentangKami/Profile",
+    "profil-organisasi": "/TentangKami/Profile",
+    "profil-sejarah": "/TentangKami/Profile",
+    "profil-visi-misi": "/TentangKami/Profile",
+    "program-kerja": "/TentangKami/Program",
+    "struktur-kepengurusan": "/TentangKami/StrukturKepengurusan",
+    "struktur-unit": "/TentangKami/StrukturKepengurusan",
+  };
   const educationPaths: Record<string, string> = {
     adi: "/Pendidikan/ADI",
     "al-khawarizmi": "/Pendidikan/AlKhawarizmi",
@@ -144,7 +172,7 @@ function getPublicPath(module: string, section: string) {
   if (module === "konsultasi") return "/Konsultasi";
   if (module === "education") return educationPaths[section] ?? "/Pendidikan/Institusi";
   if (module === "pmb") return "/Pendidikan/pendaftaran";
-  if (module === "tentang-kami") return section ? `/TentangKami/${capitalizeSegment(section)}` : "/TentangKami";
+  if (module === "tentang-kami") return aboutPaths[section] ?? "/TentangKami/Profile";
   return "/";
 }
 
@@ -273,6 +301,71 @@ export async function saveContentItem(input: ContentInput) {
   const publicPath = getPublicPath(input.module, input.section);
   try { revalidatePath(publicPath); } catch {}
   redirect(publicPath);
+}
+
+export async function saveEducationProfile(input: EducationProfileInput) {
+  const session = await getSession();
+  if (!session || !canEditSection(session, "education", input.section)) {
+    throw new Error("Anda tidak memiliki akses untuk mengubah profil lembaga ini.");
+  }
+  if (!isEducationView(input.section)) {
+    throw new Error("Lembaga pendidikan tidak valid.");
+  }
+
+  const institutionName = input.institutionName.trim();
+  const description = input.description.trim();
+  const tagline = input.tagline.trim();
+  const imageUrl = input.imageUrl.trim();
+  const fields = input.fields.map((field) => ({
+    name: field.name.trim(),
+    value: field.value.trim(),
+  }));
+
+  if (!institutionName || !description) {
+    throw new Error("Nama lembaga dan deskripsi wajib diisi.");
+  }
+
+  const data = {
+    authorName: session.name,
+    authorRole: session.role,
+    body: serializeEducationProfilePayload({
+      description,
+      fields,
+      imageUrl,
+      institutionName,
+      tagline,
+    }),
+    imageUrl: imageUrl || null,
+    module: "education",
+    publishedAt: new Date(),
+    section: input.section,
+    status: "published",
+    summary: tagline || null,
+    tags: "profile",
+    title: institutionName,
+  };
+
+  try {
+    const existing = await prisma.educationInformation.findFirst({
+      where: { module: "education", section: input.section, tags: "profile" },
+      orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
+    });
+
+    if (existing) {
+      await prisma.educationInformation.update({
+        where: { id: existing.id },
+        data,
+      });
+    } else {
+      await prisma.educationInformation.create({ data });
+    }
+  } catch {
+    throw new Error("Database pendidikan belum terhubung. Pastikan MySQL sedang berjalan.");
+  }
+
+  revalidatePublicContent();
+  revalidatePath(roleHomePaths[session.role]);
+  revalidatePath(getPublicPath("education", input.section));
 }
 
 export async function deleteContentItem(id: number, module: string) {

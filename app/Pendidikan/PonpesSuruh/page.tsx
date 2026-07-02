@@ -1,4 +1,5 @@
 import InstitutionDetail, { type InstitutionDetailData } from "../InstitutionDetail";
+import { getEducationField, getEducationProfile } from "../../lib/education-profile";
 
 const ponpesSuruhData: InstitutionDetailData = {
   titleTop: "Ponpes Suruh",
@@ -54,6 +55,23 @@ const ponpesSuruhData: InstitutionDetailData = {
   registerHref: "/Pendidikan/pendaftaran?institution=ponpes-suruh",
 };
 
-export default function PonpesSuruhPage() {
-  return <InstitutionDetail data={ponpesSuruhData} />;
+export default async function PonpesSuruhPage() {
+  const profile = await getEducationProfile("ponpes-suruh");
+  const data: InstitutionDetailData = {
+    ...ponpesSuruhData,
+    capacity: getEducationField(profile, "capacity") || ponpesSuruhData.capacity,
+    contact: {
+      address: getEducationField(profile, "address") || ponpesSuruhData.contact.address,
+      email: getEducationField(profile, "email") || ponpesSuruhData.contact.email,
+      hours: getEducationField(profile, "hours") || ponpesSuruhData.contact.hours,
+      phone: getEducationField(profile, "phone") || ponpesSuruhData.contact.phone,
+    },
+    description: profile.description || ponpesSuruhData.description,
+    imageUrl: profile.imageUrl,
+    level: getEducationField(profile, "level") || ponpesSuruhData.level,
+    registration: getEducationField(profile, "registration") || ponpesSuruhData.registration,
+    vision: profile.vision || ponpesSuruhData.vision,
+  };
+
+  return <InstitutionDetail data={data} />;
 }

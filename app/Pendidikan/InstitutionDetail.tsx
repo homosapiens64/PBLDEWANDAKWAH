@@ -32,6 +32,7 @@ export interface InstitutionDetailData {
   titleTop: string;
   titleAccent: string;
   description: string;
+  imageUrl?: string;
   registration: string;
   capacity: string;
   level: string;
@@ -86,6 +87,15 @@ export default function InstitutionDetail({ data }: { data: InstitutionDetailDat
               Jenjang: <strong>{data.level}</strong>
             </span>
           </div>
+
+          {data.imageUrl ? (
+            <div
+              className="institutionHeroImage"
+              style={{ backgroundImage: `url("${data.imageUrl.replaceAll('"', "%22")}")` }}
+            >
+              <span>{data.titleTop}</span>
+            </div>
+          ) : null}
 
           {data.vision ? (
             <div className="institutionVision">

@@ -15,6 +15,12 @@ import {
   Users,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import {
+  getEducationField,
+  getEducationProfiles,
+  type EducationProfile,
+  type EducationView,
+} from "../../lib/education-profile";
 
 interface Tag {
   icon: LucideIcon;
@@ -26,10 +32,12 @@ interface Institution {
   id: string;
   href: string;
   name: string;
+  profileKey: EducationView;
   subtitle: string;
   description: string;
   tags: Tag[];
   imageAlt: string;
+  imageUrl?: string;
   reverse?: boolean;
   featureIcon: LucideIcon;
 }
@@ -39,6 +47,7 @@ const institutions: Institution[] = [
     id: "adi",
     href: "/Pendidikan/ADI",
     name: "ADI",
+    profileKey: "adi",
     subtitle: "Akademi Da'wah Islam Indonesia - Cabang Semarang",
     description:
       "ADI adalah lembaga pendidikan tinggi vokasi yang berfokus pada pembinaan kader da'i profesional. Mahasiswa ADI dibekali ilmu syariah, metode dakwah, kepemimpinan Islam, dan keterampilan komunikasi publik agar siap berdakwah di tengah masyarakat.",
@@ -55,6 +64,7 @@ const institutions: Institution[] = [
     id: "ponpes",
     href: "/Pendidikan/PonpesSuruh",
     name: "PONPES SURUH",
+    profileKey: "ponpes-suruh",
     subtitle: "Lembaga Pendidikan Islam - Kota Semarang",
     description:
       "Pondok Pesantren Suruh adalah lembaga pendidikan Islam tradisional yang berada di bawah naungan Dewan Da'wah Islamiyah Indonesia Cabang Semarang. Pesantren ini menggabungkan pendidikan salaf yang kuat dengan kurikulum modern.",
@@ -72,6 +82,7 @@ const institutions: Institution[] = [
     id: "khawarizmi",
     href: "/Pendidikan/AlKhawarizmi",
     name: "Al Khawarizmi",
+    profileKey: "al-khawarizmi",
     subtitle: "Lembaga Pendidikan Islam - Terafiliasi DDI Cabang Semarang",
     description:
       "Al Khawarizmi adalah lembaga pendidikan Islam terpadu yang mengintegrasikan ilmu agama dengan ilmu sains dan teknologi modern, bertekad melahirkan generasi Muslim yang unggul secara akademik dan kuat secara aqidah.",
@@ -94,7 +105,53 @@ const registrationSteps = [
   { icon: BookOpen, label: "Selesai" },
 ];
 
-export default function Institusi() {
+function buildTags(view: EducationView, profile: EducationProfile): Tag[] {
+  const address = getEducationField(profile, "address");
+  const registration = getEducationField(profile, "registration");
+  const capacity = getEducationField(profile, "capacity");
+  const level = getEducationField(profile, "level");
+  const accreditation = getEducationField(profile, "accreditation");
+
+  if (view === "adi") {
+    return [
+      { icon: MapPin, label: address },
+      { icon: CalendarDays, label: `Pendaftaran: ${registration}` },
+      { icon: Users, label: `Kapasitas: ${capacity}`, variant: "green" },
+      { icon: GraduationCap, label: `Jenjang: ${level}` },
+    ].filter((tag) => tag.label) as Tag[];
+  }
+
+  if (view === "al-khawarizmi") {
+    return [
+      { icon: MapPin, label: address },
+      { icon: Home, label: `Sistem: ${level}` },
+      accreditation ? { icon: CheckCircle2, label: `Akreditasi: ${accreditation}`, variant: "green" } : null,
+      { icon: Users, label: `Penerimaan: ${capacity}` },
+    ].filter(Boolean) as Tag[];
+  }
+
+  return [
+    { icon: MapPin, label: address },
+    { icon: Home, label: `Sistem: ${level}`, variant: "green" },
+    { icon: Users, label: `Penerimaan: ${capacity}` },
+    { icon: CalendarDays, label: `Pendaftaran: ${registration}` },
+  ].filter((tag) => tag.label) as Tag[];
+}
+
+export default async function Institusi() {
+  const profiles = await getEducationProfiles();
+  const profiledInstitutions = institutions.map((institution) => {
+    const profile = profiles[institution.profileKey];
+
+    return {
+      ...institution,
+      description: profile.description,
+      imageUrl: profile.imageUrl,
+      subtitle: profile.institutionName,
+      tags: buildTags(institution.profileKey, profile),
+    };
+  });
+
   return (
     <main className="educationPublicIndex">
       <section className="educationHero">
@@ -114,8 +171,13 @@ export default function Institusi() {
 
       <section className="educationInstitutionSection">
         <div className="container grid gap-8 lg:gap-12">
-          {institutions.map((institution) => {
+          {profiledInstitutions.map((institution) => {
             const FeatureIcon = institution.featureIcon;
+            const bannerStyle = institution.imageUrl
+              ? {
+                  backgroundImage: `linear-gradient(180deg, rgba(8, 38, 29, 0.08), rgba(8, 38, 29, 0.56)), url("${institution.imageUrl.replaceAll('"', "%22")}")`,
+                }
+              : undefined;
 
             return (
               <article
@@ -161,7 +223,10 @@ export default function Institusi() {
                   </div>
                 </div>
 
-                <div className={`educationInstitutionBanner ${institution.id}`}>
+                <div
+                  className={`educationInstitutionBanner ${institution.id} ${institution.imageUrl ? "hasImage" : ""}`}
+                  style={bannerStyle}
+                >
                   <FeatureIcon aria-hidden="true" />
                   <span>{institution.imageAlt}</span>
                 </div>

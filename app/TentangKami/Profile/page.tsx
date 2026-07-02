@@ -25,6 +25,12 @@ export default async function ProfilePage() {
       fallback: profileFallback.kontak,
     },
   ];
+  const resolvedSections = sections.map((section) => ({
+    ...section,
+    item: findAboutItem(items, section.key),
+  }));
+  const featured = resolvedSections[0];
+  const supportingSections = resolvedSections.slice(1);
 
   return (
     <main className="aboutPublicPage">
@@ -36,33 +42,37 @@ export default async function ProfilePage() {
         </div>
       </section>
 
-      <section className="container aboutPublicSections">
-        {sections.map((section, index) => {
-          const item = findAboutItem(items, section.key);
-          return (
-            <article className={`aboutPublicSection ${index % 2 ? "reverse" : ""}`} key={section.key}>
-              {item?.imageUrl ? (
-                <div
-                  className="aboutPublicImage"
-                  role="img"
-                  aria-label={item.title}
-                  style={{ backgroundImage: `url("${item.imageUrl.replaceAll('"', "%22")}")` }}
-                />
-              ) : (
-                <div className="aboutPublicMark"><span>{String(index + 1).padStart(2, "0")}</span></div>
-              )}
-              <div>
-                <p className="aboutPublicEyebrow">{section.eyebrow}</p>
-                <h2>{item?.title || section.fallback.title}</h2>
-                <div className="aboutPublicBody">
-                  {(item?.body || section.fallback.body).split("\n").map((line, lineIndex) => (
-                    <p key={`${section.key}-${lineIndex}`}>{line || "\u00a0"}</p>
-                  ))}
-                </div>
+      <section className="container aboutProfileShowcase">
+        <article className="aboutProfileLead">
+          <div className="aboutProfileLeadText">
+            <p className="aboutPublicEyebrow">{featured.eyebrow}</p>
+            <h2>{featured.item?.title || featured.fallback.title}</h2>
+            <div className="aboutPublicBody">
+              {(featured.item?.body || featured.fallback.body).split("\n").map((line, lineIndex) => (
+                <p key={`${featured.key}-${lineIndex}`}>{line || "\u00a0"}</p>
+              ))}
+            </div>
+          </div>
+          <aside className="aboutProfileIdentity" aria-label="Identitas organisasi">
+            <span>DDI</span>
+            <strong>Dewan Da&apos;wah Kota Semarang</strong>
+            <p>Dakwah, pendidikan, sosial, dan pelayanan umat berbasis kebutuhan masyarakat.</p>
+          </aside>
+        </article>
+
+        <div className="aboutProfileCards">
+          {supportingSections.map((section) => (
+            <article className="aboutProfileInfoCard" key={section.key}>
+              <p className="aboutPublicEyebrow">{section.eyebrow}</p>
+              <h2>{section.item?.title || section.fallback.title}</h2>
+              <div className="aboutPublicBody">
+                {(section.item?.body || section.fallback.body).split("\n").map((line, lineIndex) => (
+                  <p key={`${section.key}-${lineIndex}`}>{line || "\u00a0"}</p>
+                ))}
               </div>
             </article>
-          );
-        })}
+          ))}
+        </div>
       </section>
 
       {/* Inline Editor untuk Super Admin */}

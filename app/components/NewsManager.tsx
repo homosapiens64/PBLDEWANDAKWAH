@@ -16,7 +16,7 @@ type NewsForm = {
   title: string;
 };
 
-type NewsSection = "kegiatan" | "nasional" | "internasional";
+type NewsSection = "terkini" | "kegiatan" | "nasional" | "internasional";
 
 const sectionConfig: Record<NewsSection, {
   addLabel: string;
@@ -24,6 +24,12 @@ const sectionConfig: Record<NewsSection, {
   search: string;
   title: string;
 }> = {
+  terkini: {
+    addLabel: "Tambah Berita",
+    icon: "bolt",
+    search: "Cari berita terkini...",
+    title: "Berita Terkini",
+  },
   kegiatan: {
     addLabel: "Tambah Kegiatan",
     icon: "clipboard",
@@ -179,7 +185,7 @@ export default function NewsManager({
   readOnly?: boolean;
   section: string;
 }) {
-  const activeSection = (section in sectionConfig ? section : "nasional") as NewsSection;
+  const activeSection = (section in sectionConfig ? section : "terkini") as NewsSection;
   const config = sectionConfig[activeSection];
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);

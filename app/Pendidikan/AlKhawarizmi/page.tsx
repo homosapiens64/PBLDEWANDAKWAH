@@ -1,4 +1,5 @@
 import InstitutionDetail, { type InstitutionDetailData } from "../InstitutionDetail";
+import { getEducationField, getEducationProfile } from "../../lib/education-profile";
 
 const alKhawarizmiData: InstitutionDetailData = {
   titleTop: "Al Khawarizmi",
@@ -54,6 +55,23 @@ const alKhawarizmiData: InstitutionDetailData = {
   registerHref: "/Pendidikan/pendaftaran?institution=al-khawarizmi",
 };
 
-export default function AlKhawarizmiPage() {
-  return <InstitutionDetail data={alKhawarizmiData} />;
+export default async function AlKhawarizmiPage() {
+  const profile = await getEducationProfile("al-khawarizmi");
+  const data: InstitutionDetailData = {
+    ...alKhawarizmiData,
+    capacity: getEducationField(profile, "capacity") || alKhawarizmiData.capacity,
+    contact: {
+      address: getEducationField(profile, "address") || alKhawarizmiData.contact.address,
+      email: getEducationField(profile, "email") || alKhawarizmiData.contact.email,
+      hours: getEducationField(profile, "hours") || alKhawarizmiData.contact.hours,
+      phone: getEducationField(profile, "phone") || alKhawarizmiData.contact.phone,
+    },
+    description: profile.description || alKhawarizmiData.description,
+    imageUrl: profile.imageUrl,
+    level: getEducationField(profile, "level") || alKhawarizmiData.level,
+    registration: getEducationField(profile, "registration") || alKhawarizmiData.registration,
+    vision: profile.vision || alKhawarizmiData.vision,
+  };
+
+  return <InstitutionDetail data={data} />;
 }

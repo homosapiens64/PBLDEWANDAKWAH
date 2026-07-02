@@ -1,4 +1,5 @@
 import InstitutionDetail, { type InstitutionDetailData } from "../InstitutionDetail";
+import { getEducationField, getEducationProfile } from "../../lib/education-profile";
 
 const adiData: InstitutionDetailData = {
   titleTop: "Akademi Da'wah Islam",
@@ -59,6 +60,22 @@ const adiData: InstitutionDetailData = {
   registerHref: "/Pendidikan/pendaftaran?institution=adi",
 };
 
-export default function ADIPage() {
-  return <InstitutionDetail data={adiData} />;
+export default async function ADIPage() {
+  const profile = await getEducationProfile("adi");
+  const data: InstitutionDetailData = {
+    ...adiData,
+    capacity: getEducationField(profile, "capacity") || adiData.capacity,
+    contact: {
+      address: getEducationField(profile, "address") || adiData.contact.address,
+      email: getEducationField(profile, "email") || adiData.contact.email,
+      hours: getEducationField(profile, "hours") || adiData.contact.hours,
+      phone: getEducationField(profile, "phone") || adiData.contact.phone,
+    },
+    description: profile.description || adiData.description,
+    imageUrl: profile.imageUrl,
+    level: getEducationField(profile, "level") || adiData.level,
+    registration: getEducationField(profile, "registration") || adiData.registration,
+  };
+
+  return <InstitutionDetail data={data} />;
 }

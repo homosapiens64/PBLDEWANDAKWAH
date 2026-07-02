@@ -2,6 +2,9 @@
 
 import { useId, useState, type ChangeEvent } from "react";
 
+const MAX_IMAGE_SIZE = 50 * 1024 * 1024;
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
 export default function ImageUploadField({
   label = "Gambar",
   onUploaded,
@@ -20,6 +23,19 @@ export default function ImageUploadField({
     if (!file) return;
 
     setMessage("");
+
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      setMessage("Format gambar harus JPG, PNG, atau WEBP.");
+      event.target.value = "";
+      return;
+    }
+
+    if (file.size > MAX_IMAGE_SIZE) {
+      setMessage("Ukuran gambar maksimal 50 MB.");
+      event.target.value = "";
+      return;
+    }
+
     setUploading(true);
 
     try {
@@ -63,6 +79,7 @@ export default function ImageUploadField({
         </svg>
         <span>{uploading ? "Mengunggah..." : value ? "Ganti Gambar" : "Pilih Gambar"}</span>
       </label>
+      <small className="imageUploadHint">JPG, PNG, atau WEBP. Maksimal 50 MB.</small>
       {value ? (
         <div className="imageUploadPreview">
           <span style={{ backgroundImage: `url("${value.replaceAll('"', "%22")}")` }} />

@@ -340,17 +340,6 @@ export default function KajianManager({
                       setForm((current) => ({ ...current, imageUrl }))
                     }
                   />
-                  <label className="kajianCoverUpload">
-                    <span>Atau tempel URL gambar</span>
-                    <input
-                      type="url"
-                      value={form.imageUrl}
-                      onChange={(event) =>
-                        setForm((current) => ({ ...current, imageUrl: event.target.value }))
-                      }
-                      placeholder="https://..."
-                    />
-                  </label>
                 </section>
 
                 <div className="kajianPreview">

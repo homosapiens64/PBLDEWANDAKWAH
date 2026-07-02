@@ -303,6 +303,7 @@
 }
 
 .dashboardApp .imageUploadPreview small,
+.dashboardApp .imageUploadHint,
 .dashboardApp .imageUploadMessage {
   color: #64746e;
   font-size: 0.72rem;
@@ -1859,7 +1860,7 @@
 .kajianWorkspace {
   min-height: calc(100svh - 74px);
   padding: 1.45rem clamp(1rem, 2.5vw, 2rem) 3rem;
-  background: #fffaf1;
+  background: #fff;
 }
 
 .kajianPageHead,
@@ -2744,7 +2745,7 @@
 
 .kajianEditor {
   min-height: calc(100svh - 74px);
-  background: #fffaf1;
+  background: #fff;
 }
 
 .kajianEditorBar {
@@ -4136,7 +4137,7 @@
 .newsEditorWorkspace {
   min-height: calc(100svh - 68px);
   padding: 1.45rem;
-  background: #fcf8ef;
+  background: #fff;
   color: #101536;
 }
 

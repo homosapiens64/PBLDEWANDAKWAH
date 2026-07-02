@@ -18,6 +18,9 @@ type NewsForm = {
 
 type NewsSection = "terkini" | "kegiatan" | "nasional" | "internasional";
 
+const MAX_IMAGE_SIZE = 50 * 1024 * 1024;
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
 const sectionConfig: Record<NewsSection, {
   addLabel: string;
   icon: "bolt" | "clipboard" | "pin" | "globe";
@@ -197,6 +200,7 @@ export default function NewsManager({
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
   const [query, setQuery] = useState("");
   const [message, setMessage] = useState("");
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [form, setForm] = useState<NewsForm>(emptyForm);
 
   const filteredItems = useMemo(() => {
@@ -296,23 +300,47 @@ export default function NewsManager({
     });
   };
 
-  const handleImage = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleImage = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
       setMessage("Format gambar harus JPG, PNG, atau WEBP.");
+      event.target.value = "";
       return;
     }
-    if (file.size > 2 * 1024 * 1024) {
-      setMessage("Ukuran gambar maksimal 2 MB.");
+
+    if (file.size > MAX_IMAGE_SIZE) {
+      setMessage("Ukuran gambar maksimal 50 MB.");
+      event.target.value = "";
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      updateForm("imageUrl", typeof reader.result === "string" ? reader.result : "");
+
+    setMessage("");
+    setUploadingImage(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const payload = await response.json();
+
+      if (!response.ok || !payload?.file_url) {
+        throw new Error(payload?.message || "Upload gambar gagal.");
+      }
+
+      updateForm("imageUrl", payload.file_url);
       setMessage("");
-    };
-    reader.readAsDataURL(file);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Upload gambar gagal.");
+      event.target.value = "";
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   if (mode === "editor") {
@@ -327,10 +355,10 @@ export default function NewsManager({
             <h2>{editingId ? `Edit ${activeSection === "kegiatan" ? "Berita" : config.title}` : activeSection === "kegiatan" ? "Tulis Berita Baru" : `Tulis ${config.title}`}</h2>
           </div>
           <div className="newsEditorActions">
-            <button type="button" className="newsDraftButton" onClick={() => save("draft")} disabled={isPending}>
+            <button type="button" className="newsDraftButton" onClick={() => save("draft")} disabled={isPending || uploadingImage}>
               Simpan Draf
             </button>
-            <button type="button" className="newsPublishButton" onClick={() => save("published")} disabled={isPending}>
+            <button type="button" className="newsPublishButton" onClick={() => save("published")} disabled={isPending || uploadingImage}>
               <NewsIcon name="save" />
               {isPending ? "Menyimpan..." : "Terbitkan"}
             </button>
@@ -418,10 +446,10 @@ export default function NewsManager({
                   <button type="button" onClick={() => updateForm("imageUrl", "")}>Hapus Gambar</button>
                 </>
               ) : (
-                <button className="newsUploadArea" type="button" onClick={() => fileInputRef.current?.click()}>
+                <button className="newsUploadArea" type="button" onClick={() => fileInputRef.current?.click()} disabled={uploadingImage}>
                   <NewsIcon name="upload" />
-                  <span>Klik untuk upload gambar</span>
-                  <small>JPG, PNG, WEBP · maks. 2 MB</small>
+                  <span>{uploadingImage ? "Mengunggah..." : "Klik untuk upload gambar"}</span>
+                  <small>JPG, PNG, WEBP - maks. 50 MB</small>
                 </button>
               )}
             </article>

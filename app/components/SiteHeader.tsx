@@ -2,8 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+
+type SearchResult = {
+  id: string;
+  typeLabel: string;
+  title: string;
+  href: string;
+};
 
 const beritaMenu = [
   { label: "Terkini", href: "/Berita/Terkini" },
@@ -66,8 +73,15 @@ function MenuIcon({ open }: { open: boolean }) {
 
 export default function SiteHeader() {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<"berita" | "pendidikan" | "tentang" | null>(null);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const searchWrapRef = useRef<HTMLDivElement>(null);
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
@@ -75,6 +89,65 @@ export default function SiteHeader() {
     setMobileOpen(false);
     setOpenDropdown(null);
   };
+
+  const submitSearch = () => {
+    const trimmed = searchQuery.trim();
+    if (!trimmed) return;
+    setSearchOpen(false);
+    closeNavigation();
+    router.push(`/search?q=${encodeURIComponent(trimmed)}`);
+  };
+
+  // Live suggestions with debounce.
+  useEffect(() => {
+    const trimmed = searchQuery.trim();
+    const controller = new AbortController();
+
+    if (trimmed.length < 2) {
+      const clear = setTimeout(() => {
+        setSearchResults([]);
+        setSearchLoading(false);
+      }, 0);
+      return () => clearTimeout(clear);
+    }
+
+    const timer = setTimeout(async () => {
+      setSearchLoading(true);
+      try {
+        const response = await fetch(`/api/search?q=${encodeURIComponent(trimmed)}`, {
+          signal: controller.signal,
+        });
+        if (!response.ok) throw new Error("search failed");
+        const data = (await response.json()) as { results: SearchResult[] };
+        setSearchResults(data.results.slice(0, 6));
+      } catch {
+        if (!controller.signal.aborted) {
+          setSearchResults([]);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setSearchLoading(false);
+        }
+      }
+    }, 250);
+
+    return () => {
+      controller.abort();
+      clearTimeout(timer);
+    };
+  }, [searchQuery]);
+
+  // Close suggestions when clicking outside.
+  useEffect(() => {
+    if (!searchOpen) return;
+    const handleClick = (event: MouseEvent) => {
+      if (searchWrapRef.current && !searchWrapRef.current.contains(event.target as Node)) {
+        setSearchOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [searchOpen]);
 
   return (
     <header className="header">
@@ -192,11 +265,61 @@ export default function SiteHeader() {
           </div>
         </nav>
 
-        <div className="searchWrap">
-          <input placeholder="Cari Berita..." />
-          <button type="button" aria-label="Cari berita">
-            <SearchIcon />
-          </button>
+        <div className="searchWrap" ref={searchWrapRef}>
+          <form
+            className="searchForm"
+            role="search"
+            onSubmit={(event) => {
+              event.preventDefault();
+              submitSearch();
+            }}
+          >
+            <input
+              type="search"
+              placeholder="Cari Berita..."
+              value={searchQuery}
+              onChange={(event) => {
+                setSearchQuery(event.target.value);
+                setSearchOpen(true);
+              }}
+              onFocus={() => setSearchOpen(true)}
+              aria-label="Cari di website"
+            />
+            <button type="submit" aria-label="Cari berita">
+              <SearchIcon />
+            </button>
+          </form>
+
+          {searchOpen && searchQuery.trim().length >= 2 && (
+            <div className="searchDropdown" role="listbox">
+              {searchLoading && searchResults.length === 0 && (
+                <p className="searchDropdownStatus">Mencari…</p>
+              )}
+              {!searchLoading && searchResults.length === 0 && (
+                <p className="searchDropdownStatus">Tidak ada hasil.</p>
+              )}
+              {searchResults.map((result) => (
+                <Link
+                  key={result.id}
+                  href={result.href}
+                  className="searchDropdownItem"
+                  role="option"
+                  onClick={() => {
+                    setSearchOpen(false);
+                    closeNavigation();
+                  }}
+                >
+                  <span className="searchDropdownType">{result.typeLabel}</span>
+                  <span className="searchDropdownTitle">{result.title}</span>
+                </Link>
+              ))}
+              {searchResults.length > 0 && (
+                <button type="button" className="searchDropdownAll" onClick={submitSearch}>
+                  Lihat semua hasil untuk “{searchQuery.trim()}”
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         <Link className="loginNavButton" href="/login" onClick={closeNavigation}>

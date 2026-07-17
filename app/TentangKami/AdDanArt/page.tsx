@@ -33,7 +33,7 @@ export default async function AdDanArtPage() {
       <section className="aboutPublicHero compact">
         <div className="container">
           <p>DOKUMEN ORGANISASI</p>
-          <h1>AD &amp; ART</h1>
+          <h1>AD &amp; <span>ART</span></h1>
           <span>Anggaran Dasar dan Anggaran Rumah Tangga Dewan Da&apos;wah Semarang.</span>
         </div>
       </section>

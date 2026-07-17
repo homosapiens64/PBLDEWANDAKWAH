@@ -10,26 +10,13 @@
 .aboutPublicHero {
   position: relative;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 85% 20%, rgba(231, 173, 55, 0.17), transparent 24%),
-    linear-gradient(135deg, #0f6547, #1d8361);
-  padding: 5.5rem 0;
-  color: #fff;
+  background: #ffffff;
+  padding: 4.5rem 0 3rem;
+  color: #395a55;
 }
 
 .aboutPublicHero.compact {
-  padding: 4rem 0;
-}
-
-.aboutPublicHero::after {
-  content: "";
-  position: absolute;
-  width: 330px;
-  height: 330px;
-  right: -120px;
-  bottom: -210px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
+  padding: 3.5rem 0 2.5rem;
 }
 
 .aboutPublicHero .container {
@@ -38,28 +25,35 @@
 }
 
 .aboutPublicHero p {
-  margin: 0 0 0.7rem;
-  color: #c4ebda;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.16em;
+  margin: 0 0 0.4rem;
+  color: #f0b84f;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
 }
 
 .aboutPublicHero h1 {
-  margin: 0;
-  color: #fff;
-  font-size: clamp(2.2rem, 5vw, 4.2rem);
-  line-height: 1.05;
-  letter-spacing: -0.045em;
+  margin: 0.1rem 0 0.4rem;
+  color: #395a55;
+  font-size: clamp(2.4rem, 4.5vw, 3.4rem);
+  line-height: 0.95;
+  font-weight: 900;
+  letter-spacing: -0.02em;
 }
 
-.aboutPublicHero span {
+.aboutPublicHero h1 span {
+  color: #f4b12e;
+  font-style: italic;
+  font-weight: 600;
+}
+
+.aboutPublicHero .container > span {
   display: block;
-  max-width: 650px;
-  margin-top: 1rem;
-  color: rgba(255, 255, 255, 0.78);
-  font-size: 0.95rem;
-  line-height: 1.7;
+  max-width: 620px;
+  margin-top: 0.6rem;
+  color: #80918f;
+  font-size: 0.86rem;
+  line-height: 1.45;
 }
 
 .aboutProfileShowcase {

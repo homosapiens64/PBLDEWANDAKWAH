@@ -83,7 +83,7 @@ export default async function StrukturKepengurusanPage() {
       <section className="aboutPublicHero compact">
         <div className="container">
           <p>PERIODE 2024 — 2028</p>
-          <h1>Struktur Kepengurusan</h1>
+          <h1>Struktur <span>Kepengurusan</span></h1>
           <span>Amanah, dakwah, dan khidmah untuk masyarakat Kota Semarang.</span>
         </div>
       </section>

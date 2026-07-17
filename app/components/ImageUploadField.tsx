@@ -83,7 +83,7 @@ export default function ImageUploadField({
       {value ? (
         <div className="imageUploadPreview">
           <span style={{ backgroundImage: `url("${value.replaceAll('"', "%22")}")` }} />
-          <small>{value}</small>
+          <small>{value.startsWith("data:") ? "Gambar tersimpan di database" : value}</small>
         </div>
       ) : null}
       {uploading || message ? (

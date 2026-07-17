@@ -24,7 +24,7 @@ export default async function ProgramPage() {
       <section className="aboutPublicHero compact">
         <div className="container">
           <p>GERAKAN &amp; PELAYANAN</p>
-          <h1>Program Kerja</h1>
+          <h1>Program <span>Kerja</span></h1>
           <span>Program dakwah, pendidikan, dan sosial yang dirancang untuk kebutuhan umat.</span>
         </div>
       </section>

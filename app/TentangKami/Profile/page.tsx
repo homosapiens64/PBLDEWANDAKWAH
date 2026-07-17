@@ -37,7 +37,7 @@ export default async function ProfilePage() {
       <section className="aboutPublicHero">
         <div className="container">
           <p>DEWAN DA&apos;WAH KOTA SEMARANG</p>
-          <h1>Profil Organisasi</h1>
+          <h1>Profil <span>Organisasi</span></h1>
           <span>Jejak perjuangan, arah dakwah, dan informasi organisasi.</span>
         </div>
       </section>
